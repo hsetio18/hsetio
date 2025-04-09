@@ -15,7 +15,7 @@ def py_commander():
     import re
     import seaborn as sns
     ############
-    df = None
+    # df = None
     # Define URLs dataset in github
     url_map = {
         'Table 14-1': 'https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/table_14_1.csv',
