@@ -227,8 +227,8 @@ def py_commander():
                 print("---")
                 print("Dependent variable:", dependent_var)
                 print(df.head())
-                df.plot.scatter(df['predicted'],df['error'])
-                plt.show()
+                # df.plot.scatter(df['predicted'],df['error'])
+                # plt.show()
 
             
             except Exception as e:
