@@ -3,5 +3,7 @@ def funct1():
   def funct2():
     global df
     df=102
-  funct2() 
+    print("in funct2",df)
+  funct2()
+  print("aaa",df)
   return df
