@@ -196,7 +196,7 @@ def py_commander():
 
             try:
                 model = smf.ols(formula=formula, data=df).fit()
-                global df
+                
                 df['predicted'] = model.fittedvalues
 
                 # print(model.summary())
@@ -225,6 +225,9 @@ def py_commander():
                 print("\nRegression Coefficients:\n", coef_df)
                 print("---")
                 print("Dependent variable:", dependent_var)
+                print(df.head())
+
+            
             except Exception as e:
                 print(f"Error running regression: {e}")
 
