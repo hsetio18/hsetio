@@ -196,6 +196,9 @@ def py_commander():
 
             try:
                 model = smf.ols(formula=formula, data=df).fit()
+                global df
+                df['predicted'] = model.fittedvalues
+
                 # print(model.summary())
                 rmse = np.sqrt(model.mse_resid)
                 regression_summary = pd.DataFrame({
