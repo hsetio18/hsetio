@@ -227,9 +227,13 @@ def py_commander():
                 print("---")
                 print("Dependent variable:", dependent_var)
                 print(df.head())
-                # df.plot.scatter(df['predicted'],df['error'])
-                # plt.show()
-
+                # residual plot
+                plt.scatter(df['predicted'], df['residu'])
+                plt.title('Residual Plot')
+                plt.xlabel('Predicted Values')
+                plt.ylabel('Residuals')
+                plt.axhline(y=0, color='r', linestyle='-')
+                plt.show()
             
             except Exception as e:
                 print(f"Error running regression: {e}")
