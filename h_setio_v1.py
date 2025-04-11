@@ -198,6 +198,7 @@ def py_commander():
                 model = smf.ols(formula=formula, data=df).fit()
                 
                 df['predicted'] = model.fittedvalues
+                df['error'] = model.resid
 
                 # print(model.summary())
                 rmse = np.sqrt(model.mse_resid)
@@ -226,6 +227,8 @@ def py_commander():
                 print("---")
                 print("Dependent variable:", dependent_var)
                 print(df.head())
+                df.plot.scatter(df['predicted'],df['error'])
+                plt.show()
 
             
             except Exception as e:
