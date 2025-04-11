@@ -21,6 +21,7 @@ def py_commander():
         'Table 14-1': 'https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/table_14_1.csv',
         'categorical data': 'https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/categorical_example.csv',
         'Antique clock auction': 'https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/antique-clock-auction.csv',
+        'KWH usage base on home size':'https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/kwh_size.csv',
         'Bank of New England': 'https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/BankOfNewEngland_ed17.csv',
         'Condo price': 'https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/condo.csv',
     }
