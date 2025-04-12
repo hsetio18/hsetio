@@ -5,6 +5,10 @@ from google.colab import files
 
 df = None
 url='https://raw.githubusercontent.com/hsetio18/hsetio/refs/heads/main/antique-clock-auction.csv'
+def f_export_df(b):
+    globals()['df'] = df
+    with output1:
+        print("df exported to global scope.")
 def f_read_local_csv(b):
     with output1:
         clear_output()
@@ -13,12 +17,14 @@ def f_read_local_csv(b):
         for fn in uploaded.keys():
               df = pd.read_csv(fn)
         print(df)
+        globals()['df'] = df
 def f_read_external_csv(b):
     with output1:
         clear_output()
         global df
         df = pd.read_csv(url)
         print(df)
+        globals()['df'] = df
 def f_desc_stats(b):
     with output1:
         clear_output()
