@@ -30,14 +30,6 @@ def f_desc_stats(b):
         else:
             print("No dataframe loaded yet.")
 
-def f_export_df(b):
-    with output1:
-        if df is not None:
-            globals()['df'] = df
-            print("✅ df exported to global scope. You can now use it in another cell.")
-        else:
-            print("⚠️ No dataframe to export. Please load it first.")
-
 tab_contents = ['Dataframe', 'Descriptive Stats']
 children = [widgets.Output() for _ in range(len(tab_contents))]
 tab = widgets.Tab()
@@ -65,7 +57,5 @@ with children[0]:
 with children[1]:
     print("Descriptive Stats")
     df_desc_button = widgets.Button(description="Descriptive Stats")
-    export_button = widgets.Button(description="Export df to global")
     df_desc_button.on_click(f_desc_stats)
-    export_button.on_click(f_export_df)
-    display(widgets.VBox([df_desc_button, export_button]))
+    display(widgets.VBox([df_desc_button]))
