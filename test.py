@@ -1,9 +1,8 @@
 def funct1():
   df=101
-  def funct2():
-    global df
+  print("funct1",df)
+  return df
+def funct2():
     df=102
     print("in funct2",df)
-  funct2()
-  print("aaa",df)
-  return df
+    return df
