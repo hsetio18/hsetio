@@ -47,3 +47,5 @@ with children[1]:
   df_desc_button=widgets.Button(description="Descriptive Stats")
   df_desc_button.on_click(f_desc_stats)
   display(df_desc_button)
+globals()['df'] = df  # Make df accessible in global scope after script run
+
