@@ -10,14 +10,21 @@ function shuffleArray(array) {
     .map(({ value }) => value);
 }
 
-// Load questions from embedded JSON in index.html
+// Load from questions.json
 function loadQuestions() {
-  const jsonData = document.getElementById("quiz-data").textContent;
-  allQuestions = JSON.parse(jsonData);
-  newQuiz();
+  fetch('questions.json')
+    .then(response => response.json())
+    .then(data => {
+      allQuestions = data;
+      newQuiz();
+    })
+    .catch(error => {
+      console.error("Error loading questions:", error);
+      document.getElementById('quiz').textContent = "Failed to load questions.";
+    });
 }
 
-// Create a new quiz with 3 random questions
+// Select 3 random questions
 function newQuiz() {
   correctAnswers = {};
   selectedQuestions = shuffleArray(allQuestions).slice(0, 3);
@@ -25,7 +32,7 @@ function newQuiz() {
   document.getElementById('result').textContent = "";
 }
 
-// Display the selected questions with shuffled options
+// Display quiz
 function renderQuiz() {
   const quizContainer = document.getElementById('quiz');
   quizContainer.innerHTML = "";
@@ -45,7 +52,7 @@ function renderQuiz() {
   });
 }
 
-// Check user's answers and display feedback
+// Check answers
 function checkAnswers() {
   let score = 0;
   const total = selectedQuestions.length;
@@ -76,7 +83,7 @@ function checkAnswers() {
   document.getElementById('result').className = "score-box";
 }
 
-// Reset selected options and feedback (for retry)
+// Retry button
 function retryQuiz() {
   selectedQuestions.forEach(q => {
     const radios = document.querySelectorAll(`input[name="${q.id}"]`);
