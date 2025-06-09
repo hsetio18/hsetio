@@ -1,0 +1,37 @@
+[
+  {
+    "id": "q1",
+    "text": "What is the capital of France?",
+    "options": ["A. Berlin", "B. Madrid", "C. Paris", "D. Rome"],
+    "answer": "C",
+    "explanation": "Paris is the capital of France."
+  },
+  {
+    "id": "q2",
+    "text": "What is 2 + 2?",
+    "options": ["A. 3", "B. 4", "C. 5", "D. 22"],
+    "answer": "B",
+    "explanation": "2 + 2 equals 4."
+  },
+  {
+    "id": "q3",
+    "text": "Which planet is known as the Red Planet?",
+    "options": ["A. Earth", "B. Venus", "C. Mars", "D. Jupiter"],
+    "answer": "C",
+    "explanation": "Mars is called the Red Planet due to its reddish appearance."
+  },
+  {
+    "id": "q4",
+    "text": "Who wrote 'Romeo and Juliet'?",
+    "options": ["A. Charles Dickens", "B. Mark Twain", "C. William Shakespeare", "D. Jane Austen"],
+    "answer": "C",
+    "explanation": "William Shakespeare wrote 'Romeo and Juliet'."
+  },
+  {
+    "id": "q5",
+    "text": "Which gas do plants absorb from the atmosphere?",
+    "options": ["A. Carbon dioxide", "B. Oxygen", "C. Nitrogen", "D. Hydrogen"],
+    "answer": "A",
+    "explanation": "Plants absorb carbon dioxide for photosynthesis."
+  }
+]
