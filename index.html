@@ -1,4 +1,21 @@
 <html>
+<p id="current-date"></p>
+
+<script>
+  // Get today's date
+  const today = new Date();
+
+  // Format the date as desired (e.g., June 9, 2025)
+  const formattedDate = today.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  // Display it in the paragraph
+  document.getElementById('current-date').textContent = formattedDate;
+</script>
+
 <h1>test html in github pages</h1>
 <p>
 <img src="gambar/hki.png" alt="My photo" style="width: 25%; height: auto;">
