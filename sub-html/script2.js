@@ -1,7 +1,12 @@
 let allQuestions = [];
 let selectedQuestions = [];
 let correctAnswers = {};
-
+function shuffleArray(array) {
+  return array
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+}
 function loadQuestions(callback) {
   fetch('questions.json')
     .then(res => res.json())
@@ -30,8 +35,9 @@ function renderQuiz() {
     let html = `<div class="question" id="${q.id}">
       <p>${idx + 1}. ${q.text}</p>`;
 
-    q.options.forEach(option => {
-      const val = option.charAt(0); // "A", "B", etc.
+    // 👇 Shuffle options here
+    shuffleArray(q.options).forEach(option => {
+      const val = option.charAt(0);
       html += `<label><input type="radio" name="${q.id}" value="${val}"> ${option}</label><br>`;
     });
 
