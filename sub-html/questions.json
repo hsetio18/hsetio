@@ -33,7 +33,7 @@
     "options": ["Spanish", "Portuguese", "English", "French"],
     "answer": "Portuguese",
     "explanation": "Brazil's official language is Portuguese."
-  }
+  },
   {
     "id": "q6",
     "text": "Calculate 2+3*4",
