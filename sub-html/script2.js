@@ -1,7 +1,7 @@
 let allQuestions = [];
 let selectedQuestions = [];
 let correctAnswers = {};
-const NUM_QUESTIONS = 6; // You can change this number as needed
+const NUM_QUESTIONS = 5; // You can change this number as needed
 
 // Shuffle utility
 function shuffleArray(array) {
