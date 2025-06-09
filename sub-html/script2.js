@@ -1,30 +1,31 @@
 let allQuestions = [];
 let selectedQuestions = [];
 let correctAnswers = {};
+
+// Shuffle utility
 function shuffleArray(array) {
   return array
     .map(value => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
 }
-function loadQuestions(callback) {
-  fetch('questions.json')
-    .then(res => res.json())
-    .then(data => {
-      allQuestions = data;
-      newQuiz(); // Load the first quiz automatically
-    });
+
+// Load questions from embedded JSON in index.html
+function loadQuestions() {
+  const jsonData = document.getElementById("quiz-data").textContent;
+  allQuestions = JSON.parse(jsonData);
+  newQuiz();
 }
 
+// Create a new quiz with 3 random questions
 function newQuiz() {
   correctAnswers = {};
-  selectedQuestions = allQuestions
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 3);
+  selectedQuestions = shuffleArray(allQuestions).slice(0, 3);
   renderQuiz();
   document.getElementById('result').textContent = "";
 }
 
+// Display the selected questions with shuffled options
 function renderQuiz() {
   const quizContainer = document.getElementById('quiz');
   quizContainer.innerHTML = "";
@@ -35,10 +36,8 @@ function renderQuiz() {
     let html = `<div class="question" id="${q.id}">
       <p>${idx + 1}. ${q.text}</p>`;
 
-    // 👇 Shuffle options here
     shuffleArray(q.options).forEach(option => {
-      const val = option.charAt(0);
-      html += `<label><input type="radio" name="${q.id}" value="${val}"> ${option}</label><br>`;
+      html += `<label><input type="radio" name="${q.id}" value="${option}"> ${option}</label><br>`;
     });
 
     html += `<div class="feedback" id="feedback-${q.id}"></div></div>`;
@@ -46,6 +45,7 @@ function renderQuiz() {
   });
 }
 
+// Check user's answers and display feedback
 function checkAnswers() {
   let score = 0;
   const total = selectedQuestions.length;
@@ -60,14 +60,14 @@ function checkAnswers() {
     if (selected) {
       if (selected.value === correct) {
         score++;
-        feedback.textContent = "Correct!";
+        feedback.textContent = "✅ Correct!";
         feedback.className = "feedback correct";
       } else {
-        feedback.textContent = `Incorrect. ${explanation}`;
+        feedback.textContent = `❌ Incorrect. ${explanation}`;
         feedback.className = "feedback incorrect";
       }
     } else {
-      feedback.textContent = "You did not answer this question.";
+      feedback.textContent = "⚠️ You did not answer this question.";
       feedback.className = "feedback incorrect";
     }
   });
@@ -76,8 +76,8 @@ function checkAnswers() {
   document.getElementById('result').className = "score-box";
 }
 
+// Reset selected options and feedback (for retry)
 function retryQuiz() {
-  // Just clear selected answers and feedback
   selectedQuestions.forEach(q => {
     const radios = document.querySelectorAll(`input[name="${q.id}"]`);
     radios.forEach(r => r.checked = false);
@@ -90,4 +90,5 @@ function retryQuiz() {
   document.getElementById('result').textContent = "";
 }
 
+// Run on page load
 window.onload = () => loadQuestions();
