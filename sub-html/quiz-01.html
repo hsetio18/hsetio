@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Extended Quiz</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz</h1>
+
+    <div class="question" id="q1">
+      <p>1. What is the capital of France?</p>
+      <label><input type="radio" name="q1" value="A" /> A. Berlin</label><br>
+      <label><input type="radio" name="q1" value="B" /> B. Madrid</label><br>
+      <label><input type="radio" name="q1" value="C" /> C. Paris</label><br>
+      <label><input type="radio" name="q1" value="D" /> D. Rome</label><br>
+      <div class="feedback" id="feedback-q1"></div>
+    </div>
+
+    <div class="question" id="q2">
+      <p>2. What is 2 + 2?</p>
+      <label><input type="radio" name="q2" value="A" /> A. 3</label><br>
+      <label><input type="radio" name="q2" value="B" /> B. 4</label><br>
+      <label><input type="radio" name="q2" value="C" /> C. 5</label><br>
+      <label><input type="radio" name="q2" value="D" /> D. 22</label><br>
+      <div class="feedback" id="feedback-q2"></div>
+    </div>
+
+    <div class="question" id="q3">
+      <p>3. Which planet is known as the Red Planet?</p>
+      <label><input type="radio" name="q3" value="A" /> A. Earth</label><br>
+      <label><input type="radio" name="q3" value="B" /> B. Venus</label><br>
+      <label><input type="radio" name="q3" value="C" /> C. Mars</label><br>
+      <label><input type="radio" name="q3" value="D" /> D. Jupiter</label><br>
+      <div class="feedback" id="feedback-q3"></div>
+    </div>
+
+    <div class="question" id="q4">
+      <p>4. Who wrote "Romeo and Juliet"?</p>
+      <label><input type="radio" name="q4" value="A" /> A. Charles Dickens</label><br>
+      <label><input type="radio" name="q4" value="B" /> B. Mark Twain</label><br>
+      <label><input type="radio" name="q4" value="C" /> C. William Shakespeare</label><br>
+      <label><input type="radio" name="q4" value="D" /> D. Jane Austen</label><br>
+      <div class="feedback" id="feedback-q4"></div>
+    </div>
+
+    <button onclick="checkAnswers()">Check Answers</button>
+    <div id="result"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
