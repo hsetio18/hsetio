@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JSON Quiz</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Random Quiz</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Random Quiz</h1>
-    <div id="quiz"></div>
-    <button onclick="checkAnswers()">Check Answers</button>
-    <button onclick="retryQuiz()">Retry</button>
-    <button onclick="newQuiz()">New Quiz</button>
-    <div id="result"></div>
-  </div>
+  <h1>Random Quiz</h1>
+  <div id="quiz"></div>
 
-  <script src="script2.js"></script>
+  <div id="result" class="score-box"></div>
+
+  <button onclick="checkAnswers()">Check Answers</button>
+  <button onclick="retryQuiz()">Retry</button>
+  <button onclick="newQuiz()">New Quiz</button>
+
+  <script src="script.js"></script>
 </body>
 </html>
