@@ -1,6 +1,7 @@
 let allQuestions = [];
 let selectedQuestions = [];
 let correctAnswers = {};
+const NUM_QUESTIONS = 2; // You can change this number as needed
 
 // Shuffle utility
 function shuffleArray(array) {
@@ -10,7 +11,7 @@ function shuffleArray(array) {
     .map(({ value }) => value);
 }
 
-// Load from questions.json
+// Load from external questions.json
 function loadQuestions() {
   fetch('questions.json')
     .then(response => response.json())
@@ -24,15 +25,15 @@ function loadQuestions() {
     });
 }
 
-// Select 3 random questions
+// Select NUM_QUESTIONS random questions
 function newQuiz() {
   correctAnswers = {};
-  selectedQuestions = shuffleArray(allQuestions).slice(0, 3);
+  selectedQuestions = shuffleArray(allQuestions).slice(0, NUM_QUESTIONS);
   renderQuiz();
   document.getElementById('result').textContent = "";
 }
 
-// Display quiz
+// Display quiz with shuffled options
 function renderQuiz() {
   const quizContainer = document.getElementById('quiz');
   quizContainer.innerHTML = "";
@@ -52,7 +53,7 @@ function renderQuiz() {
   });
 }
 
-// Check answers
+// Check answers and show feedback
 function checkAnswers() {
   let score = 0;
   const total = selectedQuestions.length;
@@ -83,7 +84,7 @@ function checkAnswers() {
   document.getElementById('result').className = "score-box";
 }
 
-// Retry button
+// Clear answers for retry
 function retryQuiz() {
   selectedQuestions.forEach(q => {
     const radios = document.querySelectorAll(`input[name="${q.id}"]`);
@@ -97,5 +98,5 @@ function retryQuiz() {
   document.getElementById('result').textContent = "";
 }
 
-// Run on page load
+// Load quiz on page load
 window.onload = () => loadQuestions();
