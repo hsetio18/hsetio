@@ -2,36 +2,36 @@
   {
     "id": "q1",
     "text": "What is the capital of France?",
-    "options": ["A. Berlin", "B. Madrid", "C. Paris", "D. Rome"],
-    "answer": "C",
+    "options": ["Berlin", "Madrid", "Paris", "Rome"],
+    "answer": "Paris",
     "explanation": "Paris is the capital of France."
   },
   {
     "id": "q2",
-    "text": "What is 2 + 2?",
-    "options": ["A. 3", "B. 4", "C. 5", "D. 22"],
-    "answer": "B",
-    "explanation": "2 + 2 equals 4."
+    "text": "Which planet is known as the Red Planet?",
+    "options": ["Earth", "Mars", "Jupiter", "Saturn"],
+    "answer": "Mars",
+    "explanation": "Mars is known as the Red Planet due to its reddish appearance."
   },
   {
     "id": "q3",
-    "text": "Which planet is known as the Red Planet?",
-    "options": ["A. Earth", "B. Venus", "C. Mars", "D. Jupiter"],
-    "answer": "C",
-    "explanation": "Mars is called the Red Planet due to its reddish appearance."
+    "text": "Who wrote 'Romeo and Juliet'?",
+    "options": ["Charles Dickens", "William Shakespeare", "Mark Twain", "Leo Tolstoy"],
+    "answer": "William Shakespeare",
+    "explanation": "William Shakespeare wrote the tragedy 'Romeo and Juliet'."
   },
   {
     "id": "q4",
-    "text": "Who wrote 'Romeo and Juliet'?",
-    "options": ["A. Charles Dickens", "B. Mark Twain", "C. William Shakespeare", "D. Jane Austen"],
-    "answer": "C",
-    "explanation": "William Shakespeare wrote 'Romeo and Juliet'."
+    "text": "What is the boiling point of water at sea level?",
+    "options": ["90°C", "100°C", "110°C", "120°C"],
+    "answer": "100°C",
+    "explanation": "Water boils at 100°C at standard atmospheric pressure."
   },
   {
     "id": "q5",
-    "text": "Which gas do plants absorb from the atmosphere?",
-    "options": ["A. Carbon dioxide", "B. Oxygen", "C. Nitrogen", "D. Hydrogen"],
-    "answer": "A",
-    "explanation": "Plants absorb carbon dioxide for photosynthesis."
+    "text": "Which language is primarily spoken in Brazil?",
+    "options": ["Spanish", "Portuguese", "English", "French"],
+    "answer": "Portuguese",
+    "explanation": "Brazil's official language is Portuguese."
   }
 ]
