@@ -34,4 +34,12 @@
     "answer": "Portuguese",
     "explanation": "Brazil's official language is Portuguese."
   }
+  {
+    "id": "q6",
+    "text": "Calculate 2+3*4",
+    "options": ["20", "14", "5", "9"],
+    "answer": "14",
+    "explanation": "multiply first than add."
+  }
+
 ]
