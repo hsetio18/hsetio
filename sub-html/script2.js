@@ -16,12 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function getParams() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return {
-    file: urlParams.get('file') || 'questions.json'
-  };
-}
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
