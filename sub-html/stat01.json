@@ -1,0 +1,122 @@
+[
+  {
+    "id": "q1",
+    "text": "Which of the following is an example of descriptive statistics?",
+    "options": [
+      "Estimating the average height of all adults based on a sample",
+      "Calculating the mean score of a dataset",
+      "Predicting next year’s sales based on trends",
+      "Testing a hypothesis about a population mean"
+    ],
+    "answer": "Calculating the mean score of a dataset",
+    "explanation": "Descriptive statistics summarizes data, such as calculating means or medians."
+  },
+  {
+    "id": "q2",
+    "text": "What is the main difference between population and sample?",
+    "options": [
+      "Population is always smaller than a sample",
+      "Sample includes all data; population is a part of it",
+      "Population includes all subjects; sample is a subset",
+      "Sample is used for descriptive statistics only"
+    ],
+    "answer": "Population includes all subjects; sample is a subset",
+    "explanation": "A population contains all elements, while a sample is a subset taken for study."
+  },
+  {
+    "id": "q3",
+    "text": "Which type of data is represented by categories without any order?",
+    "options": [
+      "Ordinal data",
+      "Interval data",
+      "Nominal data",
+      "Ratio data"
+    ],
+    "answer": "Nominal data",
+    "explanation": "Nominal data classifies items into categories with no intrinsic ordering."
+  },
+  {
+    "id": "q4",
+    "text": "Which of the following is an example of inferential statistics?",
+    "options": [
+      "Finding the median income from a dataset",
+      "Measuring the temperature in Celsius",
+      "Estimating voter preferences from a survey sample",
+      "Counting how many students passed an exam"
+    ],
+    "answer": "Estimating voter preferences from a survey sample",
+    "explanation": "Inferential statistics uses samples to make generalizations about a population."
+  },
+  {
+    "id": "q5",
+    "text": "Which of the following is a quantitative variable?",
+    "options": [
+      "Marital status",
+      "Age in years",
+      "Type of car",
+      "Hair color"
+    ],
+    "answer": "Age in years",
+    "explanation": "Quantitative variables can be measured numerically, like age."
+  },
+  {
+    "id": "q6",
+    "text": "What kind of scale is used when intervals are meaningful but there is no true zero?",
+    "options": [
+      "Nominal",
+      "Ordinal",
+      "Interval",
+      "Ratio"
+    ],
+    "answer": "Interval",
+    "explanation": "Interval scales have meaningful differences between values, but no true zero (e.g., temperature in Celsius)."
+  },
+  {
+    "id": "q7",
+    "text": "Which of the following describes ordinal data?",
+    "options": [
+      "Data with labels and no order",
+      "Data that can be measured with meaningful zero",
+      "Data with rank or order but not equal intervals",
+      "Continuous data with fixed units"
+    ],
+    "answer": "Data with rank or order but not equal intervals",
+    "explanation": "Ordinal data shows order (e.g., 1st, 2nd, 3rd) but differences between ranks aren't necessarily equal."
+  },
+  {
+    "id": "q8",
+    "text": "Which term best describes the entire group a researcher wants to study?",
+    "options": [
+      "Sample",
+      "Statistic",
+      "Population",
+      "Parameter"
+    ],
+    "answer": "Population",
+    "explanation": "A population includes all individuals or items under consideration in a study."
+  },
+  {
+    "id": "q9",
+    "text": "Which statistical term refers to a numerical summary based on a sample?",
+    "options": [
+      "Population",
+      "Statistic",
+      "Parameter",
+      "Variable"
+    ],
+    "answer": "Statistic",
+    "explanation": "A statistic is a numerical value that summarizes characteristics of a sample."
+  },
+  {
+    "id": "q10",
+    "text": "Which of the following represents a ratio scale variable?",
+    "options": [
+      "Test scores (0 to 100)",
+      "Time in seconds",
+      "Satisfaction rating (1 to 5 stars)",
+      "Clothing sizes (S, M, L)"
+    ],
+    "answer": "Time in seconds",
+    "explanation": "Ratio scale variables have a true zero and support meaningful ratios (e.g., 10 seconds is twice as long as 5 seconds)."
+  }
+]
