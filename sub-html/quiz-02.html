@@ -7,14 +7,22 @@
 </head>
 <body>
   <h1>Random Quiz</h1>
-  <img src="../gambar/hki.png" alt="My photo" style="width: 10%; height: auto;">
-  <div id="quiz"></div>
 
-  <div id="result" class="score-box"></div>
+  <div id="setup">
+    <label for="numInput">How many questions? </label>
+    <input type="number" id="numInput" min="1" value="5">
+    <button id="start-btn">Start Quiz</button>
+  </div>
 
-  <button onclick="checkAnswers()">Check Answers</button>
-  <button onclick="retryQuiz()">Retry</button>
-  <button onclick="newQuiz()">New Quiz</button>
+  <div id="quiz" style="margin-top: 20px;"></div>
+
+  <div id="actions" style="margin-top: 20px; display: none;">
+    <button id="check-btn">Check Answers</button>
+    <button id="retry-btn">Retry</button>
+    <button id="new-btn">New Quiz</button>
+  </div>
+
+  <div id="result" style="margin-top: 20px;"></div>
 
   <script src="script2.js"></script>
 </body>
