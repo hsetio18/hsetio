@@ -15,12 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
     titleElement.textContent = decodeURIComponent(title);
   }
 });
-function getParams() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return {
-    file: urlParams.get('file') || 'questions.json'
-  };
-}
+// function getParams() {
+//   const urlParams = new URLSearchParams(window.location.search);
+//   return {
+//     file: urlParams.get('file') || 'questions.json'
+//   };
+// }
 
 
 function shuffleArray(array) {
@@ -32,7 +32,7 @@ function shuffleArray(array) {
 }
 
 function loadQuestions() {
-  const { file } = getParams();
+  // const { file } = getParams();
   fetch(file + '?' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
