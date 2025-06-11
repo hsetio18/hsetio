@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sequential Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 id="quiz-title">Sequential Quiz</h1>
+
+  <div id="setup">
+    <label for="numInput">Number of questions:</label>
+    <input type="number" id="numInput" min="1">
+    <button id="start-btn">Start Quiz</button>
+  </div>
+
+  <div id="quiz" style="margin-top: 20px; display: none;"></div>
+  
+  <div id="actions" style="display: none;">
+    <button id="next-btn">Next</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script src="script3.js"></script>
+</body>
+</html>
