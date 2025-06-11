@@ -2,7 +2,7 @@
   {
     "id": "q1",
     "text": "What is the capital of France?",
-    "options": ["Berlin", "Madrid", "Paris", "Rome"],
+    "options": ["Berlin", "Madrid", "Paris", "Rome","x"],
     "answer": "Paris",
     "explanation": "Paris is the capital of France."
   },
