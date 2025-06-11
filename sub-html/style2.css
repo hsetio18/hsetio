@@ -1,0 +1,33 @@
+body {
+  font-family: sans-serif;
+  padding: 30px;
+  background-color: #f0f0f0;
+}
+.quiz-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.question {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+.input-area input {
+  margin: 5px 0;
+  font-size: 16px;
+  padding: 5px;
+  width: 100%;
+}
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.feedback {
+  font-weight: bold;
+  margin-top: 15px;
+}
