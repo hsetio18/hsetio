@@ -30,14 +30,14 @@ function shuffleArray(array) {
   }
   return array;
 }
-
 function loadQuestions() {
-  // const { file } = getParams();
   fetch(file + '?' + new Date().getTime())
     .then(response => response.json())
     .then(data => {
       allQuestions = data;
-      document.getElementById('numInput').max = allQuestions.length;
+      const numInput = document.getElementById('numInput');
+      numInput.max = allQuestions.length;
+      numInput.value = allQuestions.length; // ✅ Set default value to max
     })
     .catch(error => {
       console.error("Error loading questions:", error);
