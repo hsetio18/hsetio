@@ -4,6 +4,7 @@ let selectedQuestions = [];
 let currentQuestionIndex = 0;
 let correctAnswers = 0;
 let startTime = null;
+let userSelections = [];
 
 const params = new URLSearchParams(window.location.search);
 const file = params.get('file') || 'questions.json';
@@ -38,6 +39,7 @@ function startQuiz() {
   selectedQuestions = shuffleArray([...allQuestions]).slice(0, numQuestions);
   currentQuestionIndex = 0;
   correctAnswers = 0;
+  userSelections = [];
   startTime = new Date();
   document.getElementById('setup').style.display = 'none';
   document.getElementById('quiz').style.display = 'block';
@@ -72,9 +74,21 @@ function showQuestion() {
 function nextQuestion() {
   const selected = document.querySelector('input[name="q"]:checked');
   const correct = selectedQuestions[currentQuestionIndex].answer;
-  if (selected && selected.value === correct) {
-    correctAnswers++;
+
+  let selectedValue = '';
+  if (selected) {
+    selectedValue = selected.value;
+    if (selectedValue === correct) {
+      correctAnswers++;
+    }
   }
+
+  userSelections.push({
+    question: selectedQuestions[currentQuestionIndex].text,
+    selected: selectedValue || 'No answer selected',
+    correct: correct,
+    explanation: selectedQuestions[currentQuestionIndex].explanation
+  });
 
   currentQuestionIndex++;
   if (currentQuestionIndex < selectedQuestions.length) {
@@ -95,7 +109,21 @@ function showResult() {
     <p>Score: ${correctAnswers} / ${selectedQuestions.length}</p>
     <p>Start Time: ${startTime.toLocaleTimeString()}</p>
     <p>Finish Time: ${endTime.toLocaleTimeString()}</p>
+    <h4>Review:</h4>
   `;
+
+  userSelections.forEach((entry, index) => {
+    const block = document.createElement('div');
+    block.classList.add('review-block');
+    block.innerHTML = `
+      <p><strong>Q${index + 1}:</strong> ${entry.question}</p>
+      <p>Your Answer: <span style="color: ${entry.selected === entry.correct ? 'green' : 'red'}">${entry.selected}</span></p>
+      <p>Correct Answer: <strong>${entry.correct}</strong></p>
+      <p>Explanation: ${entry.explanation}</p>
+      <hr>
+    `;
+    result.appendChild(block);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
