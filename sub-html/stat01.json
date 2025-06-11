@@ -4,8 +4,8 @@
     "options": ["Mean", "Median", "Mode", "Standard Deviation"],
     "answer": "Median",
     "explanation": "The chart shows the median line dividing the data."
-  }
- {
+  },
+  {
     "text": "Which image represents a bell curve?",
     "options": [
       "<img src='https://example.com/wrong1.png' width='100'>",
@@ -15,7 +15,7 @@
     ],
     "answer": "<img src='https://example.com/bellcurve.png' width='100'>",
     "explanation": "A bell curve is symmetric and shaped like a bell."
-  }
+  },
 
   {
     "id": "q1",
