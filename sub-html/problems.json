@@ -1,0 +1,42 @@
+[
+  {
+    "id": "q1",
+    "problem": "Find the roots of the equation: {a}x² + {b}x + {c} = 0",
+    "variables": {
+      "a": { "mean": 2, "range": 3, "decimals": 0 },
+      "b": { "mean": -5, "range": 4, "decimals": 0 },
+      "c": { "mean": -3, "range": 5, "decimals": 0 }
+    },
+    "formula": "quadratic",
+    "answer_type": "2roots"
+  },
+  {
+    "id": "q2",
+    "problem": "Find the volume of a cube with side length {s} cm.",
+    "variables": {
+      "s": { "mean": 5, "range": 2, "decimals": 1 }
+    },
+    "formula": "cube_volume",
+    "answer_type": "number"
+  },
+  {
+    "id": "q3",
+    "problem": "Find the area of a circle with radius {r} cm. Use π = 3.14.",
+    "variables": {
+      "r": { "mean": 7, "range": 3, "decimals": 1 }
+    },
+    "formula": "circle_area",
+    "answer_type": "number"
+  },
+  {
+    "id": "q4",
+    "problem": "Find the simple interest for principal {p}, rate {r}% per year, and time {t} years.",
+    "variables": {
+      "p": { "mean": 1000, "range": 300, "decimals": 0 },
+      "r": { "mean": 5, "range": 2, "decimals": 1 },
+      "t": { "mean": 2, "range": 1, "decimals": 0 }
+    },
+    "formula": "simple_interest",
+    "answer_type": "number"
+  }
+]
