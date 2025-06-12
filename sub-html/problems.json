@@ -22,29 +22,5 @@
     "answer_type": "number",
     "decimals": 2,
     "accuracy": 0.01
-  },
-  {
-    "id": "q3",
-    "problem": "Find the area of a circle with radius {r} cm.",
-    "variables": {
-      "r": { "mean": 7, "range": 3, "decimals": 1 }
-    },
-    "formula": "3.14*{r}*{r}",
-    "answer_type": "number",
-    "decimals": 2,
-    "accuracy": 0.01
-  },
-  {
-    "id": "q4",
-    "problem": "Find the simple interest on principal {p}, rate {r}%, and time {t} years.",
-    "variables": {
-      "p": { "mean": 1000, "range": 500, "decimals": 0 },
-      "r": { "mean": 5, "range": 2, "decimals": 1 },
-      "t": { "mean": 3, "range": 2, "decimals": 0 }
-    },
-    "formula": "({p}*{r}*{t})/100",
-    "answer_type": "number",
-    "decimals": 2,
-    "accuracy": 0.01
   }
 ]
