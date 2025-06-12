@@ -1,7 +1,31 @@
-function getQueryParam(param) {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param);
+let problems = [];
+let currentIndex = 0;
+let currentVars = {};
+let currentAnswer = null;
+
+// Utility to get file and title from URL
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    file: params.get("file") || "problems.json",
+    title: params.get("title") || "Math Quiz"
+  };
 }
+
+// Generate a random variable
+function generateValue(spec) {
+  const offset = (Math.random() - 0.5) * 2 * spec.range;
+  const value = spec.mean + offset;
+  return Number(value.toFixed(spec.decimals));
+}
+
+// Format signed numbers for display
+function formatSigned(value) {
+  const num = Number(value);
+  return (num >= 0 ? "+ " : "- ") + Math.abs(num);
+}
+
+// Evaluate formula after replacing variables
 function evaluateFormula(formula, vars) {
   let expr = formula;
   for (let key in vars) {
@@ -15,84 +39,88 @@ function evaluateFormula(formula, vars) {
   }
 }
 
-let problems = [];
-let currentIndex = 0;
-let currentVars = {};
-let currentAnswer = {};
-let jsonFile = getQueryParam("file") || "problems.json";
-let quizTitle = getQueryParam("title") || "Math Quiz";
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("quizTitle").innerText = decodeURIComponent(quizTitle);
-  loadProblems();
-});
-
-function getRandomValue(mean, range, decimals) {
-  const min = mean - range;
-  const max = mean + range;
-  const value = Math.random() * (max - min) + min;
-  return Number(value.toFixed(decimals));
-}
-
-function generateVariables(variableSpec) {
-  const values = {};
-  for (let key in variableSpec) {
-    const spec = variableSpec[key];
-    values[key] = getRandomValue(spec.mean, spec.range, spec.decimals);
-  }
-  return values;
-}
-
+// Render current question
 function renderQuestion() {
   const problem = problems[currentIndex];
-  currentVars = generateVariables(problem.variables);
-
-  let question = problem.problem;
-  for (let key in currentVars) {
-    question = question.replace(`{${key}}`, currentVars[key]);
-  }
-
-  document.getElementById("questionText").innerText = question;
-
   const inputArea = document.getElementById("inputArea");
   inputArea.innerHTML = "";
+
+  // Generate variable values
+  currentVars = {};
+  for (let key in problem.variables) {
+    currentVars[key] = generateValue(problem.variables[key]);
+  }
+
+  // Display the question with signed values
+  let questionText = problem.problem;
+  for (let key in currentVars) {
+    const signed = formatSigned(currentVars[key]);
+    questionText = questionText.replace(`{${key}}`, signed);
+  }
+  document.getElementById("question").textContent = questionText;
+
+  // Input field
   if (problem.answer_type === "number") {
-    inputArea.innerHTML += `<label>Answer: <input type="number" id="numAnswer" /></label>`;
+    inputArea.innerHTML = `<label>Answer: <input type="number" id="numAnswer" step="any" /></label>`;
     currentAnswer = evaluateFormula(problem.formula, currentVars);
-  }  
-  document.getElementById("feedbackText").innerText = "";
+  }
+
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("submitBtn").disabled = false;
+  document.getElementById("nextBtn").style.display = "none";
 }
 
+// Check user answer
 function checkAnswer() {
-const problem = problems[currentIndex];
-let feedback = "";
+  const problem = problems[currentIndex];
+  const feedbackEl = document.getElementById("feedback");
 
-if (problem.answer_type === "number") {
-  const userAns = parseFloat(document.getElementById("numAnswer").value);
-  const accuracy = problem.accuracy || 0.01;
+  let userAns = parseFloat(document.getElementById("numAnswer").value);
   const decimals = problem.decimals || 2;
+  const accuracy = problem.accuracy || 0.01;
   const correct = Number(currentAnswer.toFixed(decimals));
 
-  if (Math.abs(userAns - correct) < accuracy) {
-    feedback = "✅ Correct!";
-  } else {
-    feedback = `❌ Incorrect. Correct answer: ${correct}`;
+  if (isNaN(userAns)) {
+    feedbackEl.textContent = "❗ Please enter a valid number.";
+    return;
   }
-  document.getElementById("feedbackText").innerText = feedback;
+
+  if (Math.abs(userAns - correct) <= accuracy) {
+    feedbackEl.textContent = "✅ Correct!";
+    feedbackEl.style.color = "green";
+  } else {
+    feedbackEl.textContent = `❌ Incorrect. Correct answer: ${correct}`;
+    feedbackEl.style.color = "red";
+  }
+
+  document.getElementById("submitBtn").disabled = true;
+  document.getElementById("nextBtn").style.display = "inline";
 }
 
+// Load JSON and initialize
+async function startQuiz() {
+  const { file, title } = getQueryParams();
+  document.getElementById("title").textContent = decodeURIComponent(title);
+
+  try {
+    const response = await fetch(file);
+    problems = await response.json();
+    renderQuestion();
+  } catch (e) {
+    document.getElementById("question").textContent = "❌ Failed to load problems.";
+    console.error(e);
+  }
+}
+
+// Next question
 function nextQuestion() {
   currentIndex = (currentIndex + 1) % problems.length;
   renderQuestion();
 }
 
-async function loadProblems() {
-  try {
-    const res = await fetch(jsonFile);
-    problems = await res.json();
-    renderQuestion();
-  } catch (err) {
-    document.getElementById("questionText").innerText = "❌ Failed to load questions.";
-    console.error("Error loading JSON:", err);
-  }
-}
+// Attach event listeners
+document.addEventListener("DOMContentLoaded", () => {
+  startQuiz();
+  document.getElementById("submitBtn").addEventListener("click", checkAnswer);
+  document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+});
