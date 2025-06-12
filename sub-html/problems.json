@@ -1,14 +1,16 @@
 [
   {
     "id": "q1",
-    "problem": "Find the roots of the equation: {a}x² + {b}x + {c} = 0",
+    "problem": "Find one root of the quadratic equation: {a}x²  {b}x  {c} = 0",
     "variables": {
-      "a": { "mean": 2, "range": 3, "decimals": 0 },
-      "b": { "mean": -5, "range": 4, "decimals": 0 },
-      "c": { "mean": -3, "range": 5, "decimals": 0 }
+      "a": { "mean": 2, "range": 1, "decimals": 1 },
+      "b": { "mean": -5, "range": 2, "decimals": 1 },
+      "c": { "mean": -3, "range": 1, "decimals": 1 }
     },
-    "formula": "quadratic",
-    "answer_type": "2roots"
+    "formula": "(-{b}+Math.sqrt({b}*{b}-4*{a}*{c}))/(2*{a})",
+    "answer_type": "number",
+    "decimals": 2,
+    "accuracy": 0.01
   },
   {
     "id": "q2",
@@ -16,27 +18,33 @@
     "variables": {
       "s": { "mean": 5, "range": 2, "decimals": 1 }
     },
-    "formula": "cube_volume",
-    "answer_type": "number"
+    "formula": "{s}*{s}*{s}",
+    "answer_type": "number",
+    "decimals": 2,
+    "accuracy": 0.01
   },
   {
     "id": "q3",
-    "problem": "Find the area of a circle with radius {r} cm. Use π = 3.14.",
+    "problem": "Find the area of a circle with radius {r} cm.",
     "variables": {
       "r": { "mean": 7, "range": 3, "decimals": 1 }
     },
-    "formula": "circle_area",
-    "answer_type": "number"
+    "formula": "3.14*{r}*{r}",
+    "answer_type": "number",
+    "decimals": 2,
+    "accuracy": 0.01
   },
   {
     "id": "q4",
-    "problem": "Find the simple interest for principal {p}, rate {r}% per year, and time {t} years.",
+    "problem": "Find the simple interest on principal {p}, rate {r}%, and time {t} years.",
     "variables": {
-      "p": { "mean": 1000, "range": 300, "decimals": 0 },
+      "p": { "mean": 1000, "range": 500, "decimals": 0 },
       "r": { "mean": 5, "range": 2, "decimals": 1 },
-      "t": { "mean": 2, "range": 1, "decimals": 0 }
+      "t": { "mean": 3, "range": 2, "decimals": 0 }
     },
-    "formula": "simple_interest",
-    "answer_type": "number"
+    "formula": "({p}*{r}*{t})/100",
+    "answer_type": "number",
+    "decimals": 2,
+    "accuracy": 0.01
   }
 ]
