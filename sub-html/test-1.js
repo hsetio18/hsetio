@@ -3,7 +3,7 @@ const file = params.get('file') || 'problems.json';
 const title = params.get('title') || 'My Quiz';
 document.getElementById("quiz-title").textContent = decodeURIComponent(title);
 
-let problemsData = []; // Store problems with random values
+let problemsData = [];
 
 function generateRandomValue(spec) {
   const { mean, range, decimals } = spec;
@@ -16,19 +16,23 @@ function replaceVariables(template, values) {
 }
 
 function evaluateFormula(formula, values) {
-  const expression = replaceVariables(formula, values);
   try {
-    return eval(expression);
+    const expr = replaceVariables(formula, values);
+    return eval(expr);
   } catch (e) {
-    console.error("Formula error:", expression);
-    return null;
+    console.error("Error evaluating formula:", formula, e);
+    return NaN;
   }
 }
 
 fetch(file)
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) throw new Error("File not found");
+    return response.json();
+  })
   .then(data => {
     const container = document.getElementById("questions");
+
     problemsData = data.map((problem, index) => {
       const variables = {};
       for (const key in problem.variables) {
@@ -41,7 +45,7 @@ fetch(file)
       div.className = "question-block";
       div.innerHTML = `
         <strong>Q${index + 1}:</strong> ${questionText}<br>
-        <input type="number" id="answer-${index}" step="any">
+        <input type="number" id="answer-${index}" step="any"><br><br>
       `;
       container.appendChild(div);
 
@@ -49,19 +53,19 @@ fetch(file)
       return {
         ...problem,
         variables,
-        userAnswer: null,
         correctAnswer: Number(correct.toFixed(problem.decimals))
       };
     });
   })
   .catch(error => {
-    document.getElementById("questions").innerHTML = "Error loading questions.";
-    console.error("Error:", error);
+    document.getElementById("questions").innerHTML = "❌ Error loading questions.";
+    console.error("Load error:", error);
   });
 
 document.getElementById("check-button").addEventListener("click", () => {
+  const resultBox = document.getElementById("result");
   let score = 0;
-  const results = [];
+  const output = [];
 
   problemsData.forEach((p, i) => {
     const input = document.getElementById(`answer-${i}`);
@@ -69,16 +73,12 @@ document.getElementById("check-button").addEventListener("click", () => {
     const correct = p.correctAnswer;
     const accuracy = p.accuracy || 0.01;
 
-    const correctText = `Correct answer: ${correct} (from formula: ${p.formula})`;
+    const isCorrect = Math.abs(userVal - correct) <= accuracy;
+    if (isCorrect) score++;
 
-    if (Math.abs(userVal - correct) <= accuracy) {
-      score++;
-      results.push(`<p>Q${i + 1}: ✅ Correct<br>${correctText}</p>`);
-    } else {
-      results.push(`<p>Q${i + 1}: ❌ Incorrect. You answered ${userVal}<br>${correctText}</p>`);
-    }
+    output.push(`<p>Q${i + 1}: ${isCorrect ? "✅ Correct" : `❌ Incorrect (you answered ${userVal})`}<br>
+      Correct answer: ${correct} (from formula: ${p.formula})</p>`);
   });
 
-  const resultBox = document.getElementById("result");
-  resultBox.innerHTML = `<h3>Your Score: ${score} / ${problemsData.length}</h3>` + results.join("");
+  resultBox.innerHTML = `<h3>Your Score: ${score} / ${problemsData.length}</h3>` + output.join("");
 });
