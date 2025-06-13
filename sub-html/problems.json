@@ -7,7 +7,7 @@
       "b": { "mean": -5, "range": 2, "decimals": 1 },
       "c": { "mean": -3, "range": 1, "decimals": 1 }
     },
-    "formula": "(-{b}+Math.sqrt({b}*{b}-4*{a}*{c}))/(2*{a})",
+    "formula": "(-({b}) + sqrt(({b})*({b}) - 4*({a})*({c})))/(2*({a}))",
     "answer_type": "number",
     "decimals": 2,
     "accuracy": 0.01,
