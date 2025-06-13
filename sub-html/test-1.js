@@ -97,7 +97,7 @@ function checkAnswers(problems) {
       ${correct ? "✅ Correct!" : "❌ Incorrect"}
       <br>Correct Answer: ${computed}
       <br>${q.explanation || ""}
-      <br><small><code>${q.__expression}</code></small>
+      // <br><small><code>${q.__expression}</code></small>
     `;
   });
 }
