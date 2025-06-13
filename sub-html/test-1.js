@@ -12,15 +12,19 @@ function generateRandomValue(spec) {
 }
 
 function replaceVariables(template, values) {
-  return template.replace(/\{(\w+)\}/g, (_, key) => {
-    const val = values[key];
-    // Format: if preceded by '+ ', replace '+ -' with '- '
-    return val >= 0 ? val : `(${val})`;
-  }).replace(/\+\s*\(([-\d.]+)\)/g, " − $1")
+  return template.replace(/\{(\w+)\}/g, (match, key, offset) => {
+    const val = parseFloat(values[key]).toFixed(1); // format to 1 decimal
+    const num = parseFloat(val);
 
+    // Add proper spacing and true minus sign (U+2212)
+    if (num < 0) {
+      return `− ${Math.abs(num)}`; // U+2212 minus sign with space
+    } else {
+      return `+ ${num}`; // regular plus sign with space
+    }
+  });
 }
 
-  
 function evaluateFormula(formula, values) {
   try {
     const expr = replaceVariables(formula, values);
