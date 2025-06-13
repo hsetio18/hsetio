@@ -33,10 +33,30 @@ function formatQuestion(template, values) {
   });
 }
 
+// function evaluateFormula(formula, values) {
+//   const expr = formula.replace(/\{(\w+)\}/g, (_, key) => values[key]);
+//   try {
+//     return eval(expr);
+//   } catch (err) {
+//     console.error("Evaluation error:", expr, err);
+//     return NaN;
+//   }
+// }
 function evaluateFormula(formula, values) {
-  const expr = formula.replace(/\{(\w+)\}/g, (_, key) => values[key]);
+  const expr = formula.replace(/\{(\w+)\}/g, (_, key) => {
+    if (!(key in values)) {
+      console.warn(`Missing variable: ${key}`);
+      return "0";
+    }
+    return values[key];
+  });
+
   try {
-    return eval(expr);
+    const result = eval(expr);
+    if (isNaN(result)) {
+      console.warn(`NaN result from expression: ${expr}`);
+    }
+    return result;
   } catch (err) {
     console.error("Evaluation error:", expr, err);
     return NaN;
