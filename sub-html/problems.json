@@ -1,7 +1,7 @@
 [
   {
     "id": "q1",
-    "problem": "Find one root of the quadratic equation: {a}x² + {b}x + {c} = 0",
+    "problem": "Find one root of the quadratic equation: {a}x² {b}x {c} = 0",
     "variables": {
       "a": { "mean": 2, "range": 1, "decimals": 1 },
       "b": { "mean": -5, "range": 2, "decimals": 1 },
