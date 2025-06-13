@@ -1,108 +1,103 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const file = params.get("file") || "problems.json";
-  const title = params.get("title") || "Math Quiz";
+const params = new URLSearchParams(window.location.search);
+const file = params.get('file') || 'problems.json';
+const title = params.get('title') || 'Quiz';
 
-  // Set the title
-  const titleElement = document.getElementById("quiz-title");
-  if (titleElement) titleElement.textContent = decodeURIComponent(title);
+document.addEventListener("DOMContentLoaded", async () => {
+  document.getElementById("quiz-title").textContent = decodeURIComponent(title);
 
-  // Load the questions
-  fetch(file)
-    .then((res) => res.json())
-    .then((questions) => {
-      const container = document.getElementById("quiz-container");
-
-      questions.forEach((q, index) => {
-        // Generate variable values
-        const vars = {};
-        for (let key in q.variables) {
-          const { mean, range, decimals } = q.variables[key];
-          const value =
-            +(mean + (Math.random() * 2 - 1) * range).toFixed(decimals || 0);
-          vars[key] = value;
-        }
-
-        // Prepare problem text with formatted variables
-        let problemText = q.problem;
-        for (let key in vars) {
-          const val = vars[key];
-          const displayVal = val < 0 ? `− ${Math.abs(val)}` : `+ ${val}`;
-          problemText = problemText.replaceAll(`{${key}}`, displayVal);
-        }
-
-        // Display question and input
-        const div = document.createElement("div");
-        div.className = "question-block";
-        div.innerHTML = `
-          <p><strong>Q${index + 1}:</strong> ${problemText}</p>
-          <input type="number" step="any" id="answer-${index}" />
-        `;
-        container.appendChild(div);
-
-        // Save variable values for later
-        q.vars = vars;
-      });
-
-      // Add check button
-      const btn = document.createElement("button");
-      btn.textContent = "Check";
-      btn.addEventListener("click", () => {
-        const resultsDiv = document.getElementById("results");
-        resultsDiv.innerHTML = "";
-        let score = 0;
-
-        questions.forEach((q, index) => {
-          let expr = q.formula;
-          const vars = q.vars;
-
-          // Replace placeholders with parenthesized values
-          for (let key in vars) {
-            expr = expr.replaceAll(`{${key}}`, `(${vars[key]})`);
-          }
-
-          let correct = NaN;
-          try {
-            const sqrt = Math.sqrt; // allow using sqrt() instead of Math.sqrt()
-            correct = eval(expr);
-          } catch (err) {
-            console.error("Error evaluating formula:", expr, err);
-          }
-
-          const input = document.getElementById(`answer-${index}`);
-          const userAnswer = parseFloat(input.value);
-          const isCorrect =
-            Math.abs(userAnswer - correct) <= (q.accuracy || 0.01);
-          if (isCorrect) score++;
-
-          const explanation = q.explanation
-            ? `<p>${q.explanation}</p>`
-            : "";
-
-          resultsDiv.innerHTML += `
-            <div class="result">
-              <p><strong>Q${index + 1}:</strong> ${
-            isCorrect ? "✅ Correct" : "❌ Incorrect"
-          }</p>
-              <p>Correct Answer: ${
-                isNaN(correct) ? "NaN" : correct.toFixed(q.decimals || 2)
-              }</p>
-              <p><code>${expr}</code></p>
-              ${explanation}
-            </div>
-          `;
-        });
-
-        resultsDiv.innerHTML =
-          `<h3>Score: ${score} / ${questions.length}</h3>` +
-          resultsDiv.innerHTML;
-      });
-
-      container.appendChild(btn);
-    })
-    .catch((err) => {
-      document.getElementById("quiz-container").innerHTML =
-        "Error loading questions.";
-      console.error("Fetch error:", err);
-    });
+  try {
+    const response = await fetch(file);
+    const problems = await response.json();
+    showProblems(problems);
+  } catch (err) {
+    document.getElementById("quiz-container").innerHTML = `<p>Error loading questions: ${err.message}</p>`;
+  }
 });
+
+function showProblems(problems) {
+  const container = document.createElement("div");
+  container.id = "quiz-list";
+
+  problems.forEach((q, index) => {
+    const values = {};
+    let problemText = q.problem;
+
+    // Generate random values for each variable
+    for (const [key, spec] of Object.entries(q.variables)) {
+      const rand = (spec.mean + (Math.random() * 2 - 1) * spec.range);
+      const rounded = parseFloat(rand.toFixed(spec.decimals));
+      values[key] = rounded;
+      // Display nicely: handle sign
+      const displayVal = rounded >= 0 ? `+ ${rounded}` : `− ${Math.abs(rounded)}`;
+      problemText = problemText.replaceAll(`{${key}}`, displayVal);
+    }
+
+    // Create question block
+    const qDiv = document.createElement("div");
+    qDiv.className = "question";
+    qDiv.innerHTML = `
+      <p><strong>Q${index + 1}:</strong> ${problemText}</p>
+      <input type="number" step="any" id="answer-${index}" placeholder="Your answer">
+      <div id="feedback-${index}"></div>
+    `;
+
+    // Save data for checking
+    q.__values = values;
+    q.__expression = substituteVariables(q.formula, values);
+
+    container.appendChild(qDiv);
+  });
+
+  // Add Check button
+  const checkBtn = document.createElement("button");
+  checkBtn.textContent = "Check";
+  checkBtn.onclick = () => checkAnswers(problems);
+  container.appendChild(document.createElement("br"));
+  container.appendChild(checkBtn);
+
+  // Inject to page
+  const quizContainer = document.getElementById("quiz-container") || document.body;
+  quizContainer.innerHTML = ""; // Clear loading
+  quizContainer.appendChild(container);
+}
+
+// Replace {x} with (value) to ensure safe evaluation
+function substituteVariables(expr, values) {
+  for (const [key, value] of Object.entries(values)) {
+    expr = expr.replaceAll(`{${key}}`, `(${value})`);
+  }
+  // Allow 'sqrt' instead of Math.sqrt
+  expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
+  return expr;
+}
+
+function checkAnswers(problems) {
+  problems.forEach((q, index) => {
+    const input = document.getElementById(`answer-${index}`);
+    const feedback = document.getElementById(`feedback-${index}`);
+    const userVal = parseFloat(input.value);
+    let correct = false;
+    let computed = NaN;
+
+    try {
+      computed = eval(q.__expression);
+      computed = parseFloat(computed.toFixed(q.decimals));
+      correct = Math.abs(computed - userVal) <= q.accuracy;
+    } catch (err) {
+      feedback.innerHTML = `<p style="color:red">Error evaluating expression.</p>`;
+      return;
+    }
+
+    if (!isFinite(computed)) {
+      feedback.innerHTML = `<p style="color:red">Result is invalid: ${computed}</p>`;
+      return;
+    }
+
+    feedback.innerHTML = `
+      ${correct ? "✅ Correct!" : "❌ Incorrect"}
+      <br>Correct Answer: ${computed}
+      <br>${q.explanation || ""}
+      <br><small><code>${q.__expression}</code></small>
+    `;
+  });
+}
