@@ -11,7 +11,7 @@
     "answer_type": "number",
     "decimals": 2,
     "accuracy": 0.01,
-    "explanation": "Using the quadratic formula: x = [-b + sqrt(b² - 4ac)] / 2a"
+    "explanation": "Using the ABC quadratic formula: x = [-b + sqrt(b² - 4ac)] / 2a"
   },
   {
     "id": "q2",
