@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+    }
+    input[type="text"] {
+      width: 200px;
+      font-size: 1.2em;
+      padding: 0.5em;
+    }
+    button {
+      font-size: 1.1em;
+      padding: 0.5em 1em;
+      margin-left: 10px;
+    }
+    #result {
+      margin-top: 1em;
+      font-size: 1.3em;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Expression Calculator</h2>
+  <input type="text" id="expression" placeholder="Type expression, e.g. 3+2*5" />
+  <button onclick="calculate()">Calculate</button>
+
+  <div id="result"></div>
+
+  <script>
+    function calculate() {
+      const expr = document.getElementById('expression').value;
+      let result;
+
+      try {
+        // Optionally: validate expression before eval for better security
+        result = eval(expr);
+        if (typeof result === 'number' && !isNaN(result)) {
+          document.getElementById('result').textContent = `Result: ${result}`;
+        } else {
+          document.getElementById('result').textContent = 'Invalid expression.';
+        }
+      } catch (error) {
+        document.getElementById('result').textContent = 'Error: ' + error.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
