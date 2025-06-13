@@ -1,88 +1,108 @@
-const params = new URLSearchParams(window.location.search);
-const file = params.get("file") || "problems.json";
-const title = params.get("title") || "Untitled Quiz";
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const file = params.get("file") || "problems.json";
+  const title = params.get("title") || "Math Quiz";
 
-document.addEventListener("DOMContentLoaded", async () => {
-  document.getElementById("quiz-title").textContent = decodeURIComponent(title);
+  // Set the title
+  const titleElement = document.getElementById("quiz-title");
+  if (titleElement) titleElement.textContent = decodeURIComponent(title);
 
-  try {
-    const response = await fetch(file);
-    const quizData = await response.json();
-    const container = document.createElement("div");
-    const generatedValues = [];
+  // Load the questions
+  fetch(file)
+    .then((res) => res.json())
+    .then((questions) => {
+      const container = document.getElementById("quiz-container");
 
-    quizData.forEach((q, index) => {
-      const values = {};
-      for (const [key, config] of Object.entries(q.variables)) {
-        const min = config.mean - config.range;
-        const max = config.mean + config.range;
-        const raw = Math.random() * (max - min) + min;
-        values[key] = parseFloat(raw.toFixed(config.decimals));
-      }
-      generatedValues.push(values);
-
-      let questionText = q.problem.replace(/\{(\w+)\}/g, (_, key) => {
-        const val = values[key];
-        return val < 0 ? `− ${Math.abs(val)}` : `+ ${val}`;
-      });
-
-      // Clean leading '+'
-      questionText = questionText.replace(/^\+\s*/, "");
-
-      const qDiv = document.createElement("div");
-      qDiv.innerHTML = `
-        <p><strong>Q${index + 1}:</strong> ${questionText}</p>
-        <input type="number" id="input-${q.id}" step="any" placeholder="Your answer">
-        <hr>
-      `;
-      container.appendChild(qDiv);
-    });
-
-    const checkBtn = document.createElement("button");
-    checkBtn.id = "check-btn";
-    checkBtn.textContent = "Check";
-    container.appendChild(checkBtn);
-    document.body.appendChild(container);
-
-    document.getElementById("check-btn").addEventListener("click", () => {
-      let score = 0;
-      const resultsDiv = document.createElement("div");
-      resultsDiv.innerHTML = "<h3>Results:</h3>";
-
-      quizData.forEach((q, index) => {
-        const userInput = document.getElementById(`input-${q.id}`);
-        const userValue = parseFloat(userInput.value);
-        const values = generatedValues[index];
-
-        // Replace {var} with value to form expression
-        const expr = q.formula.replace(/\{(\w+)\}/g, (_, key) => values[key]);
-
-        let correct = NaN;
-        try {
-          correct = eval(expr);
-        } catch (err) {
-          console.error("Eval error for:", expr, err);
+      questions.forEach((q, index) => {
+        // Generate variable values
+        const vars = {};
+        for (let key in q.variables) {
+          const { mean, range, decimals } = q.variables[key];
+          const value =
+            +(mean + (Math.random() * 2 - 1) * range).toFixed(decimals || 0);
+          vars[key] = value;
         }
 
-        const isCorrect = Math.abs(userValue - correct) <= q.accuracy;
-        if (isCorrect) score++;
+        // Prepare problem text with formatted variables
+        let problemText = q.problem;
+        for (let key in vars) {
+          const val = vars[key];
+          const displayVal = val < 0 ? `− ${Math.abs(val)}` : `+ ${val}`;
+          problemText = problemText.replaceAll(`{${key}}`, displayVal);
+        }
 
-        const explanation = `
-          <p><strong>Q${index + 1}:</strong> ${isCorrect ? '✅ Correct' : '❌ Incorrect'}</p>
-          <p>Correct Answer: ${isNaN(correct) ? 'NaN ❌' : correct.toFixed(q.decimals)}</p>
-          <p><em>Using formula:</em><br><code>${expr}</code></p>
-          ${q.explanation ? `<p><em>Explanation:</em> ${q.explanation}</p>` : ""}
-          <hr>
+        // Display question and input
+        const div = document.createElement("div");
+        div.className = "question-block";
+        div.innerHTML = `
+          <p><strong>Q${index + 1}:</strong> ${problemText}</p>
+          <input type="number" step="any" id="answer-${index}" />
         `;
-        resultsDiv.innerHTML += explanation;
+        container.appendChild(div);
+
+        // Save variable values for later
+        q.vars = vars;
       });
 
-      resultsDiv.innerHTML = `<h3>Your Score: ${score} / ${quizData.length}</h3>` + resultsDiv.innerHTML;
-      document.body.appendChild(resultsDiv);
-    });
+      // Add check button
+      const btn = document.createElement("button");
+      btn.textContent = "Check";
+      btn.addEventListener("click", () => {
+        const resultsDiv = document.getElementById("results");
+        resultsDiv.innerHTML = "";
+        let score = 0;
 
-  } catch (err) {
-    document.getElementById("quiz-title").textContent = "❌ Error loading questions.";
-    console.error("Failed to load or parse JSON:", err);
-  }
+        questions.forEach((q, index) => {
+          let expr = q.formula;
+          const vars = q.vars;
+
+          // Replace placeholders with parenthesized values
+          for (let key in vars) {
+            expr = expr.replaceAll(`{${key}}`, `(${vars[key]})`);
+          }
+
+          let correct = NaN;
+          try {
+            const sqrt = Math.sqrt; // allow using sqrt() instead of Math.sqrt()
+            correct = eval(expr);
+          } catch (err) {
+            console.error("Error evaluating formula:", expr, err);
+          }
+
+          const input = document.getElementById(`answer-${index}`);
+          const userAnswer = parseFloat(input.value);
+          const isCorrect =
+            Math.abs(userAnswer - correct) <= (q.accuracy || 0.01);
+          if (isCorrect) score++;
+
+          const explanation = q.explanation
+            ? `<p>${q.explanation}</p>`
+            : "";
+
+          resultsDiv.innerHTML += `
+            <div class="result">
+              <p><strong>Q${index + 1}:</strong> ${
+            isCorrect ? "✅ Correct" : "❌ Incorrect"
+          }</p>
+              <p>Correct Answer: ${
+                isNaN(correct) ? "NaN" : correct.toFixed(q.decimals || 2)
+              }</p>
+              <p><code>${expr}</code></p>
+              ${explanation}
+            </div>
+          `;
+        });
+
+        resultsDiv.innerHTML =
+          `<h3>Score: ${score} / ${questions.length}</h3>` +
+          resultsDiv.innerHTML;
+      });
+
+      container.appendChild(btn);
+    })
+    .catch((err) => {
+      document.getElementById("quiz-container").innerHTML =
+        "Error loading questions.";
+      console.error("Fetch error:", err);
+    });
 });
