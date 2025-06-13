@@ -16,7 +16,8 @@ function replaceVariables(template, values) {
     const val = values[key];
     // Format: if preceded by '+ ', replace '+ -' with '- '
     return val >= 0 ? val : `(${val})`;
-  }).replace(/\+\s*\(([-\d.]+)\)/g, "- $1");  // turns "+ (-6.8)" into "- 6.8"
+  }).replace(/\+\s*\(([-\d.]+)\)/g, " − $1")
+
 }
 
   
