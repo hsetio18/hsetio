@@ -10,7 +10,8 @@
     "formula": "(-{b}+Math.sqrt({b}*{b}-4*{a}*{c}))/(2*{a})",
     "answer_type": "number",
     "decimals": 2,
-    "accuracy": 0.01
+    "accuracy": 0.01,
+    "explanation": "Using the quadratic formula: x = [-b + sqrt(b² - 4ac)] / 2a"
   },
   {
     "id": "q2",
@@ -21,6 +22,7 @@
     "formula": "{s}*{s}*{s}",
     "answer_type": "number",
     "decimals": 2,
-    "accuracy": 0.01
+    "accuracy": 0.01,
+    "explanation": "Volume = side³"
   }
 ]
