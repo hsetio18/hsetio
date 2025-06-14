@@ -18,96 +18,108 @@ function showProblems(problems) {
   const container = document.createElement("div");
   container.id = "quiz-list";
 
-  problems.forEach((q, qIndex) => {
+  problems.forEach((q, index) => {
     const values = {};
     let problemText = q.problem;
 
-    // Generate random values
+    // Generate and substitute random variables
+    let isFirst = true;
     for (const [key, spec] of Object.entries(q.variables)) {
-      const rand = spec.mean + (Math.random() * 2 - 1) * spec.range;
+      const rand = (spec.mean + (Math.random() * 2 - 1) * spec.range);
       const rounded = parseFloat(rand.toFixed(spec.decimals));
       values[key] = rounded;
-      const displayVal = rounded >= 0 ? `+ ${rounded}` : `− ${Math.abs(rounded)}`;
+
+      // Format with proper math signs
+      let displayVal;
+      if (isFirst) {
+        displayVal = (rounded < 0) ? `− ${Math.abs(rounded)}` : `${rounded}`;
+        isFirst = false;
+      } else {
+        displayVal = (rounded < 0) ? `− ${Math.abs(rounded)}` : `+ ${rounded}`;
+      }
+
       problemText = problemText.replaceAll(`{${key}}`, displayVal);
     }
 
+    // Create question container
     const qDiv = document.createElement("div");
     qDiv.className = "question";
-    qDiv.innerHTML = `<p><strong>Q${qIndex + 1}:</strong> ${problemText}</p>`;
+    qDiv.innerHTML = `<p><strong>Q${index + 1}:</strong> ${problemText}</p>`;
 
-    // Support for subquestions or a single question
-    const subqs = q.subquestions || [q];
-    q.__results = {}; // store intermediate results
-    q.__subs = []; // keep reference to subquestions
+    const subqs = q.subquestions || [{ formula: q.formula, explanation: q.explanation }];
 
-    subqs.forEach((subq, i) => {
-      const inputId = `answer-${qIndex}-${i}`;
-
-      const subDiv = document.createElement("div");
-      subDiv.innerHTML = `
-        <p>${subq.label || ""}</p>
+    subqs.forEach((subq, subindex) => {
+      const inputId = `answer-${index}-${subindex}`;
+      qDiv.innerHTML += `
+        <label>Part ${subqs.length > 1 ? String.fromCharCode(97 + subindex) : ''}:</label>
         <input type="number" step="any" id="${inputId}" placeholder="Your answer">
-        <div id="feedback-${qIndex}-${i}"></div>
+        <div id="feedback-${index}-${subindex}"></div>
       `;
-
-      qDiv.appendChild(subDiv);
-      q.__subs.push({ ...subq, inputId, feedbackId: `feedback-${qIndex}-${i}` });
     });
 
+    // Store expressions and values
     q.__values = values;
+    q.__expressions = subqs.map(sq => substituteVariables(sq.formula, values));
+    q.__explanations = subqs.map(sq => sq.explanation || "");
+
     container.appendChild(qDiv);
   });
 
+  // Check button
   const checkBtn = document.createElement("button");
   checkBtn.textContent = "Check";
   checkBtn.onclick = () => checkAnswers(problems);
   container.appendChild(document.createElement("br"));
   container.appendChild(checkBtn);
 
+  // Render on page
   const quizContainer = document.getElementById("quiz-container") || document.body;
   quizContainer.innerHTML = "";
   quizContainer.appendChild(container);
 }
 
+// Replace {x} with (value) and support sqrt
 function substituteVariables(expr, values) {
   for (const [key, value] of Object.entries(values)) {
-    expr = expr.replaceAll(`{${key}}`, `(${value})`);
+    // Wrap negative numbers for eval safety
+    const safeVal = (value < 0) ? `(${value})` : value;
+    expr = expr.replaceAll(`{${key}}`, safeVal);
   }
+  // Allow 'sqrt' keyword
   expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
   return expr;
 }
 
 function checkAnswers(problems) {
-  problems.forEach((q, qIndex) => {
-    const values = { ...q.__values }; // make a copy to store intermediate results
-
-    q.__subs.forEach((subq, i) => {
-      const input = document.getElementById(subq.inputId);
-      const feedback = document.getElementById(subq.feedbackId);
+  problems.forEach((q, index) => {
+    q.__expressions.forEach((expr, subindex) => {
+      const input = document.getElementById(`answer-${index}-${subindex}`);
+      const feedback = document.getElementById(`feedback-${index}-${subindex}`);
       const userVal = parseFloat(input.value);
-      let correct = false;
+      const decimals = q.decimals || 2;
+      const accuracy = q.accuracy || 0.01;
+
       let computed = NaN;
+      let correct = false;
 
       try {
-        let expr = substituteVariables(subq.formula, values);
         computed = eval(expr);
-        values[subq.id || `res${i}`] = computed; // store result for later subquestions
-        computed = parseFloat(computed.toFixed(subq.decimals));
-        correct = Math.abs(computed - userVal) <= subq.accuracy;
+        computed = parseFloat(computed.toFixed(decimals));
+        correct = Math.abs(computed - userVal) <= accuracy;
       } catch (err) {
-        feedback.innerHTML = `<p style="color:red">Error evaluating expression.</p>`;
+        feedback.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
         return;
       }
 
       if (!isFinite(computed)) {
-        feedback.innerHTML = `<p style="color:red">Result is invalid: ${computed}</p>`;
+        feedback.innerHTML = `<p style="color:red">Invalid result: ${computed}</p>`;
         return;
       }
 
       feedback.innerHTML = `
         ${correct ? "✅ Correct!" : "❌ Incorrect"}
         <br>Correct Answer: ${computed}
-        <br>${subq.explanation || ""}
+        <br>${q.__explanations[subindex]}
       `;
     });
   });
