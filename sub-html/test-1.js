@@ -1,3 +1,4 @@
+// test-1.js
 const params = new URLSearchParams(window.location.search);
 const file = params.get('file') || 'problems.json';
 const title = params.get('title') || 'Quiz';
@@ -22,105 +23,153 @@ function showProblems(problems) {
     const values = {};
     let problemText = q.problem;
 
-    // Generate and substitute random variables
-    let isFirst = true;
+    // Generate random values for each variable
     for (const [key, spec] of Object.entries(q.variables)) {
-      const rand = (spec.mean + (Math.random() * 2 - 1) * spec.range);
+      const rand = spec.mean + (Math.random() * 2 - 1) * spec.range;
       const rounded = parseFloat(rand.toFixed(spec.decimals));
       values[key] = rounded;
 
-      // Format with proper math signs
-      let displayVal;
-      if (isFirst) {
-        displayVal = (rounded < 0) ? `− ${Math.abs(rounded)}` : `${rounded}`;
-        isFirst = false;
-      } else {
-        displayVal = (rounded < 0) ? `− ${Math.abs(rounded)}` : `+ ${rounded}`;
-      }
-
+      // Use nice formatting for signs
+      const raw = rounded;
+      const displayVal = raw < 0 ? `− ${Math.abs(raw)}` : `${raw}`;
       problemText = problemText.replaceAll(`{${key}}`, displayVal);
     }
 
-    // Create question container
+    q.__values = values;
+
+    // Create question block
     const qDiv = document.createElement("div");
     qDiv.className = "question";
     qDiv.innerHTML = `<p><strong>Q${index + 1}:</strong> ${problemText}</p>`;
 
-    const subqs = q.subquestions || [{ formula: q.formula, explanation: q.explanation }];
+    // If subquestions
+    if (q.subquestions) {
+      q.__subq = [];
+      const context = { ...values };
 
-    subqs.forEach((subq, subindex) => {
-      const inputId = `answer-${index}-${subindex}`;
-      qDiv.innerHTML += `
-        <label>Part ${subqs.length > 1 ? String.fromCharCode(97 + subindex) : ''}:</label>
-        <input type="number" step="any" id="${inputId}" placeholder="Your answer">
-        <div id="feedback-${index}-${subindex}"></div>
-      `;
-    });
+      q.subquestions.forEach((subq, subIndex) => {
+        const expr = substituteVariables(subq.formula, context);
+        subq.__expression = expr;
 
-    // Store expressions and values
-    q.__values = values;
-    q.__expressions = subqs.map(sq => substituteVariables(sq.formula, values));
-    q.__explanations = subqs.map(sq => sq.explanation || "");
+        const input = document.createElement("input");
+        input.type = "number";
+        input.step = "any";
+        input.id = `answer-${index}-${subIndex}`;
+        input.placeholder = subq.label;
+
+        const label = document.createElement("label");
+        label.innerHTML = `<strong>${subq.label}</strong>`;
+
+        const feedback = document.createElement("div");
+        feedback.id = `feedback-${index}-${subIndex}`;
+
+        qDiv.appendChild(label);
+        qDiv.appendChild(input);
+        qDiv.appendChild(feedback);
+
+        q.__subq.push(subq);
+      });
+    } else {
+      // Single-question format
+      const expr = substituteVariables(q.formula, values);
+      q.__expression = expr;
+
+      const input = document.createElement("input");
+      input.type = "number";
+      input.step = "any";
+      input.id = `answer-${index}`;
+      input.placeholder = "Your answer";
+
+      const feedback = document.createElement("div");
+      feedback.id = `feedback-${index}`;
+
+      qDiv.appendChild(input);
+      qDiv.appendChild(feedback);
+    }
 
     container.appendChild(qDiv);
   });
 
-  // Check button
   const checkBtn = document.createElement("button");
   checkBtn.textContent = "Check";
   checkBtn.onclick = () => checkAnswers(problems);
   container.appendChild(document.createElement("br"));
   container.appendChild(checkBtn);
 
-  // Render on page
   const quizContainer = document.getElementById("quiz-container") || document.body;
   quizContainer.innerHTML = "";
   quizContainer.appendChild(container);
 }
 
-// Replace {x} with (value) and support sqrt
 function substituteVariables(expr, values) {
   for (const [key, value] of Object.entries(values)) {
-    // Wrap negative numbers for eval safety
-    const safeVal = (value < 0) ? `(${value})` : value;
-    expr = expr.replaceAll(`{${key}}`, safeVal);
+    expr = expr.replaceAll(`{${key}}`, `(${value})`);
   }
-  // Allow 'sqrt' keyword
   expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
   return expr;
 }
 
 function checkAnswers(problems) {
   problems.forEach((q, index) => {
-    q.__expressions.forEach((expr, subindex) => {
-      const input = document.getElementById(`answer-${index}-${subindex}`);
-      const feedback = document.getElementById(`feedback-${index}-${subindex}`);
-      const userVal = parseFloat(input.value);
-      const decimals = q.decimals || 2;
-      const accuracy = q.accuracy || 0.01;
+    if (q.subquestions) {
+      const context = { ...q.__values };
 
-      let computed = NaN;
+      q.__subq.forEach((subq, subIndex) => {
+        const input = document.getElementById(`answer-${index}-${subIndex}`);
+        const feedback = document.getElementById(`feedback-${index}-${subIndex}`);
+        const userVal = parseFloat(input.value);
+        let correct = false;
+        let computed = NaN;
+
+        try {
+          computed = eval(subq.__expression);
+          computed = parseFloat(computed.toFixed(subq.decimals));
+          correct = Math.abs(computed - userVal) <= subq.accuracy;
+          if (subq.id) {
+            context[subq.id] = computed; // Store for later subquestions
+          }
+        } catch (err) {
+          feedback.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
+          return;
+        }
+
+        if (!isFinite(computed)) {
+          feedback.innerHTML = `<p style="color:red">Invalid result: ${computed}</p>`;
+          return;
+        }
+
+        feedback.innerHTML = `
+          ${correct ? "✅ Correct!" : "❌ Incorrect"}<br>
+          Correct Answer: ${computed}<br>
+          ${subq.explanation || ""}
+        `;
+      });
+    } else {
+      const input = document.getElementById(`answer-${index}`);
+      const feedback = document.getElementById(`feedback-${index}`);
+      const userVal = parseFloat(input.value);
       let correct = false;
+      let computed = NaN;
 
       try {
-        computed = eval(expr);
-        computed = parseFloat(computed.toFixed(decimals));
-        correct = Math.abs(computed - userVal) <= accuracy;
+        computed = eval(q.__expression);
+        computed = parseFloat(computed.toFixed(q.decimals));
+        correct = Math.abs(computed - userVal) <= q.accuracy;
       } catch (err) {
-        feedback.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
+        feedback.innerHTML = `<p style="color:red">Error evaluating expression.</p>`;
         return;
       }
 
       if (!isFinite(computed)) {
-        feedback.innerHTML = `<p style="color:red">Invalid result: ${computed}</p>`;
+        feedback.innerHTML = `<p style="color:red">Result is invalid: ${computed}</p>`;
         return;
       }
 
       feedback.innerHTML = `
-        ${correct ? "✅ Correct!" : "❌ Incorrect"}
-        <br>Correct Answer: ${computed}
-        <br>${q.__explanations[subindex]}
+        ${correct ? "✅ Correct!" : "❌ Incorrect"}<br>
+        Correct Answer: ${computed}<br>
+        ${q.explanation || ""}
       `;
-    });
+    }
   });
 }
