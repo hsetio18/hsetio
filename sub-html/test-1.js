@@ -49,7 +49,7 @@ function showProblems(problems) {
         input.type = "number";
         input.step = "any";
         input.id = `answer-${index}-${subIndex}`;
-        input.placeholder = subq.label;
+        input.placeholder = "Your answer";
 
         const label = document.createElement("label");
         label.innerHTML = `<strong>${subq.label}</strong>`;
