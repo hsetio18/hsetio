@@ -21,22 +21,21 @@ function showProblems(problems) {
 
   problems.forEach((q, index) => {
     const values = {};
-    const replacements = {}; // For clean sign formatting
+    let problemText = q.problem;
 
+    // Generate random values
     for (const [key, spec] of Object.entries(q.variables)) {
       const rand = spec.mean + (Math.random() * 2 - 1) * spec.range;
       const rounded = parseFloat(rand.toFixed(spec.decimals));
       values[key] = rounded;
-      replacements[key] = formatSigned(rounded);
+
+      // Smart sign formatting
+      const raw = rounded;
+      const displayVal = raw < 0 ? `− ${Math.abs(raw)}` : `${raw}`;
+      problemText = problemText.replaceAll(`{${key}}`, displayVal);
     }
 
     q.__values = values;
-
-    // Replace tokens in problem text
-    let problemText = q.problem;
-    for (const [key, val] of Object.entries(replacements)) {
-      problemText = problemText.replaceAll(`{${key}}`, val);
-    }
 
     const qDiv = document.createElement("div");
     qDiv.className = "question";
@@ -44,17 +43,13 @@ function showProblems(problems) {
 
     if (q.subquestions) {
       q.__subq = [];
-      const context = { ...values };
-
       q.subquestions.forEach((subq, subIndex) => {
-        const expr = substituteVariables(subq.formula, context);
-        subq.__expression = expr;
-
+        subq.__rawFormula = subq.formula; // Save raw formula
         const input = document.createElement("input");
         input.type = "number";
         input.step = "any";
         input.id = `answer-${index}-${subIndex}`;
-        input.placeholder = "Your answer";
+        input.placeholder = subq.label;
 
         const label = document.createElement("label");
         label.innerHTML = `<strong>${subq.label}</strong>`;
@@ -107,11 +102,6 @@ function substituteVariables(expr, values) {
   return expr;
 }
 
-function formatSigned(val) {
-  const rounded = parseFloat(val.toFixed(2));
-  return rounded >= 0 ? `+ ${rounded}` : `− ${Math.abs(rounded)}`;
-}
-
 function checkAnswers(problems) {
   problems.forEach((q, index) => {
     if (q.subquestions) {
@@ -125,10 +115,13 @@ function checkAnswers(problems) {
         let computed = NaN;
 
         try {
-          computed = eval(subq.__expression);
+          const expr = substituteVariables(subq.__rawFormula, context);
+          computed = eval(expr);
           computed = parseFloat(computed.toFixed(subq.decimals));
           correct = Math.abs(computed - userVal) <= subq.accuracy;
-          if (subq.id) context[subq.id] = computed;
+          if (subq.id) {
+            context[subq.id] = computed; // Save result for next subquestions
+          }
         } catch (err) {
           feedback.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
           return;
