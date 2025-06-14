@@ -21,28 +21,27 @@ function showProblems(problems) {
 
   problems.forEach((q, index) => {
     const values = {};
-    let problemText = q.problem;
+    const replacements = {}; // For clean sign formatting
 
-    // Generate random values for each variable
     for (const [key, spec] of Object.entries(q.variables)) {
       const rand = spec.mean + (Math.random() * 2 - 1) * spec.range;
       const rounded = parseFloat(rand.toFixed(spec.decimals));
       values[key] = rounded;
-
-      // Use nice formatting for signs
-      const raw = rounded;
-      const displayVal = raw < 0 ? `− ${Math.abs(raw)}` : `${raw}`;
-      problemText = problemText.replaceAll(`{${key}}`, displayVal);
+      replacements[key] = formatSigned(rounded);
     }
 
     q.__values = values;
 
-    // Create question block
+    // Replace tokens in problem text
+    let problemText = q.problem;
+    for (const [key, val] of Object.entries(replacements)) {
+      problemText = problemText.replaceAll(`{${key}}`, val);
+    }
+
     const qDiv = document.createElement("div");
     qDiv.className = "question";
     qDiv.innerHTML = `<p><strong>Q${index + 1}:</strong> ${problemText}</p>`;
 
-    // If subquestions
     if (q.subquestions) {
       q.__subq = [];
       const context = { ...values };
@@ -55,7 +54,7 @@ function showProblems(problems) {
         input.type = "number";
         input.step = "any";
         input.id = `answer-${index}-${subIndex}`;
-        input.placeholder = subq.label;
+        input.placeholder = "Your answer";
 
         const label = document.createElement("label");
         label.innerHTML = `<strong>${subq.label}</strong>`;
@@ -70,7 +69,6 @@ function showProblems(problems) {
         q.__subq.push(subq);
       });
     } else {
-      // Single-question format
       const expr = substituteVariables(q.formula, values);
       q.__expression = expr;
 
@@ -109,6 +107,11 @@ function substituteVariables(expr, values) {
   return expr;
 }
 
+function formatSigned(val) {
+  const rounded = parseFloat(val.toFixed(2));
+  return rounded >= 0 ? `+ ${rounded}` : `− ${Math.abs(rounded)}`;
+}
+
 function checkAnswers(problems) {
   problems.forEach((q, index) => {
     if (q.subquestions) {
@@ -125,9 +128,7 @@ function checkAnswers(problems) {
           computed = eval(subq.__expression);
           computed = parseFloat(computed.toFixed(subq.decimals));
           correct = Math.abs(computed - userVal) <= subq.accuracy;
-          if (subq.id) {
-            context[subq.id] = computed; // Store for later subquestions
-          }
+          if (subq.id) context[subq.id] = computed;
         } catch (err) {
           feedback.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
           return;
