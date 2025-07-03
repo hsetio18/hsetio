@@ -37,7 +37,7 @@ document.getElementById("start-quiz").onclick = () => {
 
 document.getElementById("next-btn").onclick = () => {
   const q = selectedQuestions[currentIndex];
-  const inputs = document.querySelectorAll("#quiz-input input");
+  const inputs = document.querySelectorAll("#quiz-input input, #quiz-input select");
   const userInput = [];
   const correctAnswer = [];
   let correct = true;
@@ -45,7 +45,11 @@ document.getElementById("next-btn").onclick = () => {
   if (q.answer_type === "number") {
     const input = inputs[0];
     const val = parseFloat(input.value);
-    const expr = substitute(q.formula, q.variables);
+    const context = {};
+    for (const [k, v] of Object.entries(q.variables)) {
+      context[k] = v.__value;
+    }
+    const expr = substitute(q.formula, context);
     try {
       const expected = eval(expr);
       correct = Math.abs(val - expected) <= (q.accuracy || 0.01);
@@ -55,12 +59,14 @@ document.getElementById("next-btn").onclick = () => {
       correct = false;
     }
     userInput.push(val);
+
   } else if (q.answer_type === "mc") {
     const select = document.querySelector("#quiz-input select");
     const val = select.value;
     correct = val === q.correct_choice;
     userInput.push(val);
     correctAnswer.push(q.correct_choice);
+
   } else if (q.answer_type === "subquestions") {
     const context = {};
     for (const [k, v] of Object.entries(q.variables)) {
@@ -138,15 +144,18 @@ function showQuestion() {
     input.step = "any";
     input.placeholder = "Your answer";
     inputBox.appendChild(input);
+
   } else if (q.answer_type === "mc") {
     const select = document.createElement("select");
-    q.choices.forEach(opt => {
+    const choices = shuffle([...q.choices]);
+    choices.forEach(opt => {
       const option = document.createElement("option");
       option.value = opt;
       option.textContent = opt;
       select.appendChild(option);
     });
     inputBox.appendChild(select);
+
   } else if (q.answer_type === "subquestions") {
     const context = {};
     for (const [k, v] of Object.entries(q.variables)) {
