@@ -7,8 +7,7 @@ let selectedQuestions = [];
 let currentIndex = 0;
 let userAnswers = [];
 let score = 0;
-let startTime = 0;
-let endTime = 0;
+let startTime;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("quiz-title").textContent = decodeURIComponent(title);
@@ -126,10 +125,11 @@ document.getElementById("next-btn").onclick = () => {
   if (currentIndex < selectedQuestions.length) {
     showQuestion();
   } else {
-    endTime = Date.now();
     document.getElementById("quiz-screen").style.display = 'none';
     document.getElementById("result-screen").style.display = 'block';
     document.getElementById("final-score").textContent = `You got ${score} out of ${selectedQuestions.length}`;
+    const duration = Math.round((Date.now() - startTime) / 1000);
+    document.getElementById("final-time").textContent = `Total time: ${duration} seconds`;
   }
 };
 
@@ -139,16 +139,6 @@ document.getElementById("review-btn").onclick = () => {
 
   const list = document.getElementById("review-list");
   list.innerHTML = "";
-  const totalTime = ((endTime - startTime) / 1000).toFixed(1);
-
-  const summary = document.createElement("div");
-  summary.innerHTML = `
-    <p><strong>Total Score:</strong> ${score} / ${selectedQuestions.length}</p>
-    <p><strong>Total Time:</strong> ${totalTime} seconds</p>
-    <hr>
-  `;
-  list.appendChild(summary);
-
   userAnswers.forEach((item, i) => {
     const div = document.createElement("div");
     div.innerHTML = `
@@ -191,7 +181,7 @@ function showQuestion() {
   } else if (q.answer_type === "subquestions") {
     q.subquestions.forEach((sub, i) => {
       const label = document.createElement("label");
-      label.textContent = sub.label;
+      label.innerHTML = sub.label;
       const input = document.createElement("input");
       input.type = "number";
       input.step = "any";
