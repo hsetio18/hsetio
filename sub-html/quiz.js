@@ -184,11 +184,21 @@ function renderText(q, values) {
   return txt;
 }
 
+//function substitute(expr, vars) {
+//  for (const [k, v] of Object.entries(vars)) {
+//    expr = expr.replaceAll(`{${k}}`, `(${v})`);
+//  }
+//  expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
+//  return expr;
+//}
 function substitute(expr, vars) {
   for (const [k, v] of Object.entries(vars)) {
     expr = expr.replaceAll(`{${k}}`, `(${v})`);
   }
-  expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
+
+  // Only replace plain "sqrt(" but NOT "Math.sqrt("
+  expr = expr.replace(/(?<!Math\.)\bsqrt\(/g, "Math.sqrt(");
+
   return expr;
 }
 
