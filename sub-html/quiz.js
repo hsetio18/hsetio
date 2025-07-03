@@ -35,7 +35,7 @@ document.getElementById("start-btn").onclick = () => {
 
 function substitute(expr, vars) {
   for (const [k, v] of Object.entries(vars)) expr = expr.replaceAll(`{${k}}`, `(${v})`);
-  return expr.replace(/\bsqrt\(/g, "Math.sqrt(");
+  return expr.replace(/\bsqrt\(/g, "Math.sqrt(").replace(/Math\.Math\./g, "Math.");
 }
 
 function generateValues(specs) {
@@ -114,7 +114,7 @@ document.getElementById("next-btn").onclick = () => {
     q.__subq.forEach((s, i) => {
       const input = parseFloat(document.getElementById(`sub-${i}`).value);
       try {
-        const answer = parseFloat(eval(s.__expr).toFixed(s.decimals));
+        const answer = parseFloat(eval(substitute(s.formula, ctx)).toFixed(s.decimals));
         if (s.id) ctx[s.id] = answer;
         const ok = Math.abs(answer - input) <= s.accuracy;
         if (ok) correct++;
@@ -147,6 +147,12 @@ document.getElementById("review-btn").onclick = () => {
   document.getElementById("review-screen").style.display = "block";
   const list = document.getElementById("review-list");
   list.innerHTML = "";
+  const totalSeconds = Math.floor((endTime - startTime) / 1000);
+  const min = Math.floor(totalSeconds / 60);
+  const sec = totalSeconds % 60;
+  list.innerHTML += `<p><strong>Total Score:</strong> ${score.toFixed(2)} / ${selected.length}</p>
+                     <p><strong>Total Time:</strong> ${min} minutes ${sec} seconds</p><hr>`;
+
   selected.forEach((q, idx) => {
     const block = document.createElement("div");
     let text = q.problem;
@@ -157,18 +163,24 @@ document.getElementById("review-btn").onclick = () => {
       }
     }
     block.innerHTML = `<strong>Q${idx + 1}:</strong> ${text}<br>`;
+
     if (q.answer_type === "subquestions") {
       q.__results.forEach(r => {
         block.innerHTML += `${r.label}<br>
           Your answer: ${r.user}<br>
-          Correct answer: ${r.correct}<br>
+          Correct answer: ${isNaN(r.correct) ? "NaN" : r.correct}<br>
           ${r.ok ? "✅ Correct" : "❌ Incorrect"}<br>
           ${r.explanation || ""}<br><br>`;
       });
     } else {
-      block.innerHTML += `Your answer: ${q.__user}<br>
-        Correct answer: ${q.__correct}<br>
-        ${Math.abs(q.__user - q.__correct) <= (q.accuracy || 0.01) ? "✅ Correct" : "❌ Incorrect"}<br>
+      const user = q.__user !== undefined ? q.__user : "N/A";
+      const correct = q.__correct !== undefined ? q.__correct : "N/A";
+      const isCorrect = typeof user === "number" && typeof correct === "number"
+        ? Math.abs(user - correct) <= (q.accuracy || 0.01)
+        : false;
+      block.innerHTML += `Your answer: ${user}<br>
+        Correct answer: ${correct}<br>
+        ${isCorrect ? "✅ Correct" : "❌ Incorrect"}<br>
         ${q.__explain || ""}`;
     }
     list.appendChild(block);
