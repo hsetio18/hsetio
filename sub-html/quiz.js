@@ -26,7 +26,18 @@ document.getElementById("start-quiz").onclick = () => {
     alert("Please enter a valid number between 1 and " + allQuestions.length);
     return;
   }
-  selectedQuestions = shuffle([...allQuestions]).slice(0, n);
+  selectedQuestions = shuffle([...allQuestions]).slice(0, n).map((q) => {
+    const values = {};
+    for (const [k, v] of Object.entries(q.variables || {})) {
+      const rand = v.mean + (Math.random() * 2 - 1) * v.range;
+      const rounded = parseFloat(rand.toFixed(v.decimals));
+      v.__value = rounded;
+      values[k] = rounded;
+    }
+    q.__values = values;
+    q.__questionText = renderText(q, values);
+    return q;
+  });
   currentIndex = 0;
   userAnswers = [];
   score = 0;
@@ -45,11 +56,7 @@ document.getElementById("next-btn").onclick = () => {
   if (q.answer_type === "number") {
     const input = inputs[0];
     const val = parseFloat(input.value);
-    const context = {};
-    for (const [k, v] of Object.entries(q.variables)) {
-      context[k] = v.__value;
-    }
-    const expr = substitute(q.formula, context);
+    const expr = substitute(q.formula, q.__values);
     try {
       const expected = eval(expr);
       correct = Math.abs(val - expected) <= (q.accuracy || 0.01);
@@ -68,10 +75,7 @@ document.getElementById("next-btn").onclick = () => {
     correctAnswer.push(q.correct_choice);
 
   } else if (q.answer_type === "subquestions") {
-    const context = {};
-    for (const [k, v] of Object.entries(q.variables)) {
-      context[k] = v.__value;
-    }
+    const context = { ...q.__values };
     for (let i = 0; i < q.subquestions.length; i++) {
       const sub = q.subquestions[i];
       const expr = substitute(sub.formula, context);
@@ -94,7 +98,7 @@ document.getElementById("next-btn").onclick = () => {
   if (correct) score++;
 
   userAnswers.push({
-    question: renderText(q),
+    question: q.__questionText,
     userInput: userInput.join(", "),
     correctAnswer: correctAnswer.join(", "),
     correct,
@@ -133,7 +137,7 @@ document.getElementById("review-btn").onclick = () => {
 
 function showQuestion() {
   const q = selectedQuestions[currentIndex];
-  document.getElementById("quiz-question").innerHTML = `<strong>Q${currentIndex + 1}:</strong> ${renderText(q)}`;
+  document.getElementById("quiz-question").innerHTML = `<strong>Q${currentIndex + 1}:</strong> ${q.__questionText}`;
 
   const inputBox = document.getElementById("quiz-input");
   inputBox.innerHTML = "";
@@ -157,10 +161,6 @@ function showQuestion() {
     inputBox.appendChild(select);
 
   } else if (q.answer_type === "subquestions") {
-    const context = {};
-    for (const [k, v] of Object.entries(q.variables)) {
-      context[k] = v.__value;
-    }
     q.subquestions.forEach((sub, i) => {
       const label = document.createElement("label");
       label.textContent = sub.label;
@@ -174,14 +174,11 @@ function showQuestion() {
   }
 }
 
-function renderText(q) {
+function renderText(q, values) {
   let txt = q.problem;
   if (q.variables) {
-    for (const [k, v] of Object.entries(q.variables)) {
-      const rand = v.mean + (Math.random() * 2 - 1) * v.range;
-      const rounded = parseFloat(rand.toFixed(v.decimals));
-      txt = txt.replaceAll(`{${k}}`, rounded);
-      v.__value = rounded;
+    for (const [k, v] of Object.entries(values)) {
+      txt = txt.replaceAll(`{${k}}`, v);
     }
   }
   return txt;
