@@ -71,7 +71,7 @@
         "explanation": "Perimeter = 2 × (length + width)"
       },
       {
-        "label": "b) What is the area?",
+        "label": "\nb) What is the area?",
         "formula": "{l} * {w}",
         "decimals": 2,
         "accuracy": 0.01,
@@ -130,14 +130,14 @@
         "explanation": "Discriminant d = b² - 4ac"
       },
       {
-        "label": "b) What is the smaller root?",
+        "label": "\nb) What is the smaller root?",
         "formula": "Math.min((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
         "decimals": 2,
         "accuracy": 0.01,
         "explanation": "Smaller root = min of the two roots"
       },
       {
-        "label": "c) What is the larger root?",
+        "label": "\nc) What is the larger root?",
         "formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
         "decimals": 2,
         "accuracy": 0.01,
