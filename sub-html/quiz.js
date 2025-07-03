@@ -26,7 +26,10 @@ document.getElementById("start-quiz").onclick = () => {
     alert("Please enter a valid number between 1 and " + allQuestions.length);
     return;
   }
-  selectedQuestions = shuffle(allQuestions).slice(0, n);
+  selectedQuestions = shuffle([...allQuestions]).slice(0, n);
+  currentIndex = 0;
+  userAnswers = [];
+  score = 0;
   document.getElementById("setup-screen").style.display = 'none';
   document.getElementById("quiz-screen").style.display = 'block';
   showQuestion();
@@ -34,7 +37,9 @@ document.getElementById("start-quiz").onclick = () => {
 
 document.getElementById("next-btn").onclick = () => {
   const input = document.querySelector("#quiz-input input, #quiz-input select");
-  const userInput = input?.value;
+  if (!input) return;
+
+  const userInput = input.value;
   const q = selectedQuestions[currentIndex];
 
   let correct = false;
@@ -43,9 +48,14 @@ document.getElementById("next-btn").onclick = () => {
 
   if (q.answer_type === "number") {
     const val = parseFloat(userInput);
-    const expected = eval(substitute(q.formula, q.variables));
-    correct = Math.abs(val - expected) <= (q.accuracy || 0.01);
-    correctAnswer = expected.toFixed(q.decimals || 2);
+    const expr = substitute(q.formula, q.variables);
+    try {
+      const expected = eval(expr);
+      correct = Math.abs(val - expected) <= (q.accuracy || 0.01);
+      correctAnswer = expected.toFixed(q.decimals || 2);
+    } catch (err) {
+      correctAnswer = "Invalid expression: " + expr;
+    }
   } else if (q.answer_type === "mc") {
     correct = userInput === q.correct_choice;
     correctAnswer = q.correct_choice;
@@ -99,7 +109,11 @@ function showQuestion() {
   inputBox.innerHTML = "";
 
   if (q.answer_type === "number") {
-    inputBox.innerHTML = `<input type="number" step="any" placeholder="Your answer">`;
+    const input = document.createElement("input");
+    input.type = "number";
+    input.step = "any";
+    input.placeholder = "Your answer";
+    inputBox.appendChild(input);
   } else if (q.answer_type === "mc") {
     const select = document.createElement("select");
     q.choices.forEach(opt => {
