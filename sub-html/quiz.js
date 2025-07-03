@@ -1,219 +1,168 @@
+// quiz.js
 const params = new URLSearchParams(window.location.search);
-const file = params.get('file') || 'problems.json';
-const title = params.get('title') || 'Quiz';
+const file = params.get("file") || "quiz-01.json";
+const title = params.get("title") || "Quiz";
+document.getElementById("quiz-title").textContent = decodeURIComponent(title);
 
-let allQuestions = [];
-let selectedQuestions = [];
-let currentIndex = 0;
-let userAnswers = [];
-let score = 0;
-let startTime;
+let problems = [], selected = [], current = 0, score = 0, startTime = 0, endTime = 0;
 
-document.addEventListener("DOMContentLoaded", async () => {
-  document.getElementById("quiz-title").textContent = decodeURIComponent(title);
-  try {
-    const response = await fetch(file);
-    allQuestions = await response.json();
-    document.getElementById("question-count").textContent = allQuestions.length;
-    document.getElementById("num-questions").max = allQuestions.length;
-  } catch (err) {
-    document.getElementById("setup-screen").innerHTML = `<p>Error loading questions: ${err.message}</p>`;
-  }
-});
-
-document.getElementById("start-quiz").onclick = () => {
-  const n = parseInt(document.getElementById("num-questions").value);
-  if (isNaN(n) || n < 1 || n > allQuestions.length) {
-    alert("Please enter a valid number between 1 and " + allQuestions.length);
-    return;
-  }
-  selectedQuestions = shuffle([...allQuestions]).slice(0, n).map((q) => {
-    const values = {};
-    for (const [k, v] of Object.entries(q.variables || {})) {
-      const rand = v.mean + (Math.random() * 2 - 1) * v.range;
-      const rounded = parseFloat(rand.toFixed(v.decimals));
-      v.__value = rounded;
-      values[k] = rounded;
-    }
-    q.__values = values;
-    q.__questionText = renderText(q, values);
-    return q;
+fetch(file)
+  .then(res => res.json())
+  .then(data => {
+    problems = data;
+    document.getElementById("question-count").textContent = problems.length;
   });
-  currentIndex = 0;
-  userAnswers = [];
-  score = 0;
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+document.getElementById("start-btn").onclick = () => {
+  const n = parseInt(document.getElementById("num-questions").value);
+  if (isNaN(n) || n < 1 || n > problems.length) return alert("Invalid input.");
+  selected = shuffle([...problems]).slice(0, n);
+  document.getElementById("start-screen").style.display = "none";
+  document.getElementById("quiz-screen").style.display = "block";
   startTime = Date.now();
-  document.getElementById("setup-screen").style.display = 'none';
-  document.getElementById("quiz-screen").style.display = 'block';
+  current = 0;
   showQuestion();
 };
 
-document.getElementById("next-btn").onclick = () => {
-  const q = selectedQuestions[currentIndex];
-  const inputs = document.querySelectorAll("#quiz-input input, #quiz-input select");
-  const userInput = [];
-  const correctAnswer = [];
-  let correctCount = 0;
-  let totalParts = 1;
+function substitute(expr, vars) {
+  for (const [k, v] of Object.entries(vars)) expr = expr.replaceAll(`{${k}}`, `(${v})`);
+  return expr.replace(/\bsqrt\(/g, "Math.sqrt(");
+}
 
-  if (q.answer_type === "number") {
-    const input = inputs[0];
-    const valStr = input.value;
-    const val = parseFloat(valStr);
-    if (valStr === "" || isNaN(val)) {
-      userInput.push("No answer");
-      correctAnswer.push("?");
-    } else {
-      const expr = substitute(q.formula, q.__values);
-      try {
-        const expected = eval(expr);
-        const expectedRounded = parseFloat(expected.toFixed(q.decimals || 2));
-        correctAnswer.push(expectedRounded);
-        userInput.push(val);
-        if (Math.abs(val - expectedRounded) <= (q.accuracy || 0.01)) correctCount++;
-      } catch (err) {
-        correctAnswer.push("Invalid expression: " + expr);
-      }
-    }
-  } else if (q.answer_type === "mc") {
-    const select = document.querySelector("#quiz-input select");
-    const val = select.value;
-    correctAnswer.push(q.correct_choice);
-    userInput.push(val);
-    if (val === q.correct_choice) correctCount++;
-  } else if (q.answer_type === "subquestions") {
-    const context = { ...q.__values };
-    totalParts = q.subquestions.length;
-    for (let i = 0; i < q.subquestions.length; i++) {
-      const sub = q.subquestions[i];
-      const expr = substitute(sub.formula, context);
-      const inputVal = inputs[i].value;
-      const val = parseFloat(inputVal);
-      let expected = NaN;
-
-      if (inputVal === "" || isNaN(val)) {
-        userInput.push("No answer");
-        correctAnswer.push("?");
-        continue;
-      }
-
-      try {
-        expected = eval(expr);
-        expected = parseFloat(expected.toFixed(sub.decimals || 2));
-        if (sub.id) context[sub.id] = expected;
-        correctAnswer.push(expected);
-        userInput.push(val);
-        if (Math.abs(val - expected) <= (sub.accuracy || 0.01)) correctCount++;
-      } catch (err) {
-        correctAnswer.push("Error: " + err.message);
-      }
-    }
+function generateValues(specs) {
+  const vals = {};
+  for (const [k, s] of Object.entries(specs)) {
+    const r = s.mean + (Math.random() * 2 - 1) * s.range;
+    vals[k] = parseFloat(r.toFixed(s.decimals));
   }
-
-  const isFullyCorrect = (correctCount === totalParts);
-  if (correctCount > 0) score++;
-
-  userAnswers.push({
-    question: q.__questionText,
-    userInput: userInput.join(", "),
-    correctAnswer: correctAnswer.join(", "),
-    correct: isFullyCorrect,
-    explanation: q.explanation || ""
-  });
-
-  currentIndex++;
-  if (currentIndex < selectedQuestions.length) {
-    showQuestion();
-  } else {
-    document.getElementById("quiz-screen").style.display = 'none';
-    document.getElementById("result-screen").style.display = 'block';
-    document.getElementById("final-score").textContent = `You got ${score} out of ${selectedQuestions.length}`;
-    const duration = Math.round((Date.now() - startTime) / 1000);
-    document.getElementById("final-time").textContent = `Total time: ${duration} seconds`;
-  }
-};
-
-document.getElementById("review-btn").onclick = () => {
-  document.getElementById("result-screen").style.display = 'none';
-  document.getElementById("review-screen").style.display = 'block';
-
-  const list = document.getElementById("review-list");
-  list.innerHTML = "";
-  userAnswers.forEach((item, i) => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <p><strong>Q${i + 1}:</strong> ${item.question}</p>
-      <p>Your answer: ${item.userInput}</p>
-      <p>Correct answer: ${item.correctAnswer}</p>
-      <p>${item.correct ? '✅ Correct' : '❌ Incorrect'}</p>
-      <p><em>${item.explanation}</em></p>
-      <hr>
-    `;
-    list.appendChild(div);
-  });
-};
+  return vals;
+}
 
 function showQuestion() {
-  const q = selectedQuestions[currentIndex];
-  document.getElementById("quiz-question").innerHTML = `<strong>Q${currentIndex + 1}:</strong> ${q.__questionText}`;
-
-  const inputBox = document.getElementById("quiz-input");
-  inputBox.innerHTML = "";
+  const q = selected[current];
+  const box = document.getElementById("question-box");
+  box.innerHTML = "";
+  q.__values = generateValues(q.variables);
+  let text = q.problem;
+  for (const [k, v] of Object.entries(q.__values)) {
+    const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
+    text = text.replaceAll(`{${k}}`, display);
+  }
+  box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
   if (q.answer_type === "number") {
-    const input = document.createElement("input");
-    input.type = "number";
-    input.step = "any";
-    input.placeholder = "Your answer";
-    inputBox.appendChild(input);
-
+    q.__expr = substitute(q.formula, q.__values);
+    box.innerHTML += `<input type="number" id="ans" step="any">`;
   } else if (q.answer_type === "mc") {
-    const select = document.createElement("select");
-    const choices = shuffle([...q.choices]);
-    choices.forEach(opt => {
-      const option = document.createElement("option");
-      option.value = opt;
-      option.textContent = opt;
-      select.appendChild(option);
+    q.__expr = substitute(q.formula, q.__values);
+    const correct = eval(q.__expr);
+    const options = shuffle([correct, ...q.distractors]).slice(0, 4);
+    options.forEach((opt, i) => {
+      box.innerHTML += `<label><input type="radio" name="ans" value="${opt}"> ${opt}</label><br>`;
     });
-    inputBox.appendChild(select);
-
   } else if (q.answer_type === "subquestions") {
-    q.subquestions.forEach((sub, i) => {
-      const label = document.createElement("label");
-      label.innerHTML = sub.label;
-      const input = document.createElement("input");
-      input.type = "number";
-      input.step = "any";
-      input.placeholder = "Your answer";
-      inputBox.appendChild(label);
-      inputBox.appendChild(input);
+    q.__context = { ...q.__values };
+    q.__subq = q.subquestions.map((s, i) => {
+      const expr = substitute(s.formula, q.__context);
+      const label = s.label || `Part ${i + 1}`;
+      return { ...s, label, __expr: expr };
+    });
+    q.__subq.forEach((s, i) => {
+      box.innerHTML += `<label>${s.label}</label><input type="number" id="sub-${i}" step="any"><br>`;
     });
   }
 }
 
-function renderText(q, values) {
-  let txt = q.problem;
-  if (q.variables) {
-    for (const [k, v] of Object.entries(values)) {
-      txt = txt.replaceAll(`{${k}}`, v);
+document.getElementById("next-btn").onclick = () => {
+  const q = selected[current];
+  let correct = 0, total = 1;
+  if (q.answer_type === "number") {
+    let val = parseFloat(document.getElementById("ans").value);
+    try {
+      const actual = parseFloat(eval(q.__expr).toFixed(q.decimals));
+      q.__correct = actual;
+      q.__user = val;
+      q.__explain = q.explanation;
+      if (Math.abs(val - actual) <= q.accuracy) correct = 1;
+    } catch {
+      q.__correct = "Invalid expression: " + q.__expr;
     }
+  } else if (q.answer_type === "mc") {
+    const choice = document.querySelector("input[name=ans]:checked");
+    if (choice) {
+      const user = parseFloat(choice.value);
+      const actual = parseFloat(eval(q.__expr).toFixed(q.decimals));
+      q.__correct = actual;
+      q.__user = user;
+      q.__explain = q.explanation;
+      if (user === actual) correct = 1;
+    }
+  } else if (q.answer_type === "subquestions") {
+    correct = 0;
+    total = q.__subq.length;
+    q.__results = [];
+    const ctx = { ...q.__values };
+    q.__subq.forEach((s, i) => {
+      const input = parseFloat(document.getElementById(`sub-${i}`).value);
+      try {
+        const answer = parseFloat(eval(s.__expr).toFixed(s.decimals));
+        if (s.id) ctx[s.id] = answer;
+        const ok = Math.abs(answer - input) <= s.accuracy;
+        if (ok) correct++;
+        q.__results.push({ label: s.label, correct: answer, user: input, ok, explanation: s.explanation });
+      } catch {
+        q.__results.push({ label: s.label, correct: NaN, user: input, ok: false, explanation: s.explanation });
+      }
+    });
   }
-  return txt;
+  score += correct / total;
+  current++;
+  if (current >= selected.length) finishQuiz();
+  else showQuestion();
+};
+
+function finishQuiz() {
+  document.getElementById("quiz-screen").style.display = "none";
+  document.getElementById("result-screen").style.display = "block";
+  endTime = Date.now();
+  const totalSeconds = Math.floor((endTime - startTime) / 1000);
+  const min = Math.floor(totalSeconds / 60);
+  const sec = totalSeconds % 60;
+  document.getElementById("summary").innerHTML =
+    `<p>Total Score: ${score.toFixed(2)} / ${selected.length}</p>
+     <p>Total Time: ${min} minutes ${sec} seconds</p>`;
 }
 
-function substitute(expr, vars) {
-  for (const [k, v] of Object.entries(vars)) {
-    expr = expr.replaceAll(`{${k}}`, `(${v})`);
-  }
-  expr = expr.replace(/(?<!Math\.)\bsqrt\(/g, "Math.sqrt(");
-  return expr;
-}
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+document.getElementById("review-btn").onclick = () => {
+  document.getElementById("result-screen").style.display = "none";
+  document.getElementById("review-screen").style.display = "block";
+  const list = document.getElementById("review-list");
+  list.innerHTML = "";
+  selected.forEach((q, idx) => {
+    const block = document.createElement("div");
+    block.innerHTML = `<strong>Q${idx + 1}:</strong> ${q.problem}<br>`;
+    if (q.answer_type === "subquestions") {
+      q.__results.forEach(r => {
+        block.innerHTML += `${r.label}<br>
+          Your answer: ${r.user}<br>
+          Correct answer: ${r.correct}<br>
+          ${r.ok ? "✅ Correct" : "❌ Incorrect"}<br>
+          ${r.explanation || ""}<br><br>`;
+      });
+    } else {
+      block.innerHTML += `Your answer: ${q.__user}<br>
+        Correct answer: ${q.__correct}<br>
+        ${Math.abs(q.__user - q.__correct) <= (q.accuracy || 0.01) ? "✅ Correct" : "❌ Incorrect"}<br>
+        ${q.__explain || ""}`;
+    }
+    list.appendChild(block);
+  });
+};
