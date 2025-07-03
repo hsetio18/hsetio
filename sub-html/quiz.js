@@ -26,18 +26,21 @@ document.getElementById("start-quiz").onclick = () => {
     alert("Please enter a valid number between 1 and " + allQuestions.length);
     return;
   }
-  selectedQuestions = shuffle([...allQuestions]).slice(0, n).map((q) => {
-    const values = {};
-    for (const [k, v] of Object.entries(q.variables || {})) {
-      const rand = v.mean + (Math.random() * 2 - 1) * v.range;
-      const rounded = parseFloat(rand.toFixed(v.decimals));
-      v.__value = rounded;
-      values[k] = rounded;
-    }
-    q.__values = values;
-    q.__questionText = renderText(q, values);
-    return q;
-  });
+  selectedQuestions = shuffle([...allQuestions])
+    .slice(0, n)
+    .map((q) => {
+      const values = {};
+      for (const [k, v] of Object.entries(q.variables || {})) {
+        const rand = v.mean + (Math.random() * 2 - 1) * v.range;
+        const rounded = parseFloat(rand.toFixed(v.decimals));
+        v.__value = rounded;
+        values[k] = rounded;
+      }
+      q.__values = values;
+      q.__questionText = renderText(q, values);
+      return q;
+    });
+
   currentIndex = 0;
   userAnswers = [];
   score = 0;
@@ -55,67 +58,69 @@ document.getElementById("next-btn").onclick = () => {
   let totalParts = 1;
 
   if (q.answer_type === "number") {
-    const input = inputs[0];
-    const valStr = input.value;
+    const valStr = inputs[0].value;
     const val = parseFloat(valStr);
     if (valStr === "" || isNaN(val)) {
       userInput.push("No answer");
       correctAnswer.push("?");
     } else {
-      const expr = substitute(q.formula, q.__values);
       try {
+        const expr = substitute(q.formula, q.__values);
         const expected = eval(expr);
         const expectedRounded = parseFloat(expected.toFixed(q.decimals || 2));
         correctAnswer.push(expectedRounded);
         userInput.push(val);
         if (Math.abs(val - expectedRounded) <= (q.accuracy || 0.01)) correctCount++;
       } catch (err) {
-        correctAnswer.push("Invalid expression: " + expr);
+        correctAnswer.push("Invalid expression: " + err.message);
       }
     }
+
   } else if (q.answer_type === "mc") {
-    const select = document.querySelector("#quiz-input select");
+    const select = inputs[0];
     const val = select.value;
     correctAnswer.push(q.correct_choice);
     userInput.push(val);
     if (val === q.correct_choice) correctCount++;
+
   } else if (q.answer_type === "subquestions") {
     const context = { ...q.__values };
     totalParts = q.subquestions.length;
-    for (let i = 0; i < q.subquestions.length; i++) {
-      const sub = q.subquestions[i];
-      const expr = substitute(sub.formula, context);
-      const inputVal = inputs[i].value;
-      const val = parseFloat(inputVal);
-      let expected = NaN;
 
-      if (inputVal === "" || isNaN(val)) {
+    q.subquestions.forEach((sub, i) => {
+      const expr = substitute(sub.formula, context);
+      const valStr = inputs[i].value;
+      const val = parseFloat(valStr);
+      if (valStr === "" || isNaN(val)) {
         userInput.push("No answer");
         correctAnswer.push("?");
-        continue;
+        return;
       }
 
       try {
-        expected = eval(expr);
-        expected = parseFloat(expected.toFixed(sub.decimals || 2));
-        if (sub.id) context[sub.id] = expected;
-        correctAnswer.push(expected);
+        const expected = eval(expr);
+        const expectedRounded = parseFloat(expected.toFixed(sub.decimals || 2));
+        if (sub.id) context[sub.id] = expectedRounded;
+        correctAnswer.push(expectedRounded);
         userInput.push(val);
-        if (Math.abs(val - expected) <= (sub.accuracy || 0.01)) correctCount++;
+        if (Math.abs(val - expectedRounded) <= (sub.accuracy || 0.01)) {
+          correctCount++;
+        }
       } catch (err) {
         correctAnswer.push("Error: " + err.message);
       }
-    }
+    });
   }
 
-  const isFullyCorrect = (correctCount === totalParts);
-  if (correctCount > 0) score++;
+  if (correctCount > 0) {
+    score += correctCount / totalParts;
+  }
 
   userAnswers.push({
     question: q.__questionText,
     userInput: userInput.join(", "),
     correctAnswer: correctAnswer.join(", "),
-    correct: isFullyCorrect,
+    correct: correctCount === totalParts,
     explanation: q.explanation || ""
   });
 
@@ -125,7 +130,7 @@ document.getElementById("next-btn").onclick = () => {
   } else {
     document.getElementById("quiz-screen").style.display = 'none';
     document.getElementById("result-screen").style.display = 'block';
-    document.getElementById("final-score").textContent = `You got ${score} out of ${selectedQuestions.length}`;
+    document.getElementById("final-score").textContent = `You got ${score.toFixed(2)} out of ${selectedQuestions.length}`;
   }
 };
 
@@ -175,7 +180,7 @@ function showQuestion() {
     inputBox.appendChild(select);
 
   } else if (q.answer_type === "subquestions") {
-    q.subquestions.forEach((sub, i) => {
+    q.subquestions.forEach((sub) => {
       const label = document.createElement("label");
       label.textContent = sub.label;
       const input = document.createElement("input");
@@ -190,10 +195,8 @@ function showQuestion() {
 
 function renderText(q, values) {
   let txt = q.problem;
-  if (q.variables) {
-    for (const [k, v] of Object.entries(values)) {
-      txt = txt.replaceAll(`{${k}}`, v);
-    }
+  for (const [k, v] of Object.entries(values)) {
+    txt = txt.replaceAll(`{${k}}`, v);
   }
   return txt;
 }
@@ -202,6 +205,7 @@ function substitute(expr, vars) {
   for (const [k, v] of Object.entries(vars)) {
     expr = expr.replaceAll(`{${k}}`, `(${v})`);
   }
+  // Replace 'sqrt(' with 'Math.sqrt(' if not already part of 'Math.'
   expr = expr.replace(/(?<!Math\.)\bsqrt\(/g, "Math.sqrt(");
   return expr;
 }
