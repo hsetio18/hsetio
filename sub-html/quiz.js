@@ -39,6 +39,7 @@ document.getElementById("start-quiz").onclick = () => {
     q.__questionText = renderText(q, values);
     return q;
   });
+
   currentIndex = 0;
   userAnswers = [];
   score = 0;
@@ -54,9 +55,10 @@ document.getElementById("next-btn").onclick = () => {
   const userInput = [];
   const correctAnswer = [];
   let correct = true;
+  let questionScore = 0;
+  let questionMax = 1;
 
   if (q.answer_type === "number") {
-    maxScore += 1;
     const input = inputs[0];
     const valStr = input.value;
     const val = parseFloat(valStr);
@@ -76,60 +78,48 @@ document.getElementById("next-btn").onclick = () => {
       }
       userInput.push(val);
     }
-    if (correct) score++;
+    questionScore = correct ? 1 : 0;
 
   } else if (q.answer_type === "mc") {
-    maxScore += 1;
     const select = document.querySelector("#quiz-input select");
     const val = select.value;
     correct = val === q.correct_choice;
     userInput.push(val);
     correctAnswer.push(q.correct_choice);
-    if (correct) score++;
+    questionScore = correct ? 1 : 0;
 
   } else if (q.answer_type === "subquestions") {
     const context = { ...q.__values };
-    let correctCount = 0;
-    maxScore += q.subquestions.length;
-
-    for (let i = 0; i < q.subquestions.length; i++) {
-      const sub = q.subquestions[i];
+    questionMax = q.subquestions.length;
+    q.subquestions.forEach((sub, i) => {
       const expr = substitute(sub.formula, context);
       const inputVal = inputs[i].value;
       const val = parseFloat(inputVal);
       let expected = NaN;
+      let thisCorrect = false;
 
       if (inputVal === "" || isNaN(val)) {
         userInput.push("No answer");
         correctAnswer.push("?");
-        continue;
-      }
-
-      try {
-        expected = eval(expr);
-
-        if (!isFinite(expected)) {
-          correctAnswer.push("Invalid result");
-          userInput.push(val);
-          continue;
+      } else {
+        try {
+          expected = eval(expr);
+          expected = parseFloat(expected.toFixed(sub.decimals || 2));
+          if (sub.id) context[sub.id] = expected;
+          thisCorrect = Math.abs(val - expected) <= (sub.accuracy || 0.01);
+          if (thisCorrect) questionScore++;
+          correctAnswer.push(expected);
+        } catch (err) {
+          correctAnswer.push("Error: " + err.message);
         }
-
-        expected = parseFloat(expected.toFixed(sub.decimals || 2));
-        if (sub.id) context[sub.id] = expected;
-
-        if (Math.abs(val - expected) <= (sub.accuracy || 0.01)) {
-          correctCount++;
-        }
-
-        correctAnswer.push(expected);
-      } catch (err) {
-        correctAnswer.push("Error: " + err.message);
+        userInput.push(val);
       }
-
-      userInput.push(val);
-    }
-    score += correctCount;
+    });
+    correct = questionScore === questionMax;
   }
+
+  score += questionScore;
+  maxScore += questionMax;
 
   userAnswers.push({
     question: q.__questionText,
@@ -195,7 +185,7 @@ function showQuestion() {
     inputBox.appendChild(select);
 
   } else if (q.answer_type === "subquestions") {
-    q.subquestions.forEach((sub, i) => {
+    q.subquestions.forEach((sub) => {
       const label = document.createElement("label");
       label.textContent = sub.label;
       const input = document.createElement("input");
@@ -223,7 +213,6 @@ function substitute(expr, vars) {
     expr = expr.replaceAll(`{${k}}`, `(${v})`);
   }
   expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
-  expr = expr.replace(/Math\.Math/g, "Math");
   return expr;
 }
 
