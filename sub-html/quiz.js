@@ -7,7 +7,6 @@ let selectedQuestions = [];
 let currentIndex = 0;
 let userAnswers = [];
 let score = 0;
-let maxScore = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("quiz-title").textContent = decodeURIComponent(title);
@@ -39,11 +38,9 @@ document.getElementById("start-quiz").onclick = () => {
     q.__questionText = renderText(q, values);
     return q;
   });
-
   currentIndex = 0;
   userAnswers = [];
   score = 0;
-  maxScore = 0;
   document.getElementById("setup-screen").style.display = 'none';
   document.getElementById("quiz-screen").style.display = 'block';
   showQuestion();
@@ -54,78 +51,71 @@ document.getElementById("next-btn").onclick = () => {
   const inputs = document.querySelectorAll("#quiz-input input, #quiz-input select");
   const userInput = [];
   const correctAnswer = [];
-  let correct = true;
-  let questionScore = 0;
-  let questionMax = 1;
+  let correctCount = 0;
+  let totalParts = 1;
 
   if (q.answer_type === "number") {
     const input = inputs[0];
     const valStr = input.value;
     const val = parseFloat(valStr);
     if (valStr === "" || isNaN(val)) {
-      correct = false;
       userInput.push("No answer");
       correctAnswer.push("?");
     } else {
       const expr = substitute(q.formula, q.__values);
       try {
         const expected = eval(expr);
-        correct = Math.abs(val - expected) <= (q.accuracy || 0.01);
-        correctAnswer.push(expected.toFixed(q.decimals || 2));
+        const expectedRounded = parseFloat(expected.toFixed(q.decimals || 2));
+        correctAnswer.push(expectedRounded);
+        userInput.push(val);
+        if (Math.abs(val - expectedRounded) <= (q.accuracy || 0.01)) correctCount++;
       } catch (err) {
         correctAnswer.push("Invalid expression: " + expr);
-        correct = false;
       }
-      userInput.push(val);
     }
-    questionScore = correct ? 1 : 0;
-
   } else if (q.answer_type === "mc") {
     const select = document.querySelector("#quiz-input select");
     const val = select.value;
-    correct = val === q.correct_choice;
-    userInput.push(val);
     correctAnswer.push(q.correct_choice);
-    questionScore = correct ? 1 : 0;
-
+    userInput.push(val);
+    if (val === q.correct_choice) correctCount++;
   } else if (q.answer_type === "subquestions") {
     const context = { ...q.__values };
-    questionMax = q.subquestions.length;
-    q.subquestions.forEach((sub, i) => {
+    totalParts = q.subquestions.length;
+    for (let i = 0; i < q.subquestions.length; i++) {
+      const sub = q.subquestions[i];
       const expr = substitute(sub.formula, context);
       const inputVal = inputs[i].value;
       const val = parseFloat(inputVal);
       let expected = NaN;
-      let thisCorrect = false;
 
       if (inputVal === "" || isNaN(val)) {
         userInput.push("No answer");
         correctAnswer.push("?");
-      } else {
-        try {
-          expected = eval(expr);
-          expected = parseFloat(expected.toFixed(sub.decimals || 2));
-          if (sub.id) context[sub.id] = expected;
-          thisCorrect = Math.abs(val - expected) <= (sub.accuracy || 0.01);
-          if (thisCorrect) questionScore++;
-          correctAnswer.push(expected);
-        } catch (err) {
-          correctAnswer.push("Error: " + err.message);
-        }
-        userInput.push(val);
+        continue;
       }
-    });
-    correct = questionScore === questionMax;
+
+      try {
+        expected = eval(expr);
+        expected = parseFloat(expected.toFixed(sub.decimals || 2));
+        if (sub.id) context[sub.id] = expected;
+        correctAnswer.push(expected);
+        userInput.push(val);
+        if (Math.abs(val - expected) <= (sub.accuracy || 0.01)) correctCount++;
+      } catch (err) {
+        correctAnswer.push("Error: " + err.message);
+      }
+    }
   }
 
-  score += questionScore;
-  maxScore += questionMax;
+  const isFullyCorrect = (correctCount === totalParts);
+  if (correctCount > 0) score++;
 
   userAnswers.push({
     question: q.__questionText,
     userInput: userInput.join(", "),
     correctAnswer: correctAnswer.join(", "),
-    correct,
+    correct: isFullyCorrect,
     explanation: q.explanation || ""
   });
 
@@ -135,7 +125,7 @@ document.getElementById("next-btn").onclick = () => {
   } else {
     document.getElementById("quiz-screen").style.display = 'none';
     document.getElementById("result-screen").style.display = 'block';
-    document.getElementById("final-score").textContent = `You got ${score} out of ${maxScore}`;
+    document.getElementById("final-score").textContent = `You got ${score} out of ${selectedQuestions.length}`;
   }
 };
 
@@ -185,7 +175,7 @@ function showQuestion() {
     inputBox.appendChild(select);
 
   } else if (q.answer_type === "subquestions") {
-    q.subquestions.forEach((sub) => {
+    q.subquestions.forEach((sub, i) => {
       const label = document.createElement("label");
       label.textContent = sub.label;
       const input = document.createElement("input");
@@ -212,7 +202,7 @@ function substitute(expr, vars) {
   for (const [k, v] of Object.entries(vars)) {
     expr = expr.replaceAll(`{${k}}`, `(${v})`);
   }
-  expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
+  expr = expr.replace(/(?<!Math\.)\bsqrt\(/g, "Math.sqrt(");
   return expr;
 }
 
