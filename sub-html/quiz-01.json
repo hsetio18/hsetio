@@ -1,56 +1,219 @@
-[
-  {
-    "id": "q7",
-    "problem": "Which of the following numbers is prime?",
-    "answer_type": "mc",
-    "choices": ["4", "6", "9", "7"],
-    "correct_choice": "7",
-    "explanation": "7 is the only prime number listed."
-  },
-  {
-    "id": "q9",
-    "problem": "What is the square root of {x}?",
-    "answer_type": "number",
-    "variables": {
-      "x": { "mean": 49, "range": 9, "decimals": 0 }
-    },
-    "formula": "sqrt({x})",
-    "decimals": 2,
-    "accuracy": 0.01,
-    "explanation": "Use √x or Math.sqrt(x)."
-  },
-  {
-    "id": "q10",
-    "problem": "Solve a quadratic equation {a}x² {b}x {c} = 0",
-    "answer_type": "subquestions",
-    "variables": {
-      "a": { "mean": 2, "range": 1, "decimals": 1 },
-      "b": { "mean": -5, "range": 2, "decimals": 1 },
-      "c": { "mean": -3, "range": 1, "decimals": 1 }
-    },
-    "subquestions": [
-      {
-        "label": "a) What is the discriminant?",
-        "id": "d",
-        "formula": "{b}*{b} - 4*{a}*{c}",
-        "decimals": 2,
-        "accuracy": 0.01,
-        "explanation": "Discriminant d = b² - 4ac"
-      },
-      {
-        "label": "\nb) What is the smaller root?",
-        "formula": "Math.min((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-        "decimals": 2,
-        "accuracy": 0.01,
-        "explanation": "Smaller root = min of the two roots"
-      },
-      {
-        "label": "\nc) What is the larger root?",
-        "formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-        "decimals": 2,
-        "accuracy": 0.01,
-        "explanation": "Larger root = max of the two roots"
-      }
-    ]
+const params = new URLSearchParams(window.location.search);
+const file = params.get('file') || 'problems.json';
+const title = params.get('title') || 'Quiz';
+
+let allQuestions = [];
+let selectedQuestions = [];
+let currentIndex = 0;
+let userAnswers = [];
+let score = 0;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  document.getElementById("quiz-title").textContent = decodeURIComponent(title);
+  try {
+    const response = await fetch(file);
+    allQuestions = await response.json();
+    document.getElementById("question-count").textContent = allQuestions.length;
+    document.getElementById("num-questions").max = allQuestions.length;
+  } catch (err) {
+    document.getElementById("setup-screen").innerHTML = `<p>Error loading questions: ${err.message}</p>`;
   }
-]
+});
+
+document.getElementById("start-quiz").onclick = () => {
+  const n = parseInt(document.getElementById("num-questions").value);
+  if (isNaN(n) || n < 1 || n > allQuestions.length) {
+    alert("Please enter a valid number between 1 and " + allQuestions.length);
+    return;
+  }
+  selectedQuestions = shuffle([...allQuestions])
+    .slice(0, n)
+    .map((q) => {
+      const values = {};
+      for (const [k, v] of Object.entries(q.variables || {})) {
+        const rand = v.mean + (Math.random() * 2 - 1) * v.range;
+        const rounded = parseFloat(rand.toFixed(v.decimals));
+        v.__value = rounded;
+        values[k] = rounded;
+      }
+      q.__values = values;
+      q.__questionText = renderText(q, values);
+      return q;
+    });
+
+  currentIndex = 0;
+  userAnswers = [];
+  score = 0;
+  document.getElementById("setup-screen").style.display = 'none';
+  document.getElementById("quiz-screen").style.display = 'block';
+  showQuestion();
+};
+
+document.getElementById("next-btn").onclick = () => {
+  const q = selectedQuestions[currentIndex];
+  const inputs = document.querySelectorAll("#quiz-input input, #quiz-input select");
+  const userInput = [];
+  const correctAnswer = [];
+  let correctCount = 0;
+  let totalParts = 1;
+
+  if (q.answer_type === "number") {
+    const valStr = inputs[0].value;
+    const val = parseFloat(valStr);
+    if (valStr === "" || isNaN(val)) {
+      userInput.push("No answer");
+      correctAnswer.push("?");
+    } else {
+      try {
+        const expr = substitute(q.formula, q.__values);
+        const expected = eval(expr);
+        const expectedRounded = parseFloat(expected.toFixed(q.decimals || 2));
+        correctAnswer.push(expectedRounded);
+        userInput.push(val);
+        if (Math.abs(val - expectedRounded) <= (q.accuracy || 0.01)) correctCount++;
+      } catch (err) {
+        correctAnswer.push("Invalid expression: " + err.message);
+      }
+    }
+
+  } else if (q.answer_type === "mc") {
+    const select = inputs[0];
+    const val = select.value;
+    correctAnswer.push(q.correct_choice);
+    userInput.push(val);
+    if (val === q.correct_choice) correctCount++;
+
+  } else if (q.answer_type === "subquestions") {
+    const context = { ...q.__values };
+    totalParts = q.subquestions.length;
+
+    q.subquestions.forEach((sub, i) => {
+      const expr = substitute(sub.formula, context);
+      const valStr = inputs[i].value;
+      const val = parseFloat(valStr);
+      if (valStr === "" || isNaN(val)) {
+        userInput.push("No answer");
+        correctAnswer.push("?");
+        return;
+      }
+
+      try {
+        const expected = eval(expr);
+        const expectedRounded = parseFloat(expected.toFixed(sub.decimals || 2));
+        if (sub.id) context[sub.id] = expectedRounded;
+        correctAnswer.push(expectedRounded);
+        userInput.push(val);
+        if (Math.abs(val - expectedRounded) <= (sub.accuracy || 0.01)) {
+          correctCount++;
+        }
+      } catch (err) {
+        correctAnswer.push("Error: " + err.message);
+      }
+    });
+  }
+
+  if (correctCount > 0) {
+    score += correctCount / totalParts;
+  }
+
+  userAnswers.push({
+    question: q.__questionText,
+    userInput: userInput.join(", "),
+    correctAnswer: correctAnswer.join(", "),
+    correct: correctCount === totalParts,
+    explanation: q.explanation || ""
+  });
+
+  currentIndex++;
+  if (currentIndex < selectedQuestions.length) {
+    showQuestion();
+  } else {
+    document.getElementById("quiz-screen").style.display = 'none';
+    document.getElementById("result-screen").style.display = 'block';
+    document.getElementById("final-score").textContent = `You got ${score.toFixed(2)} out of ${selectedQuestions.length}`;
+  }
+};
+
+document.getElementById("review-btn").onclick = () => {
+  document.getElementById("result-screen").style.display = 'none';
+  document.getElementById("review-screen").style.display = 'block';
+
+  const list = document.getElementById("review-list");
+  list.innerHTML = "";
+  userAnswers.forEach((item, i) => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <p><strong>Q${i + 1}:</strong> ${item.question}</p>
+      <p>Your answer: ${item.userInput}</p>
+      <p>Correct answer: ${item.correctAnswer}</p>
+      <p>${item.correct ? '✅ Correct' : '❌ Incorrect'}</p>
+      <p><em>${item.explanation}</em></p>
+      <hr>
+    `;
+    list.appendChild(div);
+  });
+};
+
+function showQuestion() {
+  const q = selectedQuestions[currentIndex];
+  document.getElementById("quiz-question").innerHTML = `<strong>Q${currentIndex + 1}:</strong> ${q.__questionText}`;
+
+  const inputBox = document.getElementById("quiz-input");
+  inputBox.innerHTML = "";
+
+  if (q.answer_type === "number") {
+    const input = document.createElement("input");
+    input.type = "number";
+    input.step = "any";
+    input.placeholder = "Your answer";
+    inputBox.appendChild(input);
+
+  } else if (q.answer_type === "mc") {
+    const select = document.createElement("select");
+    const choices = shuffle([...q.choices]);
+    choices.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
+    inputBox.appendChild(select);
+
+  } else if (q.answer_type === "subquestions") {
+    q.subquestions.forEach((sub) => {
+      const label = document.createElement("label");
+      label.textContent = sub.label;
+      const input = document.createElement("input");
+      input.type = "number";
+      input.step = "any";
+      input.placeholder = "Your answer";
+      inputBox.appendChild(label);
+      inputBox.appendChild(input);
+    });
+  }
+}
+
+function renderText(q, values) {
+  let txt = q.problem;
+  for (const [k, v] of Object.entries(values)) {
+    txt = txt.replaceAll(`{${k}}`, v);
+  }
+  return txt;
+}
+
+function substitute(expr, vars) {
+  for (const [k, v] of Object.entries(vars)) {
+    expr = expr.replaceAll(`{${k}}`, `(${v})`);
+  }
+  // Replace 'sqrt(' with 'Math.sqrt(' if not already part of 'Math.'
+  expr = expr.replace(/(?<!Math\.)\bsqrt\(/g, "Math.sqrt(");
+  return expr;
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
