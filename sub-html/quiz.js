@@ -7,6 +7,7 @@ let selectedQuestions = [];
 let currentIndex = 0;
 let userAnswers = [];
 let score = 0;
+let maxScore = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("quiz-title").textContent = decodeURIComponent(title);
@@ -41,6 +42,7 @@ document.getElementById("start-quiz").onclick = () => {
   currentIndex = 0;
   userAnswers = [];
   score = 0;
+  maxScore = 0;
   document.getElementById("setup-screen").style.display = 'none';
   document.getElementById("quiz-screen").style.display = 'block';
   showQuestion();
@@ -54,48 +56,80 @@ document.getElementById("next-btn").onclick = () => {
   let correct = true;
 
   if (q.answer_type === "number") {
+    maxScore += 1;
     const input = inputs[0];
-    const val = parseFloat(input.value);
-    const expr = substitute(q.formula, q.__values);
-    try {
-      const expected = eval(expr);
-      correct = Math.abs(val - expected) <= (q.accuracy || 0.01);
-      correctAnswer.push(expected.toFixed(q.decimals || 2));
-    } catch (err) {
-      correctAnswer.push("Invalid expression: " + expr);
+    const valStr = input.value;
+    const val = parseFloat(valStr);
+    if (valStr === "" || isNaN(val)) {
       correct = false;
+      userInput.push("No answer");
+      correctAnswer.push("?");
+    } else {
+      const expr = substitute(q.formula, q.__values);
+      try {
+        const expected = eval(expr);
+        correct = Math.abs(val - expected) <= (q.accuracy || 0.01);
+        correctAnswer.push(expected.toFixed(q.decimals || 2));
+      } catch (err) {
+        correctAnswer.push("Invalid expression: " + expr);
+        correct = false;
+      }
+      userInput.push(val);
     }
-    userInput.push(val);
+    if (correct) score++;
 
   } else if (q.answer_type === "mc") {
+    maxScore += 1;
     const select = document.querySelector("#quiz-input select");
     const val = select.value;
     correct = val === q.correct_choice;
     userInput.push(val);
     correctAnswer.push(q.correct_choice);
+    if (correct) score++;
 
   } else if (q.answer_type === "subquestions") {
     const context = { ...q.__values };
+    let correctCount = 0;
+    maxScore += q.subquestions.length;
+
     for (let i = 0; i < q.subquestions.length; i++) {
       const sub = q.subquestions[i];
       const expr = substitute(sub.formula, context);
-      let val = parseFloat(inputs[i].value);
+      const inputVal = inputs[i].value;
+      const val = parseFloat(inputVal);
       let expected = NaN;
+
+      if (inputVal === "" || isNaN(val)) {
+        userInput.push("No answer");
+        correctAnswer.push("?");
+        continue;
+      }
+
       try {
         expected = eval(expr);
+
+        if (!isFinite(expected)) {
+          correctAnswer.push("Invalid result");
+          userInput.push(val);
+          continue;
+        }
+
         expected = parseFloat(expected.toFixed(sub.decimals || 2));
         if (sub.id) context[sub.id] = expected;
-        if (Math.abs(val - expected) > (sub.accuracy || 0.01)) correct = false;
+
+        if (Math.abs(val - expected) <= (sub.accuracy || 0.01)) {
+          correctCount++;
+        }
+
         correctAnswer.push(expected);
       } catch (err) {
-        correct = false;
         correctAnswer.push("Error: " + err.message);
       }
+
       userInput.push(val);
     }
+    score += correctCount;
   }
-
-  if (correct) score++;
 
   userAnswers.push({
     question: q.__questionText,
@@ -111,7 +145,7 @@ document.getElementById("next-btn").onclick = () => {
   } else {
     document.getElementById("quiz-screen").style.display = 'none';
     document.getElementById("result-screen").style.display = 'block';
-    document.getElementById("final-score").textContent = `You got ${score} out of ${selectedQuestions.length}`;
+    document.getElementById("final-score").textContent = `You got ${score} out of ${maxScore}`;
   }
 };
 
@@ -189,6 +223,7 @@ function substitute(expr, vars) {
     expr = expr.replaceAll(`{${k}}`, `(${v})`);
   }
   expr = expr.replace(/\bsqrt\(/g, "Math.sqrt(");
+  expr = expr.replace(/Math\.Math/g, "Math");
   return expr;
 }
 
