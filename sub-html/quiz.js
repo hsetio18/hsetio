@@ -49,6 +49,7 @@ function generateValues(specs) {
 
 function showQuestion() {
   const q = selected[current];
+  q.__start = Date.now();
   const box = document.getElementById("question-box");
   box.innerHTML = "";
   q.__values = generateValues(q.variables);
@@ -84,6 +85,7 @@ function showQuestion() {
 
 document.getElementById("next-btn").onclick = () => {
   const q = selected[current];
+  q.__end = Date.now();
   let correct = 0, total = 1;
   if (q.answer_type === "number") {
     let val = parseFloat(document.getElementById("ans").value);
@@ -162,7 +164,8 @@ document.getElementById("review-btn").onclick = () => {
         text = text.replaceAll(`{${k}}`, display);
       }
     }
-    block.innerHTML = `<strong>Q${idx + 1}:</strong> ${text}<br>`;
+    const timeTaken = q.__end && q.__start ? ((q.__end - q.__start) / 1000).toFixed(1) : "N/A";
+    block.innerHTML = `<strong>Q${idx + 1}:</strong> ${text}<br><small>Time: ${timeTaken} sec</small><br>`;
 
     if (q.answer_type === "subquestions") {
       q.__results.forEach(r => {
