@@ -1,85 +1,5 @@
 [
   {
-    "id": "q1",
-    "problem": "What is the value of {a} + {b}?",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 10, "range": 5, "decimals": 0 },
-      "b": { "mean": 20, "range": 5, "decimals": 0 }
-    },
-    "formula": "{a} + {b}",
-    "decimals": 0,
-    "accuracy": 0.01,
-    "explanation": "Just add the two values."
-  },
-  {
-    "id": "q2",
-    "problem": "What is the area of a circle with radius {r} cm?",
-    "answer_type": "number",
-    "variables": {
-      "r": { "mean": 7, "range": 3, "decimals": 1 }
-    },
-    "formula": "Math.PI * {r} * {r}",
-    "decimals": 2,
-    "accuracy": 0.05,
-    "explanation": "Area of a circle = π × r²"
-  },
-  {
-    "id": "q3",
-    "problem": "What is the capital of France?",
-    "answer_type": "mc",
-    "choices": ["Paris", "London", "Berlin", "Rome"],
-    "correct_choice": "Paris",
-    "explanation": "Paris is the capital of France."
-  },
-  {
-    "id": "q4",
-    "problem": "What is {a} × {b}?",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 4, "range": 2, "decimals": 0 },
-      "b": { "mean": 6, "range": 2, "decimals": 0 }
-    },
-    "formula": "{a} * {b}",
-    "decimals": 0,
-    "accuracy": 0.01,
-    "explanation": "Multiply the two numbers."
-  },
-  {
-    "id": "q5",
-    "problem": "Which planet is known as the Red Planet?",
-    "answer_type": "mc",
-    "choices": ["Earth", "Mars", "Jupiter", "Venus"],
-    "correct_choice": "Mars",
-    "explanation": "Mars is often called the Red Planet."
-  },
-  {
-    "id": "q6",
-    "problem": "Solve for the perimeter and area of a rectangle with length {l} and width {w}.",
-    "answer_type": "subquestions",
-    "variables": {
-      "l": { "mean": 10, "range": 2, "decimals": 1 },
-      "w": { "mean": 5, "range": 1, "decimals": 1 }
-    },
-    "subquestions": [
-      {
-        "label": "a) What is the perimeter?",
-        "id": "p",
-        "formula": "2 * ({l} + {w})",
-        "decimals": 1,
-        "accuracy": 0.01,
-        "explanation": "Perimeter = 2 × (length + width)"
-      },
-      {
-        "label": "\nb) What is the area?",
-        "formula": "{l} * {w}",
-        "decimals": 2,
-        "accuracy": 0.01,
-        "explanation": "Area = length × width"
-      }
-    ]
-  },
-  {
     "id": "q7",
     "problem": "Which of the following numbers is prime?",
     "answer_type": "mc",
@@ -88,25 +8,13 @@
     "explanation": "7 is the only prime number listed."
   },
   {
-    "id": "q8",
-    "problem": "Convert {usd} USD to IDR assuming 1 USD = 15,000 IDR.",
-    "answer_type": "number",
-    "variables": {
-      "usd": { "mean": 10, "range": 2, "decimals": 0 }
-    },
-    "formula": "{usd} * 15000",
-    "decimals": 0,
-    "accuracy": 1,
-    "explanation": "Multiply USD amount by 15,000 to get IDR."
-  },
-  {
     "id": "q9",
     "problem": "What is the square root of {x}?",
     "answer_type": "number",
     "variables": {
       "x": { "mean": 49, "range": 9, "decimals": 0 }
     },
-    "formula": "Math.sqrt({x})",
+    "formula": "sqrt({x})",
     "decimals": 2,
     "accuracy": 0.01,
     "explanation": "Use √x or Math.sqrt(x)."
