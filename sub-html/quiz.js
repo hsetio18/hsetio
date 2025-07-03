@@ -29,6 +29,7 @@ document.getElementById("start-btn").onclick = () => {
   document.getElementById("quiz-screen").style.display = "block";
   startTime = Date.now();
   current = 0;
+  score = 0;
   showQuestion();
 };
 
@@ -76,7 +77,7 @@ function showQuestion() {
       return { ...s, label, __expr: expr };
     });
     q.__subq.forEach((s, i) => {
-      box.innerHTML += `<label>${s.label}</label><input type="number" id="sub-${i}" step="any"><br>`;
+      box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
     });
   }
 }
@@ -148,7 +149,14 @@ document.getElementById("review-btn").onclick = () => {
   list.innerHTML = "";
   selected.forEach((q, idx) => {
     const block = document.createElement("div");
-    block.innerHTML = `<strong>Q${idx + 1}:</strong> ${q.problem}<br>`;
+    let text = q.problem;
+    if (q.__values) {
+      for (const [k, v] of Object.entries(q.__values)) {
+        const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
+        text = text.replaceAll(`{${k}}`, display);
+      }
+    }
+    block.innerHTML = `<strong>Q${idx + 1}:</strong> ${text}<br>`;
     if (q.answer_type === "subquestions") {
       q.__results.forEach(r => {
         block.innerHTML += `${r.label}<br>
