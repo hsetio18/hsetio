@@ -26,9 +26,9 @@
     "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
     "answer_type": "number",
     "variables": {},
-    "formula": "{b}*{b} - 4*{a}*{c}",
+    "formula": "(3+sqrt(2*2-4*2*-3))/(2*2)",
     "decimals": 3,
     "accuracy": 0.01,
-    "explanation": "Discriminant d = b² - 4ac"
+    "explanation": "type the calculator: (3+sqrt(2*2-4*2*-3))/(2*2)"
   }
 ]
