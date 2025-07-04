@@ -157,7 +157,7 @@ document.getElementById("next-btn").onclick = () => {
     document.getElementById("summary").innerHTML = `
       <p>Total Score: ${score.toFixed(2)} / ${selected.length}</p>
       <p>Total Time: ${totalTime.toFixed(1)} sec</p>
-      <button onclick="showReview()">Review</button>
+      <button onclick="showReview(); this.remove()">Review</button>
       <button onclick="location.href='quiz.html?file=${file}&title=${title}'">Repeat Quiz</button>
     `;
   }
