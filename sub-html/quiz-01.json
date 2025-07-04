@@ -19,7 +19,7 @@
     "variables": {
       "x": { "mean": 49, "range": 9, "decimals": 0 }
     },
-    "formula": "Math.sqrt({x})",
+    "formula": "sqrt({x})",
     "decimals": 2,
     "accuracy": 0.01,
     "explanation": "Use √x or Math.sqrt(x)."
