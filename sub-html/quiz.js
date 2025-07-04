@@ -11,6 +11,7 @@ fetch(file)
   .then(data => {
     problems = data;
     document.getElementById("question-count").textContent = problems.length;
+    document.getElementById("end-num").value = problems.length;
   });
 
 function shuffle(arr) {
@@ -22,15 +23,24 @@ function shuffle(arr) {
 }
 
 document.getElementById("start-btn").onclick = () => {
-  const n = parseInt(document.getElementById("num-questions").value);
-  if (isNaN(n) || n < 1 || n > problems.length) return alert("Invalid input.");
-  selected = shuffle([...problems]).slice(0, n);
+  const from = parseInt(document.getElementById("start-num").value);
+  const to = parseInt(document.getElementById("end-num").value);
+  const shuffleOpt = document.getElementById("shuffle-toggle").checked;
+  const randomizeVars = document.getElementById("randomize-vars").checked;
+
+  if (isNaN(from) || isNaN(to) || from < 1 || to > problems.length || from > to) {
+    alert("Invalid selection range.");
+    return;
+  }
+  selected = problems.slice(from - 1, to);
+  if (shuffleOpt) selected = shuffle(selected);
+
   document.getElementById("start-screen").style.display = "none";
   document.getElementById("quiz-screen").style.display = "block";
   startTime = Date.now();
   current = 0;
   score = 0;
-  showQuestion();
+  showQuestion(randomizeVars);
 };
 
 function substitute(expr, vars) {
@@ -43,21 +53,21 @@ function substitute(expr, vars) {
     .replace(/Math\.Math\./g, "Math.");
 }
 
-function generateValues(specs) {
+function generateValues(specs, randomize = true) {
   const vals = {};
   for (const [k, s] of Object.entries(specs)) {
-    const r = s.mean + (Math.random() * 2 - 1) * s.range;
+    const r = randomize ? s.mean + (Math.random() * 2 - 1) * s.range : s.mean;
     vals[k] = parseFloat(r.toFixed(s.decimals));
   }
   return vals;
 }
 
-function showQuestion() {
+function showQuestion(randomizeVars = true) {
   const q = selected[current];
   q.__start = Date.now();
   const box = document.getElementById("question-box");
   box.innerHTML = "";
-  q.__values = generateValues(q.variables);
+  q.__values = generateValues(q.variables, randomizeVars);
   let text = q.problem;
   for (const [k, v] of Object.entries(q.__values)) {
     const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
