@@ -94,7 +94,7 @@ function showQuestion(randomizeVars = true) {
       return { ...s, label, __expr: expr };
     });
     q.__subq.forEach((s, i) => {
-      document.getElementById("question-box").innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
+      box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
     });
   }
 }
@@ -160,13 +160,24 @@ document.getElementById("next-btn").onclick = () => {
     review.innerHTML = "";
 
     selected.forEach((q, idx) => {
-      review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${q.problem}</p>`;
+      let questionText = q.problem;
+      for (const [k, v] of Object.entries(q.__values)) {
+        const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
+        questionText = questionText.replaceAll(`{${k}}`, display);
+      }
+      review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
       if (q.answer_type === "subquestions") {
         q.__subq.forEach((s, i) => {
-          review.innerHTML += `<p>${s.label}<br>Your answer: ${s.__user}<br>Correct answer: ${s.__correct}<br>${s.explanation || ""}<br>${Math.abs(s.__user - s.__correct) <= s.accuracy ? "✅ Correct" : "❌ Incorrect"}</p>`;
+          const correct = typeof s.__correct === "number" ? parseFloat(s.__correct).toFixed(s.decimals) : s.__correct;
+          const user = typeof s.__user === "number" ? parseFloat(s.__user).toFixed(s.decimals) : s.__user;
+          const isCorrect = Math.abs(s.__user - s.__correct) <= s.accuracy;
+          review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
         });
       } else {
-        review.innerHTML += `<p>Your answer: ${q.__user}<br>Correct answer: ${q.__correct}<br>${q.explanation || ""}<br>${Math.abs(q.__user - q.__correct) <= q.accuracy ? "✅ Correct" : "❌ Incorrect"}</p>`;
+        const correct = typeof q.__correct === "number" ? parseFloat(q.__correct).toFixed(q.decimals) : q.__correct;
+        const user = typeof q.__user === "number" ? parseFloat(q.__user).toFixed(q.decimals) : q.__user;
+        const isCorrect = Math.abs(q.__user - q.__correct) <= q.accuracy;
+        review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
       }
       review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
     });
