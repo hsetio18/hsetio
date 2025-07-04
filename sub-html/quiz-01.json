@@ -14,15 +14,15 @@
   },
   {
     "id": "q9",
-    "problem": "What is the square root of {x}?",
+    "problem": "What is the square root of {x}+log({x})?",
     "answer_type": "number",
     "variables": {
       "x": { "mean": 49, "range": 9, "decimals": 0 }
     },
-    "formula": "sqrt({x})",
+    "formula": "sqrt({x})+log({x})",
     "decimals": 2,
     "accuracy": 0.01,
-    "explanation": "Use √x or Math.sqrt(x)."
+    "explanation": "Use √x "
   },
   {
     "id": "q10",
