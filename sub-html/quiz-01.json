@@ -25,7 +25,7 @@
     "explanation": "Area of a circle = π × r²"
   },
   {
-    "id": "q4",
+    "id": "q3",
     "problem": "What is {a} × {b}?",
     "answer_type": "number",
     "variables": {
@@ -36,5 +36,38 @@
     "decimals": 0,
     "accuracy": 0.01,
     "explanation": "Multiply the two numbers."
+  },
+  {
+    "id": "q4",
+    "problem": "Given x=2<sup>2</sup>/<sub>5</sub>-5<sup>3</sup>/<sub>4</sub><br>Calculate x",
+    "answer_type": "number",
+    "variables":{},
+    "formula": "2+2/5 - 5-3/4",
+    "decimals": 3,
+    "accuracy": 0.01,
+    "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4 = Then input the answer -3.35"
+  },
+  {
+    "id": "q5",
+    "problem": "Given x=v3+log(5)<br>Calculate x",
+    "answer_type": "number",
+    "variables": {
+      "x": { "mean": 49, "range": 9, "decimals": 0 }
+    },
+    "formula": "sqrt(3)+log(5)",
+    "decimals": 3,
+    "accuracy": 0.01,
+    "explanation": "Type the calculator: √ 3 + lg 5 ) "
+  },
+  {
+    "id": "q6",
+    "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
+    "answer_type": "number",
+    "variables": {},
+    "formula": "(3+sqrt(3*3-4*2*-1.5))/(2*2)",
+    "decimals": 3,
+    "accuracy": 0.01,
+    "explanation": "type the calculator: (3+sqrt(3*3-4*2*-1.5))/(2*2)"
   }
+  
 ]
