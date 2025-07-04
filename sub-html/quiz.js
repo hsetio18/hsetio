@@ -4,7 +4,7 @@ const file = params.get("file") || "quiz-01.json";
 const title = params.get("title") || "Quiz";
 document.getElementById("quiz-title").textContent = decodeURIComponent(title);
 
-let problems = [], selected = [], current = 0, score = 0, startTime = 0, endTime = 0;
+let problems = [], selected = [], current = 0, score = 0, startTime = 0, endTime = 0, totalTime = 0, timePerQuestion = [];
 
 fetch(file)
   .then(res => res.json())
@@ -40,6 +40,7 @@ document.getElementById("start-btn").onclick = () => {
   startTime = Date.now();
   current = 0;
   score = 0;
+  timePerQuestion = [];
   showQuestion(randomizeVars);
 };
 
@@ -50,7 +51,7 @@ function substitute(expr, vars) {
     .replace(/\bpower\(/g, "Math.pow(")
     .replace(/\bln\(/g, "Math.log(")
     .replace(/\blog\(/g, "Math.log10(")
-    .replace(/Math\.Math\./g, "Math.");
+    .replace(/Math\\.Math\\./g, "Math.");
 }
 
 function generateValues(specs, randomize = true) {
@@ -93,114 +94,81 @@ function showQuestion(randomizeVars = true) {
       return { ...s, label, __expr: expr };
     });
     q.__subq.forEach((s, i) => {
-      box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
+      document.getElementById("question-box").innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
     });
   }
 }
 
 document.getElementById("next-btn").onclick = () => {
   const q = selected[current];
-  q.__end = Date.now();
-  let correct = 0, total = 1;
+  const now = Date.now();
+  timePerQuestion.push((now - q.__start) / 1000);
+
+  let correctCount = 0;
   if (q.answer_type === "number") {
-    let val = parseFloat(document.getElementById("ans").value);
+    const userAns = parseFloat(document.getElementById("ans").value);
     try {
-      const actual = parseFloat(eval(q.__expr).toFixed(q.decimals));
-      q.__correct = actual;
-      q.__user = val;
-      q.__explain = q.explanation;
-      if (Math.abs(val - actual) <= q.accuracy) correct = 1;
-    } catch {
+      const val = eval(q.__expr);
+      const rounded = parseFloat(val.toFixed(q.decimals));
+      if (Math.abs(userAns - rounded) <= q.accuracy) correctCount = 1;
+      q.__user = userAns;
+      q.__correct = rounded;
+    } catch (e) {
+      q.__user = userAns;
       q.__correct = "Invalid expression: " + q.__expr;
     }
   } else if (q.answer_type === "mc") {
-    const choice = document.querySelector("input[name=ans]:checked");
-    if (choice) {
-      const user = parseFloat(choice.value);
-      const actual = parseFloat(eval(q.__expr).toFixed(q.decimals));
-      q.__correct = actual;
-      q.__user = user;
-      q.__explain = q.explanation;
-      if (user === actual) correct = 1;
+    const selectedRadio = document.querySelector("input[name='ans']:checked");
+    if (selectedRadio) {
+      const userAns = parseFloat(selectedRadio.value);
+      const correctAns = eval(q.__expr);
+      if (userAns === correctAns) correctCount = 1;
+      q.__user = userAns;
+      q.__correct = correctAns;
     }
   } else if (q.answer_type === "subquestions") {
-    correct = 0;
-    total = q.__subq.length;
-    q.__results = [];
-    const ctx = { ...q.__values };
+    let totalSub = q.__subq.length;
+    let correctSub = 0;
     q.__subq.forEach((s, i) => {
-      const input = parseFloat(document.getElementById(`sub-${i}`).value);
+      const userVal = parseFloat(document.getElementById(`sub-${i}`).value);
       try {
-        const answer = parseFloat(eval(substitute(s.formula, ctx)).toFixed(s.decimals));
-        if (s.id) ctx[s.id] = answer;
-        const ok = Math.abs(answer - input) <= s.accuracy;
-        if (ok) correct++;
-        q.__results.push({ label: s.label, correct: answer, user: input, ok, explanation: s.explanation });
-      } catch {
-        q.__results.push({ label: s.label, correct: NaN, user: input, ok: false, explanation: s.explanation });
+        const val = eval(substitute(s.__expr, q.__context));
+        const rounded = parseFloat(val.toFixed(s.decimals));
+        if (Math.abs(userVal - rounded) <= s.accuracy) correctSub++;
+        if (s.id) q.__context[s.id] = rounded;
+        s.__user = userVal;
+        s.__correct = rounded;
+      } catch (e) {
+        s.__user = userVal;
+        s.__correct = "Invalid expression: " + s.__expr;
       }
     });
+    correctCount = correctSub / totalSub;
   }
-  score += correct / total;
+
+  score += correctCount;
   current++;
-  if (current >= selected.length) finishQuiz();
-  else showQuestion();
-};
+  if (current < selected.length) {
+    showQuestion(document.getElementById("randomize-vars").checked);
+  } else {
+    endTime = Date.now();
+    totalTime = (endTime - startTime) / 1000;
+    document.getElementById("quiz-screen").style.display = "none";
+    document.getElementById("review-screen").style.display = "block";
+    document.getElementById("summary").innerHTML = `Total Score: ${score.toFixed(2)} / ${selected.length}<br>Total Time: ${totalTime.toFixed(1)} sec`;
+    const review = document.getElementById("review-content");
+    review.innerHTML = "";
 
-function finishQuiz() {
-  document.getElementById("quiz-screen").style.display = "none";
-  document.getElementById("result-screen").style.display = "block";
-  endTime = Date.now();
-  const totalSeconds = Math.floor((endTime - startTime) / 1000);
-  const min = Math.floor(totalSeconds / 60);
-  const sec = totalSeconds % 60;
-  document.getElementById("summary").innerHTML =
-    `<p>Total Score: ${score.toFixed(2)} / ${selected.length}</p>
-     <p>Total Time: ${min} minutes ${sec} seconds</p>`;
-}
-
-document.getElementById("review-btn").onclick = () => {
-  document.getElementById("result-screen").style.display = "none";
-  document.getElementById("review-screen").style.display = "block";
-  const list = document.getElementById("review-list");
-  list.innerHTML = "";
-  const totalSeconds = Math.floor((endTime - startTime) / 1000);
-  const min = Math.floor(totalSeconds / 60);
-  const sec = totalSeconds % 60;
-  list.innerHTML += `<p><strong>Total Score:</strong> ${score.toFixed(2)} / ${selected.length}</p>
-                     <p><strong>Total Time:</strong> ${min} minutes ${sec} seconds</p><hr>`;
-
-  selected.forEach((q, idx) => {
-    const block = document.createElement("div");
-    let text = q.problem;
-    if (q.__values) {
-      for (const [k, v] of Object.entries(q.__values)) {
-        const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
-        text = text.replaceAll(`{${k}}`, display);
+    selected.forEach((q, idx) => {
+      review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${q.problem}</p>`;
+      if (q.answer_type === "subquestions") {
+        q.__subq.forEach((s, i) => {
+          review.innerHTML += `<p>${s.label}<br>Your answer: ${s.__user}<br>Correct answer: ${s.__correct}<br>${s.explanation || ""}<br>${Math.abs(s.__user - s.__correct) <= s.accuracy ? "✅ Correct" : "❌ Incorrect"}</p>`;
+        });
+      } else {
+        review.innerHTML += `<p>Your answer: ${q.__user}<br>Correct answer: ${q.__correct}<br>${q.explanation || ""}<br>${Math.abs(q.__user - q.__correct) <= q.accuracy ? "✅ Correct" : "❌ Incorrect"}</p>`;
       }
-    }
-    const timeTaken = q.__end && q.__start ? ((q.__end - q.__start) / 1000).toFixed(1) : "N/A";
-    block.innerHTML = `<strong>Q${idx + 1}:</strong> ${text}<br><small>Time: ${timeTaken} sec</small><br>`;
-
-    if (q.answer_type === "subquestions") {
-      q.__results.forEach(r => {
-        block.innerHTML += `${r.label}<br>
-          Your answer: ${r.user}<br>
-          Correct answer: ${isNaN(r.correct) ? "NaN" : r.correct}<br>
-          ${r.ok ? "✅ Correct" : "❌ Incorrect"}<br>
-          ${r.explanation || ""}<br><br>`;
-      });
-    } else {
-      const user = q.__user !== undefined ? q.__user : "N/A";
-      const correct = q.__correct !== undefined ? q.__correct : "N/A";
-      const isCorrect = typeof user === "number" && typeof correct === "number"
-        ? Math.abs(user - correct) <= (q.accuracy || 0.01)
-        : false;
-      block.innerHTML += `Your answer: ${user}<br>
-        Correct answer: ${correct}<br>
-        ${isCorrect ? "✅ Correct" : "❌ Incorrect"}<br>
-        ${q.__explain || ""}`;
-    }
-    list.appendChild(block);
-  });
+      review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
+    });
+  }
 };
