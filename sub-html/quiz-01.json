@@ -1,7 +1,7 @@
 [
   {
     "id": "q1",
-    "problem": "Given x=2<sup>2</sup>/;<sub>5</sub>-5<sup>3</sup>/<sub>4</sub><br>Calculate x",
+    "problem": "Given x=2<sup>2</sup>/<sub>5</sub>-5<sup>3</sup>/<sub>4</sub><br>Calculate x",
     "answer_type": "number",
     "variables": {
       "a": { "mean": 10, "range": 5, "decimals": 0 },
@@ -9,19 +9,19 @@
     "formula": "2+2/5 - 5-3/4",
     "decimals": 3,
     "accuracy": 0.01,
-    "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4"
+    "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4 = Then input the answer -3.35"
   },
   {
-    "id": "q9",
-    "problem": "What is the square root of {x}+log({x})?",
+    "id": "q2",
+    "problem": "Given x=v3+log(5)<br>Calculate x",
     "answer_type": "number",
     "variables": {
       "x": { "mean": 49, "range": 9, "decimals": 0 }
     },
-    "formula": "sqrt({x})+log({x})",
-    "decimals": 2,
+    "formula": "sqrt(3)+log(5)",
+    "decimals": 3,
     "accuracy": 0.01,
-    "explanation": "Use √x "
+    "explanation": "Type the calculator: √ 3 + lg 5 ) "
   },
   {
     "id": "q10",
