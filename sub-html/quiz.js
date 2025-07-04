@@ -35,7 +35,12 @@ document.getElementById("start-btn").onclick = () => {
 
 function substitute(expr, vars) {
   for (const [k, v] of Object.entries(vars)) expr = expr.replaceAll(`{${k}}`, `(${v})`);
-  return expr.replace(/\bsqrt\(/g, "Math.sqrt(").replace(/Math\.Math\./g, "Math.");
+  return expr
+    .replace(/\bsqrt\(/g, "Math.sqrt(")
+    .replace(/\bpower\(/g, "Math.pow(")
+    .replace(/\bln\(/g, "Math.log(")
+    .replace(/\blog\(/g, "Math.log10(")
+    .replace(/Math\.Math\./g, "Math.");
 }
 
 function generateValues(specs) {
