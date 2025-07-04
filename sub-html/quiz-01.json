@@ -1,16 +1,15 @@
 [
   {
     "id": "q1",
-    "problem": "Given x=2<sup>2</sup>&#47;<sub>5</sub>-5<sup>3</sup>&#47;<sub>4</sub><br>Calculate x",
+    "problem": "Given x=2<sup>2</sup>/;<sub>5</sub>-5<sup>3</sup>/<sub>4</sub><br>Calculate x",
     "answer_type": "number",
     "variables": {
       "a": { "mean": 10, "range": 5, "decimals": 0 },
-      "b": { "mean": 20, "range": 5, "decimals": 0 }
-    },
+      "b": { "mean": 20, "range": 5, "decimals": 0 }    },
     "formula": "2+2/5 - 5-3/4",
     "decimals": 3,
     "accuracy": 0.01,
-    "explanation": "type the calculator: 2+2/5-5-3/4"
+    "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4"
   },
   {
     "id": "q9",
