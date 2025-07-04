@@ -50,8 +50,7 @@ function substitute(expr, vars) {
     .replace(/\bsqrt\(/g, "Math.sqrt(")
     .replace(/\bpower\(/g, "Math.pow(")
     .replace(/\bln\(/g, "Math.log(")
-    .replace(/\blog\(/g, "Math.log10(")
-    .replace(/Math\\.Math\\./g, "Math.");
+    .replace(/\blog\(/g, "Math.log10(");
 }
 
 function generateValues(specs, randomize = true) {
@@ -155,31 +154,38 @@ document.getElementById("next-btn").onclick = () => {
     totalTime = (endTime - startTime) / 1000;
     document.getElementById("quiz-screen").style.display = "none";
     document.getElementById("review-screen").style.display = "block";
-    document.getElementById("summary").innerHTML = `Total Score: ${score.toFixed(2)} / ${selected.length}<br>Total Time: ${totalTime.toFixed(1)} sec`;
-    const review = document.getElementById("review-content");
-    review.innerHTML = "";
-
-    selected.forEach((q, idx) => {
-      let questionText = q.problem;
-      for (const [k, v] of Object.entries(q.__values)) {
-        const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
-        questionText = questionText.replaceAll(`{${k}}`, display);
-      }
-      review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
-      if (q.answer_type === "subquestions") {
-        q.__subq.forEach((s, i) => {
-          const correct = typeof s.__correct === "number" ? parseFloat(s.__correct).toFixed(s.decimals) : s.__correct;
-          const user = typeof s.__user === "number" ? parseFloat(s.__user).toFixed(s.decimals) : s.__user;
-          const isCorrect = Math.abs(s.__user - s.__correct) <= s.accuracy;
-          review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
-        });
-      } else {
-        const correct = typeof q.__correct === "number" ? parseFloat(q.__correct).toFixed(q.decimals) : q.__correct;
-        const user = typeof q.__user === "number" ? parseFloat(q.__user).toFixed(q.decimals) : q.__user;
-        const isCorrect = Math.abs(q.__user - q.__correct) <= q.accuracy;
-        review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
-      }
-      review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
-    });
+    document.getElementById("summary").innerHTML = `
+      <p>Total Score: ${score.toFixed(2)} / ${selected.length}</p>
+      <p>Total Time: ${totalTime.toFixed(1)} sec</p>
+      <button onclick="showReview()">Review</button>
+      <button onclick="location.href='quiz.html?file=${file}&title=${title}'">Repeat Quiz</button>
+    `;
   }
 };
+
+function showReview() {
+  const review = document.getElementById("review-content");
+  review.innerHTML = "";
+  selected.forEach((q, idx) => {
+    let questionText = q.problem;
+    for (const [k, v] of Object.entries(q.__values)) {
+      const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
+      questionText = questionText.replaceAll(`{${k}}`, display);
+    }
+    review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
+    if (q.answer_type === "subquestions") {
+      q.__subq.forEach((s, i) => {
+        const correct = typeof s.__correct === "number" ? parseFloat(s.__correct).toFixed(s.decimals) : s.__correct;
+        const user = typeof s.__user === "number" ? parseFloat(s.__user).toFixed(s.decimals) : s.__user;
+        const isCorrect = typeof s.__correct === "number" && Math.abs(s.__user - s.__correct) <= s.accuracy;
+        review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
+      });
+    } else {
+      const correct = typeof q.__correct === "number" ? parseFloat(q.__correct).toFixed(q.decimals) : q.__correct;
+      const user = typeof q.__user === "number" ? parseFloat(q.__user).toFixed(q.decimals) : q.__user;
+      const isCorrect = typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
+      review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
+    }
+    review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
+  });
+}
