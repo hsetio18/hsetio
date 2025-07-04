@@ -1,34 +1,40 @@
 [
-  {
+  {    
     "id": "q1",
-    "problem": "Given x=2<sup>2</sup>/<sub>5</sub>-5<sup>3</sup>/<sub>4</sub><br>Calculate x",
+    "problem": "What is the value of {a} + {b}?",
     "answer_type": "number",
-    "variables":{},
-    "formula": "2+2/5 - 5-3/4",
-    "decimals": 3,
+    "variables": {
+      "a": { "mean": 10, "range": 5, "decimals": 0 },
+      "b": { "mean": 20, "range": 5, "decimals": 0 }
+    },
+    "formula": "{a} + {b}",
+    "decimals": 0,
     "accuracy": 0.01,
-    "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4 = Then input the answer -3.35"
+    "explanation": "Just add the two values."
   },
   {
     "id": "q2",
-    "problem": "Given x=v3+log(5)<br>Calculate x",
+    "problem": "What is the area of a circle with radius {r} cm?",
     "answer_type": "number",
     "variables": {
-      "x": { "mean": 49, "range": 9, "decimals": 0 }
+      "r": { "mean": 7, "range": 3, "decimals": 1 }
     },
-    "formula": "sqrt(3)+log(5)",
-    "decimals": 3,
-    "accuracy": 0.01,
-    "explanation": "Type the calculator: √ 3 + lg 5 ) "
+    "formula": "Math.PI * {r} * {r}",
+    "decimals": 2,
+    "accuracy": 0.05,
+    "explanation": "Area of a circle = π × r²"
   },
   {
-    "id": "q10",
-    "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
+    "id": "q4",
+    "problem": "What is {a} × {b}?",
     "answer_type": "number",
-    "variables": {},
-    "formula": "(3+sqrt(3*3-4*2*-1.5))/(2*2)",
-    "decimals": 3,
+    "variables": {
+      "a": { "mean": 4, "range": 2, "decimals": 0 },
+      "b": { "mean": 6, "range": 2, "decimals": 0 }
+    },
+    "formula": "{a} * {b}",
+    "decimals": 0,
     "accuracy": 0.01,
-    "explanation": "type the calculator: (3+sqrt(3*3-4*2*-1.5))/(2*2)"
+    "explanation": "Multiply the two numbers."
   }
 ]
