@@ -1,7 +1,7 @@
 [
   {
     "id": "q1",
-    "problem": "Given x={a}<sup>2</sup>&frasl<sub>5</sub>-{b}<sup>3</sup>&frasl;<sub>4</sub><br>Calculate x",
+    "problem": "Given x={a}<sup>2</sup>&divide;<sub>5</sub>-{b}<sup>3</sup>&divide;<sub>4</sub><br>Calculate x",
     "answer_type": "number",
     "variables": {
       "a": { "mean": 10, "range": 5, "decimals": 0 },
