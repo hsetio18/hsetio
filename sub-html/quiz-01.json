@@ -23,7 +23,7 @@
   },
   {
     "id": "q10",
-    "problem": "Solve a quadratic equation {a}x² {b}x {c} = 0",
+    "problem": "<img src="gambar/x1abc.jpg">Solve a quadratic equation {a}x² {b}x {c} = 0",
     "answer_type": "subquestions",
     "variables": {
       "a": { "mean": 2, "range": 1, "decimals": 1 },
