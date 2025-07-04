@@ -1,16 +1,16 @@
 [
   {
     "id": "q1",
-    "problem": "What is the value of {a} + {b}?",
+    "problem": "Given x={a}<sup>2</sup>&frasl<sub>5</sub>-{b}<sup>3</sup>&frasl<sub>4</sub><br>Calculate x",
     "answer_type": "number",
     "variables": {
       "a": { "mean": 10, "range": 5, "decimals": 0 },
       "b": { "mean": 20, "range": 5, "decimals": 0 }
     },
-    "formula": "{a} + {b}",
-    "decimals": 0,
+    "formula": "{a}+2/5 - {b}-3/4",
+    "decimals": 3,
     "accuracy": 0.01,
-    "explanation": "Just add the two values."
+    "explanation": "Just use calculator"
   },
   {
     "id": "q9",
