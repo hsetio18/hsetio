@@ -89,7 +89,9 @@ function showQuestion(randomizeVars = true) {
       choices = [correct, ...(q.distractors || [])];
     }
     q.__correct = correct;
-    choices = shuffle(choices);
+    if (q.shuffle_choices !== false) choices = shuffle(choices);
+
+    // choices = shuffle(choices);
     choices.forEach((opt, i) => {
       box.innerHTML += `<label><input type="radio" name="ans" value="${opt}"> ${opt}</label><br>`;
     });
