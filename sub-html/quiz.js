@@ -91,16 +91,18 @@ function showQuestion(randomizeVars = true) {
     q.__correct = correct;
     if (q.shuffle_choices !== false) choices = shuffle(choices);
 
-    // choices = shuffle(choices);
     choices.forEach((opt, i) => {
       box.innerHTML += `<label><input type="radio" name="ans" value="${opt}"> ${opt}</label><br>`;
     });
   } else if (q.answer_type === "subquestions") {
     q.__context = { ...q.__values };
-    q.__subq = q.subquestions.map((s, i) => {
-      const expr = substitute(s.formula, q.__context);
+    q.__subq = [];
+    q.subquestions.forEach((s, i) => {
       const label = s.label || `Part ${i + 1}`;
-      return { ...s, label, __expr: expr };
+      const expr = substitute(s.formula, q.__context);
+      const sub = { ...s, label, __expr: expr };
+      if (s.id) q.__context[s.id] = null;
+      q.__subq.push(sub);
     });
     q.__subq.forEach((s, i) => {
       box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
@@ -139,7 +141,8 @@ document.getElementById("next-btn").onclick = () => {
     q.__subq.forEach((s, i) => {
       const userVal = parseFloat(document.getElementById(`sub-${i}`).value);
       try {
-        const val = eval(substitute(s.__expr, q.__context));
+        const expr = substitute(s.formula, q.__context);
+        const val = eval(expr);
         const rounded = parseFloat(val.toFixed(s.decimals));
         if (Math.abs(userVal - rounded) <= s.accuracy) correctSub++;
         if (s.id) q.__context[s.id] = rounded;
@@ -147,7 +150,7 @@ document.getElementById("next-btn").onclick = () => {
         s.__correct = rounded;
       } catch (e) {
         s.__user = userVal;
-        s.__correct = "Invalid expression: " + s.__expr;
+        s.__correct = "Invalid expression: " + s.formula;
       }
     });
     correctCount = correctSub / totalSub;
@@ -182,15 +185,25 @@ function showReview() {
     }
     review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
     if (q.answer_type === "subquestions") {
+      const ctx = { ...q.__values };
       q.__subq.forEach((s, i) => {
-        const correct = typeof s.__correct === "number" ? parseFloat(s.__correct).toFixed(s.decimals) : s.__correct;
-        const user = typeof s.__user === "number" ? parseFloat(s.__user).toFixed(s.decimals) : s.__user;
-        const isCorrect = typeof s.__correct === "number" && Math.abs(s.__user - s.__correct) <= s.accuracy;
+        let val, rounded;
+        try {
+          const expr = substitute(s.formula, ctx);
+          val = eval(expr);
+          rounded = parseFloat(val.toFixed(s.decimals));
+          if (s.id) ctx[s.id] = rounded;
+        } catch (e) {
+          rounded = "Invalid expression: " + s.formula;
+        }
+        const correct = typeof rounded === "number" ? rounded.toFixed(s.decimals) : rounded;
+        const user = typeof s.__user === "number" ? s.__user.toFixed(s.decimals) : s.__user;
+        const isCorrect = typeof rounded === "number" && Math.abs(s.__user - rounded) <= s.accuracy;
         review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
       });
     } else {
-      const correct = typeof q.__correct === "number" ? parseFloat(q.__correct).toFixed(q.decimals || 2) : q.__correct;
-      const user = typeof q.__user === "number" ? parseFloat(q.__user).toFixed(q.decimals || 2) : q.__user;
+      const correct = typeof q.__correct === "number" ? q.__correct.toFixed(q.decimals || 2) : q.__correct;
+      const user = typeof q.__user === "number" ? q.__user.toFixed(q.decimals || 2) : q.__user;
       const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
       review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
     }
