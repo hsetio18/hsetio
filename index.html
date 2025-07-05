@@ -1,54 +1,26 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    
-  </head>
-  <body>
-    <p id="current-date"></p>
-    
-  </body>
-
-<script>
-  // Get today's date
-  const today = new Date();
-  // Format the date as desired (e.g., June 9, 2025)
-  const formattedDate = today.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-  // Display it in the paragraph
-  document.getElementById('current-date').textContent = formattedDate;
-</script>
-
-<h1>test html in github pages</h1>
-<p>
-<img src="gambar/hki.png" alt="My photo" style="width: 10%; height: auto;">
-<img src="gambar/hki.png" alt="My photo" width="100" height="115">
-<p>hehehe
-<p> 
-
-<a href="sub-html/quiz-02.html?file=questions.json&title=Random%20General%20Quiz">General Quiz</a><br>
-<a href="sub-html/quiz-03.html?file=questions.json&title=Random%20General%20Quiz">General Quiz sequential</a><br>
-<a href="sub-html/quiz-02.html?file=stat01.json&title=Random%20Statistics%20Quiz-01">Statistics Quiz 01</a><br>
-<a href="sub-html/quiz-03.html?file=stat01.json&title=Random%20Statistics%20Quiz-01">Statistics Quiz 01 sequential</a>
-<p>
-<a href="sub-html/quiz.html?file=quiz-01.json&title=Random%20Calculated%20Quiz-01">Calculated Quiz 01 </a>
-     
-
-
-</p>
-<h1 id = "para1" 
-    style="display: flex; margin: auto; justify-content: center;">
-    GeeksforGeeks
-</h1>
-<input type = "Submit" 
-       onclick = "Click()"
-       style="display: flex; margin: auto; justify-content: center;"/>
-<script>
-    function Click() {
-        document.getElementById("para1").style.color = "green";
-        window.alert("Color changed to green");
-    }
-</script>
-https://www.geeksforgeeks.org/html/dhtml-javascript/
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz App</title>
+  <link rel="stylesheet" href="sub-html/quiz.css">
+<head>    
+<body>
+  <p id="current-date"></p>
+  <script>
+    // Get today's date
+    const today = new Date();
+    // Format the date as desired (e.g., June 9, 2025)
+    const formattedDate = today.toLocaleDateString('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+    // Display it in the paragraph
+    document.getElementById('current-date').textContent = formattedDate;
+  </script>
+  <h1>Math Quiz collection</h1>
+  <h2>Dedicated to Business and Economics students</h2>
+  <img src="gambar/hki.png" alt="My photo" style="width: 5%; height: auto;">
+  <p>
+  <a href="sub-html/quiz.html?file=quiz-01.json&title=Math%20Expression%20Quiz-01">Quiz 01 </a>
+</body>
 </html>
