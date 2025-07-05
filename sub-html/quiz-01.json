@@ -80,8 +80,8 @@
   {
     "id": "q8",
     "text": "What is the capital of France?",
-    "options": ["Berlin", "Madrid", "Paris", "Rome","None of the above"],
-    "answer": "Paris",
+    "choices": ["Berlin", "Madrid", "Paris", "Rome","None of the above"],
+    "correct_choice": "Paris",
     "shuffle_choices": false,
     "explanation": "Paris is the capital of France."
   },
