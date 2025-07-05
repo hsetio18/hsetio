@@ -68,5 +68,14 @@
     "decimals": 3,
     "accuracy": 0.01,
     "explanation": "type the calculator: (3+sqrt(3*3-4*2*-1.5))/(2*2)"
-  }
+  },
+  {
+    "id": "q7",
+    "problem": "Which of the following numbers is prime?",
+    "answer_type": "mc",
+    "choices": ["4", "6", "9", "7"],
+    "correct_choice": "7",
+    "explanation": "7 is the only prime number listed."
+  }    
+
 ]
