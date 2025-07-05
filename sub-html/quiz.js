@@ -76,9 +76,8 @@ function showQuestion(randomizeVars = true) {
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
   if (q.answer_type === "number") {
-    q.__expr = substitute(q.formula, q.__values);
-    const unit = q.unit ? ` ${q.unit}` : "";
-    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}</label>`;
+    q.__expr = q.formula ? substitute(q.formula, q.__values) : null;
+    box.innerHTML += `<input type="number" id="ans" step="any">`;
   } else if (q.answer_type === "mc") {
     let choices = [];
     let correct = q.correct_choice;
@@ -110,19 +109,3 @@ function showQuestion(randomizeVars = true) {
     });
   }
 }
-
-// You can now add this sample to your quiz-01.json:
-// {
-//   "id": "q9",
-//   "problem": "Calculate the area of a rectangle with length {l} m and width {w} m.",
-//   "answer_type": "number",
-//   "variables": {
-//     "l": { "mean": 10, "range": 4, "decimals": 1 },
-//     "w": { "mean": 5, "range": 2, "decimals": 1 }
-//   },
-//   "formula": "{l} * {w}",
-//   "decimals": 2,
-//   "accuracy": 0.05,
-//   "unit": "m²",
-//   "explanation": "Area of a rectangle = length × width."
-// }
