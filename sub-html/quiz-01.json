@@ -79,7 +79,8 @@
   },
   {
     "id": "q8",
-    "text": "What is the capital of France?",
+    "problem": "What is the capital of France?",
+    "answer_type": "mc",
     "choices": ["Berlin", "Madrid", "Paris", "Rome","None of the above"],
     "correct_choice": "Paris",
     "shuffle_choices": false,
