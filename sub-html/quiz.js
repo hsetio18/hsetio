@@ -67,7 +67,7 @@ function showQuestion(randomizeVars = true) {
   q.__start = Date.now();
   const box = document.getElementById("question-box");
   box.innerHTML = "";
-  q.__values = generateValues(q.variables, randomizeVars);
+  q.__values = generateValues(q.variables || {}, randomizeVars);
   let text = q.problem;
   for (const [k, v] of Object.entries(q.__values)) {
     const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
@@ -79,10 +79,18 @@ function showQuestion(randomizeVars = true) {
     q.__expr = substitute(q.formula, q.__values);
     box.innerHTML += `<input type="number" id="ans" step="any">`;
   } else if (q.answer_type === "mc") {
-    q.__expr = substitute(q.formula, q.__values);
-    const correct = eval(q.__expr);
-    const options = shuffle([correct, ...q.distractors]).slice(0, 4);
-    options.forEach((opt, i) => {
+    let choices = [];
+    let correct = q.correct_choice;
+    if (q.choices && q.correct_choice !== undefined) {
+      choices = q.choices;
+    } else if (q.formula) {
+      q.__expr = substitute(q.formula, q.__values);
+      correct = eval(q.__expr);
+      choices = [correct, ...(q.distractors || [])];
+    }
+    q.__correct = correct;
+    choices = shuffle(choices);
+    choices.forEach((opt, i) => {
       box.innerHTML += `<label><input type="radio" name="ans" value="${opt}"> ${opt}</label><br>`;
     });
   } else if (q.answer_type === "subquestions") {
@@ -119,11 +127,9 @@ document.getElementById("next-btn").onclick = () => {
   } else if (q.answer_type === "mc") {
     const selectedRadio = document.querySelector("input[name='ans']:checked");
     if (selectedRadio) {
-      const userAns = parseFloat(selectedRadio.value);
-      const correctAns = eval(q.__expr);
-      if (userAns === correctAns) correctCount = 1;
+      const userAns = selectedRadio.value;
+      if (userAns == q.__correct) correctCount = 1;
       q.__user = userAns;
-      q.__correct = correctAns;
     }
   } else if (q.answer_type === "subquestions") {
     let totalSub = q.__subq.length;
@@ -181,9 +187,9 @@ function showReview() {
         review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
       });
     } else {
-      const correct = typeof q.__correct === "number" ? parseFloat(q.__correct).toFixed(q.decimals) : q.__correct;
-      const user = typeof q.__user === "number" ? parseFloat(q.__user).toFixed(q.decimals) : q.__user;
-      const isCorrect = typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
+      const correct = typeof q.__correct === "number" ? parseFloat(q.__correct).toFixed(q.decimals || 2) : q.__correct;
+      const user = typeof q.__user === "number" ? parseFloat(q.__user).toFixed(q.decimals || 2) : q.__user;
+      const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
       review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
     }
     review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
