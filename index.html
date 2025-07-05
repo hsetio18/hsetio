@@ -1,17 +1,21 @@
 <html>
-<p id="current-date"></p>
+  <head>
+    
+  </head>
+  <body>
+    <p id="current-date"></p>
+    
+  </body>
 
 <script>
   // Get today's date
   const today = new Date();
-
   // Format the date as desired (e.g., June 9, 2025)
   const formattedDate = today.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
-
   // Display it in the paragraph
   document.getElementById('current-date').textContent = formattedDate;
 </script>
