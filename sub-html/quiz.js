@@ -77,7 +77,8 @@ function showQuestion(randomizeVars = true) {
 
   if (q.answer_type === "number") {
     q.__expr = substitute(q.formula, q.__values);
-    box.innerHTML += `<input type="number" id="ans" step="any">`;
+    const unit = q.unit ? ` ${q.unit}` : "";
+    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}</label>`;
   } else if (q.answer_type === "mc") {
     let choices = [];
     let correct = q.correct_choice;
@@ -110,103 +111,18 @@ function showQuestion(randomizeVars = true) {
   }
 }
 
-document.getElementById("next-btn").onclick = () => {
-  const q = selected[current];
-  const now = Date.now();
-  timePerQuestion.push((now - q.__start) / 1000);
-
-  let correctCount = 0;
-  if (q.answer_type === "number") {
-    const userAns = parseFloat(document.getElementById("ans").value);
-    try {
-      const val = eval(q.__expr);
-      const rounded = parseFloat(val.toFixed(q.decimals));
-      if (Math.abs(userAns - rounded) <= q.accuracy) correctCount = 1;
-      q.__user = userAns;
-      q.__correct = rounded;
-    } catch (e) {
-      q.__user = userAns;
-      q.__correct = "Invalid expression: " + q.__expr;
-    }
-  } else if (q.answer_type === "mc") {
-    const selectedRadio = document.querySelector("input[name='ans']:checked");
-    if (selectedRadio) {
-      const userAns = selectedRadio.value;
-      if (userAns == q.__correct) correctCount = 1;
-      q.__user = userAns;
-    }
-  } else if (q.answer_type === "subquestions") {
-    let totalSub = q.__subq.length;
-    let correctSub = 0;
-    q.__subq.forEach((s, i) => {
-      const userVal = parseFloat(document.getElementById(`sub-${i}`).value);
-      try {
-        const expr = substitute(s.formula, q.__context);
-        const val = eval(expr);
-        const rounded = parseFloat(val.toFixed(s.decimals));
-        if (Math.abs(userVal - rounded) <= s.accuracy) correctSub++;
-        if (s.id) q.__context[s.id] = rounded;
-        s.__user = userVal;
-        s.__correct = rounded;
-      } catch (e) {
-        s.__user = userVal;
-        s.__correct = "Invalid expression: " + s.formula;
-      }
-    });
-    correctCount = correctSub / totalSub;
-  }
-
-  score += correctCount;
-  current++;
-  if (current < selected.length) {
-    showQuestion(document.getElementById("randomize-vars").checked);
-  } else {
-    endTime = Date.now();
-    totalTime = (endTime - startTime) / 1000;
-    document.getElementById("quiz-screen").style.display = "none";
-    document.getElementById("review-screen").style.display = "block";
-    document.getElementById("summary").innerHTML = `
-      <p>Total Score: ${score.toFixed(2)} / ${selected.length}</p>
-      <p>Total Time: ${totalTime.toFixed(1)} sec</p>
-      <button onclick="showReview(); this.remove()">Review</button>
-      <button onclick="location.href='quiz.html?file=${file}&title=${title}'">Repeat Quiz</button>
-    `;
-  }
-};
-
-function showReview() {
-  const review = document.getElementById("review-content");
-  review.innerHTML = "";
-  selected.forEach((q, idx) => {
-    let questionText = q.problem;
-    for (const [k, v] of Object.entries(q.__values)) {
-      const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
-      questionText = questionText.replaceAll(`{${k}}`, display);
-    }
-    review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
-    if (q.answer_type === "subquestions") {
-      const ctx = { ...q.__values };
-      q.__subq.forEach((s, i) => {
-        let val, rounded;
-        try {
-          const expr = substitute(s.formula, ctx);
-          val = eval(expr);
-          rounded = parseFloat(val.toFixed(s.decimals));
-          if (s.id) ctx[s.id] = rounded;
-        } catch (e) {
-          rounded = "Invalid expression: " + s.formula;
-        }
-        const correct = typeof rounded === "number" ? rounded.toFixed(s.decimals) : rounded;
-        const user = typeof s.__user === "number" ? s.__user.toFixed(s.decimals) : s.__user;
-        const isCorrect = typeof rounded === "number" && Math.abs(s.__user - rounded) <= s.accuracy;
-        review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
-      });
-    } else {
-      const correct = typeof q.__correct === "number" ? q.__correct.toFixed(q.decimals || 2) : q.__correct;
-      const user = typeof q.__user === "number" ? q.__user.toFixed(q.decimals || 2) : q.__user;
-      const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
-      review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
-    }
-    review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
-  });
-}
+// You can now add this sample to your quiz-01.json:
+// {
+//   "id": "q9",
+//   "problem": "Calculate the area of a rectangle with length {l} m and width {w} m.",
+//   "answer_type": "number",
+//   "variables": {
+//     "l": { "mean": 10, "range": 4, "decimals": 1 },
+//     "w": { "mean": 5, "range": 2, "decimals": 1 }
+//   },
+//   "formula": "{l} * {w}",
+//   "decimals": 2,
+//   "accuracy": 0.05,
+//   "unit": "m²",
+//   "explanation": "Area of a rectangle = length × width."
+// }
