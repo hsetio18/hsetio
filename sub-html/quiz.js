@@ -74,6 +74,7 @@ function showQuestion(randomizeVars = true) {
     const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
     text = text.replaceAll(`{${k}}`, display);
   }
+  alert(text);
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
   if (q.answer_type === "number") {
