@@ -81,11 +81,11 @@ function showQuestion(randomizeVars = true) {
     
     q.__expr = substitute(q.formula, q.__values);
     // const decimal = q.decimals ? ${q.decimals} +" digits of decimal" : "";
-    const decimal = q.decimals ? `${q.decimals} digits of decimal` : "";
+    const decimal = q.decimals ? `(${q.decimals} digits of decimal)` : "";
 
     alert("c:"+decimal);
     const unit = q.unit ? ` ${q.unit}` : "";
-    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}+" "+${decimal}</label>`;
+    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit} ${decimal}</label>`;
   } else if (q.answer_type === "mc") {
     let choices = [];
     let correct = q.correct_choice;
