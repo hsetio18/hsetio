@@ -85,8 +85,7 @@ function showQuestion(randomizeVars = true) {
 
     alert(decimal);
     const unit = q.unit ? ` ${q.unit}` : "";
-    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}</label>`;
-    // box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}+${decimal}</label>`;
+    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}+" "+${decimal}</label>`;
   } else if (q.answer_type === "mc") {
     let choices = [];
     let correct = q.correct_choice;
