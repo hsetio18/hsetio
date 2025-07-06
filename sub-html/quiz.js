@@ -69,15 +69,16 @@ function showQuestion(randomizeVars = true) {
   box.innerHTML = "";
   q.__values = generateValues(q.variables || {}, randomizeVars);
   let text = q.problem;
-  alert(text);
+  alert("a:"+text);
   for (const [k, v] of Object.entries(q.__values)) {
     const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
     text = text.replaceAll(`{${k}}`, display);
   }
-  alert(text);
+  alert("b"+text);
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
   if (q.answer_type === "number") {
+    alert("c. formula="+q.formula);
     q.__expr = substitute(q.formula, q.__values);
     box.innerHTML += `<input type="number" id="ans" step="any">`;
   } else if (q.answer_type === "mc") {
