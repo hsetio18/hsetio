@@ -69,6 +69,7 @@ function showQuestion(randomizeVars = true) {
   box.innerHTML = "";
   q.__values = generateValues(q.variables || {}, randomizeVars);
   let text = q.problem;
+  alert(text);
   for (const [k, v] of Object.entries(q.__values)) {
     const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
     text = text.replaceAll(`{${k}}`, display);
