@@ -1,45 +1,42 @@
 [
-  {    
+    {
     "id": "q1",
-    "problem": "What is the value of {a} + {b}?",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 10, "range": 5, "decimals": 0 },
-      "b": { "mean": 20, "range": 5, "decimals": 0 }
-    },
-    "formula": "{a} + {b}",
-    "decimals": 0,
-    "accuracy": 0.01,
-    "explanation": "Just add the two values."
+    "problem": "Evaluate 2+5*3",
+    "answer_type": "mc",
+    "choices": ["10", "30", "17", "None of the above"],
+    "correct_choice": "17",
+    "shuffle_choices": false,
+    "explanation": "Multiplication takes precedence over addition."
   },
-  {
+  {    
     "id": "q2",
-    "problem": "What is the area of a circle with radius {r} cm?",
-    "answer_type": "number",
-    "variables": {
-      "r": { "mean": 7, "range": 3, "decimals": 1 }
-    },
-    "unit": "cm2",
-    "formula": "Math.PI * {r} * {r}",
-    "decimals": 2,
-    "accuracy": 0.05,
-    "explanation": "Area of a circle = π × r²"
+    "problem": "Evaluate (2+5)*3",
+    "answer_type": "mc",
+    "choices": ["21", "30", "17", "10", "None of the above"],
+    "correct_choice": "21",
+    "shuffle_choices": false,
+    "explanation": "Bracket takes precedence over multiplication."
   },
   {
     "id": "q3",
-    "problem": "What is {a} × {b}?",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 4, "range": 2, "decimals": 0 },
-      "b": { "mean": 6, "range": 2, "decimals": 0 }
-    },
-    "formula": "{a} * {b}",
-    "decimals": 0,
-    "accuracy": 0.01,
-    "explanation": "Multiply the two numbers."
+    "problem": "Evaluate 2/5*10",
+    "answer_type": "mc",
+    "choices": ["0.04", "4", "None of the above"],
+    "correct_choice": "4",
+    "shuffle_choices": false,
+    "explanation": "Left to right for same division and multiplication."
   },
   {
     "id": "q4",
+    "problem": "Evaluate 2*3² ",
+    "answer_type": "mc",
+    "choices": ["36", "12", "18", "None of the above"],
+    "correct_choice": "18",
+    "shuffle_choices": false,
+    "explanation": " Exponential takes precedence over multiplication."
+  },
+  {
+    "id": "q5",
     "problem": "Given x=2<sup>2</sup>/<sub>5</sub>-5<sup>3</sup>/<sub>4</sub><br>Calculate x",
     "answer_type": "number",
     "variables":{},
@@ -49,7 +46,7 @@
     "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4 = Then input the answer -3.35"
   },
   {
-    "id": "q5",
+    "id": "q6",
     "problem": "Given x=v3+log(5)<br>Calculate x",
     "answer_type": "number",
     "variables": {
@@ -61,7 +58,7 @@
     "explanation": "Type the calculator: √ 3 + lg 5 ) "
   },
   {
-    "id": "q6",
+    "id": "q7",
     "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
     "answer_type": "number",
     "variables": {},
@@ -71,7 +68,7 @@
     "explanation": "type the calculator: (3+sqrt(3*3-4*2*-1.5))/(2*2)"
   },
   {
-    "id": "q7",
+    "id": "q8",
     "problem": "Which of the following numbers is prime?",
     "answer_type": "mc",
     "choices": ["4", "6", "9", "7"],
@@ -79,7 +76,7 @@
     "explanation": "7 is the only prime number listed."
   },
   {
-    "id": "q8",
+    "id": "q9",
     "problem": "What is the capital of France?",
     "answer_type": "mc",
     "choices": ["Berlin", "Madrid", "Paris", "Rome","None of the above"],
