@@ -80,7 +80,9 @@ function showQuestion(randomizeVars = true) {
   if (q.answer_type === "number") {
     
     q.__expr = substitute(q.formula, q.__values);
-    const decimal = q.decimals ? ${q.decimals} +" digits of decimal" : "";
+    // const decimal = q.decimals ? ${q.decimals} +" digits of decimal" : "";
+    const decimal = q.decimals ? `${q.decimals} digits of decimal` : "";
+
     alert(decimal);
     const unit = q.unit ? ` ${q.unit}` : "";
     box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}</label>`;
