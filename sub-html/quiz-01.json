@@ -19,6 +19,7 @@
     "variables": {
       "r": { "mean": 7, "range": 3, "decimals": 1 }
     },
+    "unit": "cm2",
     "formula": "Math.PI * {r} * {r}",
     "decimals": 2,
     "accuracy": 0.05,
