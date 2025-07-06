@@ -41,6 +41,7 @@
     "answer_type": "number",
     "variables":{},
     "formula": "2+2/5 - 5-3/4",
+    "unit": "m2",  
     "decimals": 3,
     "accuracy": 0.01,
     "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4 = Then input the answer -3.35"
