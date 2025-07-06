@@ -80,8 +80,9 @@ function showQuestion(randomizeVars = true) {
   if (q.answer_type === "number") {
     // alert("c. formula="+q.formula);
     q.__expr = substitute(q.formula, q.__values);
+    const decimal = q.decimal ? $(q.decimal)+" digits of decimal" : "";
     const unit = q.unit ? ` ${q.unit}` : "";
-    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}</label>`;
+    box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}+$(decimal)</label>`;
     // box.innerHTML += `<input type="number" id="ans" step="any">`;
   } else if (q.answer_type === "mc") {
     let choices = [];
