@@ -113,6 +113,7 @@
       {
         "label": "\nc) What is the larger root?",
         "formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
+        "unit": "kg",
         "decimals": 2,
         "accuracy": 0.01,
         "explanation": "Larger root = max of the two roots"
