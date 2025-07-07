@@ -70,7 +70,7 @@
   },
   {
     "id": "q8",
-    "problem": "<svg><text x='5' y='35'>2x-5</text></svg> when x=4",
+    "problem": " when x=4",
     "answer_type": "mc",
     "choices": ["0.08", "39", "9", "0.0833"],
     "correct_choice": "0.0833",
