@@ -70,12 +70,12 @@
   },
   {
     "id": "q8",
-     "problem": "Find the area of the shape below:<br><svg width='100' height='100'><rect width='80' height='50' style='fill:lightblue;stroke:black;stroke-width:2'/></svg> with width=80 and height=50",
+     "problem": 
       "answer_type": "number",
       "formula": "80 * 50",
       "decimals": 0,
       "accuracy": 1,
-      "explanation": "Area = width × height"  
+      "explanation": "Area = wi"<svg><text x=5 y=35>2x-5</text><line x1=0 y1=43 x2=50 y2=43 style='stroke:black;stroke-width:1' /><text x=0 y=65>-5+10x</text></svg>when x=4",dth × height"  
   },
   {
     "id": "q9",
