@@ -74,7 +74,7 @@
   "answer_type": "number",
   "formula": "0.0833",
   "decimals": 4,
-  "accuracy": 0.01,
+  "accuracy": 0.001,
   "explanation": "(2*4-5)/(-4+10*4)"
 },
   {
