@@ -12,7 +12,7 @@ h1, h2 {
   font-size: 1.8em;
   margin-bottom: 10px;
 }
-
+h3{text-align:center;fpnt-size:1.2em;margin-bottom:10px;}
 #start-screen, #quiz-screen, #review-screen {
   max-width: 800px;
   margin: 0 auto;
