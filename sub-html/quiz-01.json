@@ -70,12 +70,12 @@
   },
   {
     "id": "q8",
-     "problem": 
-      "answer_type": "number",
-      "formula": "80 * 50",
+    "problem": "<svg><text x=5 y=35>2x-5</text><line x1=0 y1=43 x2=50 y2=43 style='stroke:black;stroke-width:1' /><text x=0 y=65>-5+10x</text></svg>when x=4",
+     "answer_type": "number",
+    "formula": "80 * 50",
       "decimals": 0,
       "accuracy": 1,
-      "explanation": "Area = wi"<svg><text x=5 y=35>2x-5</text><line x1=0 y1=43 x2=50 y2=43 style='stroke:black;stroke-width:1' /><text x=0 y=65>-5+10x</text></svg>when x=4",dth × height"  
+      "explanation": "bracket"
   },
   {
     "id": "q9",
