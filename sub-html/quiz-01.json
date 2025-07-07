@@ -70,11 +70,12 @@
   },
   {
     "id": "q8",
-    "problem": " when x=4",
-    "answer_type": "mc",
-    "choices": ["0.08", "39", "9", "0.0833"],
-    "correct_choice": "0.0833",
-    "explanation": "use calculator: (2*4-5)/(-4+10*4)"
+     "problem": "Find the area of the shape below:<br><svg width='100' height='100'><rect width='80' height='50' style='fill:lightblue;stroke:black;stroke-width:2'/></svg>",
+      "answer_type": "number",
+      "formula": "80 * 50",
+      "decimals": 0,
+      "accuracy": 1,
+      "explanation": "Area = width × height"  
   },
   {
     "id": "q9",
