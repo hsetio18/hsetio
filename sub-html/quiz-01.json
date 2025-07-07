@@ -70,11 +70,11 @@
   },
   {
     "id": "q8",
-    "problem": "Which of the following numbers is prime?",
+    "problem": "<svg><text x="5" y="35">2x-5</text><line x1="0" y1="43" x2="50" y2="43" style="stroke:black;stroke-width:1" /><text x="0" y="65">-5+10x</text></svg>when x=4",
     "answer_type": "mc",
-    "choices": ["4", "6", "9", "7"],
-    "correct_choice": "7",
-    "explanation": "7 is the only prime number listed."
+    "choices": ["0.08", "39", "9", "0.0833"],
+    "correct_choice": "0.0833",
+    "explanation": "use calculator: (2*4-5)/(-4+10*4)"
   },
   {
     "id": "q9",
