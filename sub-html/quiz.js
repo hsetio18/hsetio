@@ -69,21 +69,15 @@ function showQuestion(randomizeVars = true) {
   box.innerHTML = "";
   q.__values = generateValues(q.variables || {}, randomizeVars);
   let text = q.problem;
-  // alert("a:"+text);
   for (const [k, v] of Object.entries(q.__values)) {
     const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
     text = text.replaceAll(`{${k}}`, display);
   }
-  // alert("b"+text);
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
-  if (q.answer_type === "number") {
-    
+  if (q.answer_type === "number") { 
     q.__expr = substitute(q.formula, q.__values);
-    // const decimal = q.decimals ? ${q.decimals} +" digits of decimal" : "";
     const decimal = q.decimals ? `(${q.decimals} digits of decimal)` : "";
-
-    // alert("c:"+decimal);
     const unit = q.unit ? ` ${q.unit}` : "";
     box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit} ${decimal}</label>`;
   } else if (q.answer_type === "mc") {
@@ -113,7 +107,10 @@ function showQuestion(randomizeVars = true) {
       q.__subq.push(sub);
     });
     q.__subq.forEach((s, i) => {
-      box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
+        const decimal = s.decimals ? ` (${s.decimals} digits of decimal)` : "";
+        const unit = s.unit ? ` ${s.unit}` : "";
+        box.innerHTML += `<label>${s.label}</label><br><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label><br>`;
+      // box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
     });
   }
 }
