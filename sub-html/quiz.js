@@ -110,7 +110,9 @@ function showQuestion(randomizeVars = true) {
     q.__subq.forEach((s, i) => {
         const decimal = s.decimals ? ` (${s.decimals} digits of decimal)` : "";
         const unit = s.unit ? ` ${s.unit}` : "";
-        box.innerHTML += `<label>${s.label}</label><br><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label>`;
+        box.innerHTML += `<label>${s.label}<input type="number" id="sub-${i}" step="any"></label>`;
+
+      //  box.innerHTML += `<label>${s.label}</label><br><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label>`;
       // box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
     });
   }
