@@ -19,13 +19,7 @@ h1, h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
-
-.question-info {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-}
-
-label, p {
+label, p, .question-info {
   font-size: 1.1rem;
   display: block;
   margin: 0.5rem 0;
