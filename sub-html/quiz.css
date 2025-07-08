@@ -36,7 +36,9 @@ input[type="text"] {
   font-size: 1rem;
   padding: 0.4rem;
   margin-top: 0.3rem;
-  width: 100%;
+  width: auto;
+  min-width: 150px;
+  max-width: 300px;
   box-sizing: border-box;
 }
 
@@ -81,5 +83,11 @@ hr {
   button {
     font-size: 1.1rem;
     padding: 0.6rem 1.2rem;
+  }
+
+  input[type="number"],
+  input[type="text"] {
+    width: 100%;
+    max-width: 100%;
   }
 }
