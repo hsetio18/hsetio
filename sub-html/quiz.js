@@ -95,7 +95,7 @@ function showQuestion(randomizeVars = true) {
     if (q.shuffle_choices !== false) choices = shuffle(choices);
 
     choices.forEach((opt, i) => {
-      box.innerHTML += `<label><input type="radio" name="ans" value="${opt}"> ${opt}</label><br>`;
+      box.innerHTML += `<label><input type="radio" name="ans" value="${opt}"> ${opt}</label>`;
     });
   } else if (q.answer_type === "subquestions") {
     q.__context = { ...q.__values };
@@ -110,7 +110,7 @@ function showQuestion(randomizeVars = true) {
     q.__subq.forEach((s, i) => {
         const decimal = s.decimals ? ` (${s.decimals} digits of decimal)` : "";
         const unit = s.unit ? ` ${s.unit}` : "";
-        box.innerHTML += `<label>${s.label}</label><br><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label><br>`;
+        box.innerHTML += `<label>${s.label}</label><br><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label>`;
       // box.innerHTML += `<label>${s.label}</label><br><input type="number" id="sub-${i}" step="any"><br>`;
     });
   }
