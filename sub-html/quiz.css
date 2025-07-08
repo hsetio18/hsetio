@@ -70,6 +70,11 @@ hr {
 @media (max-width: 600px) {
   body {
     font-size: 1.2rem;
+    padding: 1rem;
+  }
+
+  .container {
+    padding: 1rem;
   }
 
   h1 {
