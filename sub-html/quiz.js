@@ -71,10 +71,6 @@ function showQuestion(randomizeVars = true) {
   q.__values = generateValues(q.variables || {}, randomizeVars);
 
   // Create display values (for question text only)
-//  const displayValues = {};
-//  for (const [k, v] of Object.entries(q.__values)) {
-//    displayValues[k] = v < 0 ? `−${Math.abs(v)}` : `${v}`;
-//  }
   const displayValues = q.__values;
 
 
@@ -85,8 +81,6 @@ function showQuestion(randomizeVars = true) {
   }
   text = text.replaceAll("+-", "-");  // fix for displaying '+ -2' as '-2'
   text = text.replaceAll("--", "+");  // fix for displaying '- -2' as '+2'
-alert(text);  
-
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
   // Handle number-type question
@@ -124,6 +118,7 @@ alert(text);
       return { ...s, label, __expr: expr };
     });
     q.__subq.forEach((s, i) => {
+      s.label = s.label.replaceAll("+-", "-");  
       const decimal = s.decimals ? ` (${s.decimals} digits of decimal)` : "";
       const unit = s.unit ? ` ${s.unit}` : "";
       box.innerHTML += `<label>${s.label}</label><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label>`;
