@@ -1,18 +1,4 @@
 [
-  {
-    "id": "q1",
-    "problem": "Evaluate {a}+{b}*{c}",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 10.2, "range": 2, "decimals": 1 },
-      "b": { "mean": 4, "range": 2, "decimals": 1 },
-      "c": { "mean": 6.5, "range": 2, "decimals": 1 }
-    },
-    "formula": "{a} + {b}*{c}",
-    "decimals": 4,
-    "accuracy": 0.001,
-    "explanation": "Using the ABC quadratic formula: x = [-b + sqrt(b² - 4ac)] / 2a"
-  },
   {    
     "id": "q2",
     "problem": "Evaluate (2+5)*3",
