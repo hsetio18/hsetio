@@ -47,18 +47,6 @@
   },
   {
     "id": "q6",
-    "problem": "Given x=v3+log(5)<br>Calculate x",
-    "answer_type": "number",
-    "variables": {
-      "x": { "mean": 49, "range": 9, "decimals": 0 }
-    },
-    "formula": "sqrt(3)+log(5)",
-    "decimals": 3,
-    "accuracy": 0.01,
-    "explanation": "Type the calculator: √ 3 + lg 5 ) "
-  },
-  {
-    "id": "q7",
     "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
     "answer_type": "number",
     "variables": {},
@@ -68,7 +56,7 @@
     "explanation": "type the calculator: (3+sqrt(3*3-4*2*-1.5))/(2*2)"
   },
 {
-  "id": "q8",
+  "id": "q7",
   "problem": "Evaluate<br> <svg width='100' height='100'><text x='5' y='35'>2x-5</text><line x1='0' y1='43' x2='50' y2='43' style='stroke:black;stroke-width:1' /><text x='0' y='65'>-3+10x</text></svg>when x=4",
   "answer_type": "number",
   "formula": "0.0811",
@@ -77,7 +65,7 @@
   "explanation": "(2*4-5)/(-3+10*4)"
 },
 {
-  "id": "q9",
+  "id": "q8",
   "problem": "The price of gold 10 years ago was Rp 625,000 per gram. If the current price is Rp 2,000,000 per gram, what is the percentage increase in the price of gold over the past 10 years?",
   "answer_type": "number",
   "formula": "(2000000-625000)/625000*100",
@@ -86,6 +74,16 @@
   "accuracy": 0.01,
   "explanation": "(2000000-625000)/625000*100"
 },
+{
+  "id": "q9",
+  "problem": "Up to a purchase of 5 kg, the price of an item is Rp 5000 per gram. Beyond that, the price is discounted by 5%. A customer buys 6 kg. How many rupiahs should he/she pay?",
+  "answer_type": "number",
+  "formula": "5*5000*1000+(6-5)*5000*(1-5/100)*1000",
+  "unit": "Rp",        
+  "decimals": 1,
+  "accuracy": 0.01,
+  "explanation": "5*5000*1000+(6-5)*5000*(1-5/100)*1000"
+}   
 {
   "id": "q10",
   "problem": "The price of gold has increased dramatically by 220% over the past 10 years. If the current price of gold is Rp 2 million per gram, what was its price 10 years ago?",
