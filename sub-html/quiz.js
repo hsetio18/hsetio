@@ -83,7 +83,7 @@ function showQuestion(randomizeVars = true) {
   for (const [k, v] of Object.entries(displayValues)) {
     text = text.replaceAll(`{${k}}`, v);
   }
-  
+alert(text);  
 
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
