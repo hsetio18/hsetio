@@ -71,16 +71,20 @@ function showQuestion(randomizeVars = true) {
   q.__values = generateValues(q.variables || {}, randomizeVars);
 
   // Create display values (for question text only)
-  const displayValues = {};
-  for (const [k, v] of Object.entries(q.__values)) {
-    displayValues[k] = v < 0 ? `−${Math.abs(v)}` : `${v}`;
-  }
+//  const displayValues = {};
+//  for (const [k, v] of Object.entries(q.__values)) {
+//    displayValues[k] = v < 0 ? `−${Math.abs(v)}` : `${v}`;
+//  }
+  const displayValues = q.__values;
+
 
   // Format and inject the question text
   let text = q.problem;
   for (const [k, v] of Object.entries(displayValues)) {
     text = text.replaceAll(`{${k}}`, v);
   }
+  
+
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
   // Handle number-type question
