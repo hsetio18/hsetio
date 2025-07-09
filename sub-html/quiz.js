@@ -122,13 +122,12 @@ function showQuestion(randomizeVars = true) {
       const decimal = s.decimals ? ` (${s.decimals} digits of decimal)` : "";
       const unit = s.unit ? ` ${s.unit}` : "";
       box.innerHTML += `<label>${s.label}</label><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label>`;
-    });
-    setTimeout(() => {
+    });  
+  }
+  setTimeout(() => {
       const firstInput = box.querySelector("input");
       if (firstInput) firstInput.focus();
-    }, 0);
-  
-  }
+  }, 0);  
 }
 
 
