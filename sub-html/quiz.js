@@ -83,6 +83,8 @@ function showQuestion(randomizeVars = true) {
   for (const [k, v] of Object.entries(displayValues)) {
     text = text.replaceAll(`{${k}}`, v);
   }
+  text = text.replaceAll("+-", "-");  // fix for displaying '+ -2' as '-2'
+  text = text.replaceAll("--", "+");  // fix for displaying '- -2' as '+2'
 alert(text);  
 
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
