@@ -11,7 +11,7 @@
     },
     "formula": "{a} + {b}*{c}",
     "decimals": 4,
-    "accuracy": 0.001,
+    "accuracy": 0.001
   },
   {    
     "id": "q2",
