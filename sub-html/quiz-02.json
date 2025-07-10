@@ -93,7 +93,7 @@
                 "decimals": 1
             }
         },
-        "formula": "{a} / power({b},2)}",
+        "formula": "{a} / pow({b},2))",
         "decimals": 4,
         "accuracy": 0.001,
         "explanation": " Exponential takes precedence over divisiom."
