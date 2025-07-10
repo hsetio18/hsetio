@@ -211,6 +211,17 @@ function showReview() {
       const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
       questionText = questionText.replaceAll(`{${k}}`, display);
     }
+  // Evaluate inline expressions like {= ... } in the review text
+  questionText = questionText.replace(/\{=([^}]+)\}/g, (_, expr) => {
+  try {
+      const replaced = substitute(expr, q.__values);
+      const result = eval(replaced);
+      return result;
+    } catch (e) {
+      return `[Error: ${expr}]`;
+    }
+  });
+    
     review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
     if (q.answer_type === "subquestions") {
       const ctx = { ...q.__values };
