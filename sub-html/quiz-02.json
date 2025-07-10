@@ -47,7 +47,7 @@
     "answer_type": "number",
     "variables": {
       "a": { "mean": 10.2, "range": 2, "decimals": 1 },
-      "b": { "mean": 4.3, "range": 2, "decimals": 1 },
+      "b": { "mean": 4.3, "range": 2, "decimals": 1 }
     },
     "formula": "{a} / power({b},2)}",
     "decimals": 4,
@@ -60,7 +60,7 @@
     "answer_type": "number",
     "variables": {
       "a": { "mean": 6, "range": 1 "decimals": 0 },
-      "b": { "mean": 8 "range": 1, "decimals": 0 },
+      "b": { "mean": 8 "range": 1, "decimals": 0 }
     },
     "formula": "2+2/{a} - 5-3/{b}",
     "decimals": 3,
