@@ -99,7 +99,7 @@ function showQuestion(randomizeVars = true) {
       // new
       return formatNumber(result);
 
-      //
+      // new
     } catch (e) {
       return `[Error: ${expr}]`;
     }
@@ -254,17 +254,32 @@ function showReview() {
         } catch (e) {
           rounded = "Invalid expression: " + s.formula;
         }
-        const correct = typeof rounded === "number" ? rounded.toFixed(s.decimals) : rounded;
-        const user = typeof s.__user === "number" ? s.__user.toFixed(s.decimals) : s.__user;
+        //old
+        // const correct = typeof rounded === "number" ? rounded.toFixed(s.decimals) : rounded;
+        // const user = typeof s.__user === "number" ? s.__user.toFixed(s.decimals) : s.__user;
+        // new
+        const correct = typeof rounded === "number" ? formatNumber(+rounded.toFixed(s.decimals)) : rounded;
+        const user = typeof s.__user === "number" ? formatNumber(+s.__user.toFixed(s.decimals)) : s.__user;
+        // end of new
         const isCorrect = typeof rounded === "number" && Math.abs(s.__user - rounded) <= s.accuracy;
         review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
       });
-    } else {
-      const correct = typeof q.__correct === "number" ? q.__correct.toFixed(q.decimals || 2) : q.__correct;
-      const user = typeof q.__user === "number" ? q.__user.toFixed(q.decimals || 2) : q.__user;
-      const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
-      review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
-    }
-    review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
+      // old
+    // } else {
+    //   const correct = typeof q.__correct === "number" ? q.__correct.toFixed(q.decimals || 2) : q.__correct;
+    //   const user = typeof q.__user === "number" ? q.__user.toFixed(q.decimals || 2) : q.__user;
+    //   const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
+    //   review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
+    // }
+    // review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
+    // new
+      } else {
+  const correct = typeof q.__correct === "number" ? formatNumber(+q.__correct.toFixed(q.decimals || 2)) : q.__correct;
+  const user = typeof q.__user === "number" ? formatNumber(+q.__user.toFixed(q.decimals || 2)) : q.__user;
+  const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
+  review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
+}
+
+      // end of new
   });
 }
