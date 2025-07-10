@@ -66,19 +66,26 @@ function showQuestion(randomizeVars = true) {
   q.__start = Date.now();
   const box = document.getElementById("question-box");
   box.innerHTML = "";
-
   // Generate raw values
   q.__values = generateValues(q.variables || {}, randomizeVars);
-
   // Create display values (for question text only)
   const displayValues = q.__values;
-
-
   // Format and inject the question text
   let text = q.problem;
   for (const [k, v] of Object.entries(displayValues)) {
     text = text.replaceAll(`{${k}}`, v);
   }
+  // Handle computed expressions like {= {a} * 100}
+  text = text.replace(/\{=([^}]+)\}/g, (_, expr) => {
+    try {
+      const replaced = substitute(expr, displayValues);
+      const result = eval(replaced);
+      return result;
+    } catch (e) {
+      return `[Error: ${expr}]`;
+    }
+  });
+  // Display-friendly fixups
   text = text.replaceAll("+-", "-");  // fix for displaying '+ -2' as '-2'
   text = text.replaceAll("--", "+");  // fix for displaying '- -2' as '+2'
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
