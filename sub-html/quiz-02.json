@@ -38,28 +38,34 @@
     },
     "formula": "{a} / {b}*{c}",
     "decimals": 4,
-    "accuracy": 0.001,    
-    
+    "accuracy": 0.001,        
     "explanation": "Left to right for same level of division and multiplication."
   },
   {
     "id": "q4",
-    "problem": "Evaluate 2*3² ",
-    "answer_type": "mc",
-    "choices": ["36", "12", "18", "None of the above"],
-    "correct_choice": "18",
-    "shuffle_choices": false,
-    "explanation": " Exponential takes precedence over multiplication."
+    "problem": "Evaluate {a}/{b}² ",
+    "answer_type": "number",
+    "variables": {
+      "a": { "mean": 10.2, "range": 2, "decimals": 1 },
+      "b": { "mean": 4.3, "range": 2, "decimals": 1 },
+    },
+    "formula": "{a} / power({b},2}",
+    "decimals": 4,
+    "accuracy": 0.001,    
+    "explanation": " Exponential takes precedence over divisiom."
   },
   {
     "id": "q5",
-    "problem": "Given x=2<sup>2</sup>/<sub>5</sub>-5<sup>3</sup>/<sub>4</sub><br>Calculate x",
+    "problem": "Given x=2<sup>2</sup>/<sub>{a}</sub>-5<sup>3</sup>/<sub>{b}</sub><br>Calculate x",
     "answer_type": "number",
-    "variables":{},
-    "formula": "2+2/5 - 5-3/4",
+    "variables": {
+      "a": { "mean": 6, "range": 1 "decimals": 0 },
+      "b": { "mean": 8 "range": 1, "decimals": 0 },
+    },
+    "formula": "2+2/{a} - 5-3/{b}",
     "decimals": 3,
     "accuracy": 0.01,
-    "explanation": "type the calculator: 2 + 2 &divide; 5 - 5 -3 &divide; 4 = Then input the answer -3.35"
+    "explanation": ""
   },
   {
     "id": "q6",
