@@ -94,7 +94,12 @@ function showQuestion(randomizeVars = true) {
     try {
       const replaced = substitute(expr, displayValues);
       const result = eval(replaced);
-      return result;
+      // old
+      // return result;
+      // new
+      return formatNumber(result);
+
+      //
     } catch (e) {
       return `[Error: ${expr}]`;
     }
