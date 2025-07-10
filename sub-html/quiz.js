@@ -7,10 +7,8 @@ document.getElementById("quiz-title").textContent = decodeURIComponent(title);
 let problems = [], selected = [], current = 0, score = 0, startTime = 0, endTime = 0, totalTime = 0, timePerQuestion = [];
 
 function formatNumber(n) {
-  if (typeof n !== "number") return n;
-  return n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 20 });
+  return n.toLocaleString("en-US");
 }
-
 
 fetch(file)
   .then(res => res.json())
@@ -67,49 +65,40 @@ function generateValues(specs, randomize = true) {
   }
   return vals;
 }
+// showQuestion *****************
 function showQuestion(randomizeVars = true) {
   const q = selected[current];
   q.__start = Date.now();
   const box = document.getElementById("question-box");
   box.innerHTML = "";
-  // Generate raw values
-  q.__values = generateValues(q.variables || {}, randomizeVars);
-  // Create display values (for question text only)
-  const displayValues = q.__values;
-  // Format and inject the question text
-  let text = q.problem;
-  // old
-  for (const [k, v] of Object.entries(displayValues)) {
-    text = text.replaceAll(`{${k}}`, v);
-  }
-  // new
-  // for (const [k, v] of Object.entries(displayValues)) {
-  //   const formatted = v < 0 ? `− ${formatNumber(Math.abs(v))}` : formatNumber(v);
-  //   text = text.replaceAll(`{${k}}`, formatted);
-  // }
-  // end of new
 
-  // Handle computed expressions like {= {a} * 100}
+  // Generate values
+  q.__values = generateValues(q.variables || {}, randomizeVars);
+  const displayValues = q.__values;
+
+  // Inject variable values into problem text
+  let text = q.problem;
+  for (const [k, v] of Object.entries(displayValues)) {
+    text = text.replaceAll(`{${k}}`, formatNumber(v));
+  }
+
+  // Handle inline expressions like {=a * 100}
   text = text.replace(/\{=([^}]+)\}/g, (_, expr) => {
     try {
       const replaced = substitute(expr, displayValues);
       const result = eval(replaced);
-      // old
-      // return result;
-      // new
       return formatNumber(result);
-
-      // new
     } catch (e) {
       return `[Error: ${expr}]`;
     }
   });
-  // Display-friendly fixups
-  text = text.replaceAll("+-", "-");  // fix for displaying '+ -2' as '-2'
-  text = text.replaceAll("--", "+");  // fix for displaying '- -2' as '+2'
+
+  // Clean up awkward signs
+  text = text.replaceAll("+-", "-").replaceAll("--", "+");
+
   box.innerHTML += `<p><strong>Q${current + 1}:</strong> ${text}</p>`;
 
-  // Handle number-type question
+  // === Answer input ===
   if (q.answer_type === "number") {
     q.__expr = substitute(q.formula, q.__values);
     const decimal = q.decimals ? ` (${q.decimals} digits of decimal)` : "";
@@ -117,7 +106,6 @@ function showQuestion(randomizeVars = true) {
     box.innerHTML += `<label>The answer = <input type="number" id="ans" step="any">${unit}${decimal}</label>`;
   }
 
-  // Handle multiple choice question
   else if (q.answer_type === "mc") {
     let choices = [];
     let correct = q.correct_choice;
@@ -130,12 +118,12 @@ function showQuestion(randomizeVars = true) {
     }
     q.__correct = correct;
     if (q.shuffle_choices !== false) choices = shuffle(choices);
+
     choices.forEach((opt, i) => {
       box.innerHTML += `<label><input type="radio" name="ans" value="${opt}"> ${opt}</label>`;
     });
   }
 
-  // Handle subquestions
   else if (q.answer_type === "subquestions") {
     q.__context = { ...q.__values };
     q.__subq = q.subquestions.map((s, i) => {
@@ -144,19 +132,20 @@ function showQuestion(randomizeVars = true) {
       return { ...s, label, __expr: expr };
     });
     q.__subq.forEach((s, i) => {
-      s.label = s.label.replaceAll("+-", "-");  
+      s.label = s.label.replaceAll("+-", "-").replaceAll("--", "+");
       const decimal = s.decimals ? ` (${s.decimals} digits of decimal)` : "";
       const unit = s.unit ? ` ${s.unit}` : "";
       box.innerHTML += `<label>${s.label}</label><label><input type="number" id="sub-${i}" step="any">${unit}${decimal}</label>`;
-    });  
+    });
   }
+
+  // Focus the first input box
   setTimeout(() => {
-      const firstInput = box.querySelector("input");
-      if (firstInput) firstInput.focus();
-  }, 0);  
+    const firstInput = box.querySelector("input");
+    if (firstInput) firstInput.focus();
+  }, 0);
 }
-
-
+// end of showQuestion *****************
 document.getElementById("next-btn").onclick = () => {
   const q = selected[current];
   const now = Date.now();
@@ -221,29 +210,34 @@ document.getElementById("next-btn").onclick = () => {
   }
 };
 
+// showReview ************
 function showReview() {
   const review = document.getElementById("review-content");
   review.innerHTML = "";
+
   selected.forEach((q, idx) => {
     let questionText = q.problem;
-    for (const [k, v] of Object.entries(q.__values)) {
-      const display = v < 0 ? `− ${Math.abs(v)}` : `${v}`;
-      questionText = questionText.replaceAll(`{${k}}`, display);
-    }
-  // Evaluate inline expressions like {= ... } in the review text
-  questionText = questionText.replace(/\{=([^}]+)\}/g, (_, expr) => {
-  try {
-      const replaced = substitute(expr, q.__values);
-      const result = eval(replaced);
-      // return result; old
-      return formatNumber(result);
 
-    } catch (e) {
-      return `[Error: ${expr}]`;
+    // Inject displayed variable values
+    for (const [k, v] of Object.entries(q.__values)) {
+      questionText = questionText.replaceAll(`{${k}}`, formatNumber(v));
     }
-  });
-    
+
+    // Handle inline expressions like {=...}
+    questionText = questionText.replace(/\{=([^}]+)\}/g, (_, expr) => {
+      try {
+        const replaced = substitute(expr, q.__values);
+        const result = eval(replaced);
+        return formatNumber(result);
+      } catch (e) {
+        return `[Error: ${expr}]`;
+      }
+    });
+
+    questionText = questionText.replaceAll("+-", "-").replaceAll("--", "+");
+
     review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
+
     if (q.answer_type === "subquestions") {
       const ctx = { ...q.__values };
       q.__subq.forEach((s, i) => {
@@ -256,31 +250,23 @@ function showReview() {
         } catch (e) {
           rounded = "Invalid expression: " + s.formula;
         }
-        //old
-        // const correct = typeof rounded === "number" ? rounded.toFixed(s.decimals) : rounded;
-        // const user = typeof s.__user === "number" ? s.__user.toFixed(s.decimals) : s.__user;
-        // new
         const correct = typeof rounded === "number" ? formatNumber(+rounded.toFixed(s.decimals)) : rounded;
         const user = typeof s.__user === "number" ? formatNumber(+s.__user.toFixed(s.decimals)) : s.__user;
-        // end of new
         const isCorrect = typeof rounded === "number" && Math.abs(s.__user - rounded) <= s.accuracy;
         review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
       });
-      // old
-    // } else {
-    //   const correct = typeof q.__correct === "number" ? q.__correct.toFixed(q.decimals || 2) : q.__correct;
-    //   const user = typeof q.__user === "number" ? q.__user.toFixed(q.decimals || 2) : q.__user;
-    //   const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
-    //   review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
-    // }
-    // review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
-    // new
-      } else {
-  const correct = typeof q.__correct === "number" ? formatNumber(+q.__correct.toFixed(q.decimals || 2)) : q.__correct;
-  const user = typeof q.__user === "number" ? formatNumber(+q.__user.toFixed(q.decimals || 2)) : q.__user;
-  const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
-  review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
-}
-      // end of new
+
+    } else {
+      const correct = typeof q.__correct === "number" ? formatNumber(+q.__correct.toFixed(q.decimals || 2)) : q.__correct;
+      const user = typeof q.__user === "number" ? formatNumber(+q.__user.toFixed(q.decimals || 2)) : q.__user;
+      const isCorrect = q.answer_type === "mc"
+        ? q.__user == q.__correct
+        : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
+
+      review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
+    }
+
+    review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
   });
 }
+// end of showReview *******************
