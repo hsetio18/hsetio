@@ -172,7 +172,6 @@
                 "decimals": 0
             }
         },
-        
         "formula": "({a}*100000-625000)/625000*100",
         "unit": "%",
         "decimals": 3,
@@ -181,13 +180,26 @@
     },
     {
         "id": "q9",
-        "problem": "Up to a purchase of 5 kg, the price of an item is Rp 5000 per gram. Beyond that, the price is discounted by 5%. A customer buys 6 kg. How many rupiahs should he/she pay?",
+        "problem": "Up to a purchase of 5 kg, the price of an item is Rp {={a}*100} per gram. Beyond that, the price is discounted by {b}%. A customer buys 6 kg. How many rupiahs should he/she pay?",
         "answer_type": "number",
-        "formula": "5*5000*1000+(6-5)*5000*(1-5/100)*1000",
+        "variables": {
+            "a": {
+                "mean": 50,
+                "range": 10,
+                "decimals": 0
+            },
+            "b": {
+                "mean": 6.2,
+                "range": 3,
+                "decimals": 1
+            }
+        },
+        
+        "formula": "5*{a}*100*1000+(6-5)*5000*(1-{b}/100)*1000",
         "unit": "Rp",
-        "decimals": 1,
-        "accuracy": 0.01,
-        "explanation": "5*5000*1000+(6-5)*5000*(1-5/100)*1000"
+        "decimals": 2,
+        "accuracy": 0.1,
+        "explanation": "study quiz 01"
     },
     {
         "id": "q10",
