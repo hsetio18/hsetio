@@ -163,13 +163,21 @@
     },
     {
         "id": "q8",
-        "problem": "The price of gold 10 years ago was Rp 625,000 per gram. If the current price is Rp 2,000,000 per gram, what is the percentage increase in the price of gold over the past 10 years?",
+        "problem": "The price of gold 10 years ago was Rp 625,000 per gram. If the current price is Rp {={a}*100000} per gram, what is the percentage increase in the price of gold over the past 10 years?",
         "answer_type": "number",
-        "formula": "(2000000-625000)/625000*100",
+        "variables": {
+            "a": {
+                "mean": 19,
+                "range": 3,
+                "decimals": 0
+            }
+        },
+        
+        "formula": "({a}*100000-625000)/625000*100",
         "unit": "%",
-        "decimals": 1,
+        "decimals": 3,
         "accuracy": 0.01,
-        "explanation": "(2000000-625000)/625000*100"
+        "explanation": ""
     },
     {
         "id": "q9",
