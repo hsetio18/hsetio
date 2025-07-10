@@ -55,19 +55,6 @@
     "explanation": " Exponential takes precedence over divisiom."
   },
   {
-    "id": "q5",
-    "problem": "Given x=2<sup>2</sup>/<sub>{a}</sub>-5<sup>3</sup>/<sub>{b}</sub><br>Calculate x",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 6, "range": 1 "decimals": 0 },
-      "b": { "mean": 8 "range": 1, "decimals": 0 }
-    },
-    "formula": "2+2/{a} - 5-3/{b}",
-    "decimals": 3,
-    "accuracy": 0.01,
-    "explanation": ""
-  },
-  {
     "id": "q6",
     "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
     "answer_type": "number",
