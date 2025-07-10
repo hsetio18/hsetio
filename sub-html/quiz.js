@@ -235,7 +235,9 @@ function showReview() {
   try {
       const replaced = substitute(expr, q.__values);
       const result = eval(replaced);
-      return result;
+      // return result; old
+      return formatNumber(result);
+
     } catch (e) {
       return `[Error: ${expr}]`;
     }
@@ -279,7 +281,6 @@ function showReview() {
   const isCorrect = q.answer_type === "mc" ? q.__user == q.__correct : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
   review.innerHTML += `<p>Your answer: ${user}<br>Correct answer: ${correct}<br>${q.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
 }
-
       // end of new
   });
 }
