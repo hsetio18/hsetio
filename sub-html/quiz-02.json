@@ -1,141 +1,217 @@
 [
-  {
-    "id": "q1",
-    "problem": "Evaluate {a}+{b}*{c}",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 10.2, "range": 2, "decimals": 1 },
-      "b": { "mean": -4, "range": 2, "decimals": 1 },
-      "c": { "mean": 6.5, "range": 2, "decimals": 1 }
-    },
-    "formula": "{a} + {b}*{c}",
-    "decimals": 4,
-    "accuracy": 0.001,
-    "explanation": "Multiplication takes precedence over addition"
-  },
-  {    
-    "id": "q2",
-    "problem": "Evaluate ({a}+{b})*{c}",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 10.2, "range": 2, "decimals": 1 },
-      "b": { "mean": -4.3, "range": 2, "decimals": 1 },
-      "c": { "mean": 6.5, "range": 2, "decimals": 1 }
-    },
-    "formula": "({a} + {b})*{c}",
-    "decimals": 4,
-    "accuracy": 0.001,    
-    "explanation": "Bracket takes precedence over multiplication."
-  },
-  {
-    "id": "q3",
-    "problem": "Evaluate {a}/{b}*{c}",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 10.2, "range": 2, "decimals": 1 },
-      "b": { "mean": -4.3, "range": 2, "decimals": 1 },
-      "c": { "mean": 6.5, "range": 2, "decimals": 1 }
-    },
-    "formula": "{a} / {b}*{c}",
-    "decimals": 4,
-    "accuracy": 0.001,        
-    "explanation": "Left to right for same level of division and multiplication."
-  },
-  {
-    "id": "q4",
-    "problem": "Evaluate {a}/{b}² ",
-    "answer_type": "number",
-    "variables": {
-      "a": { "mean": 10.2, "range": 2, "decimals": 1 },
-      "b": { "mean": 4.3, "range": 2, "decimals": 1 }
-    },
-    "formula": "{a} / power({b},2)}",
-    "decimals": 4,
-    "accuracy": 0.001,    
-    "explanation": " Exponential takes precedence over divisiom."
-  },
-  {
-    "id": "q6",
-    "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
-    "answer_type": "number",
-    "variables": {},
-    "formula": "(3+sqrt(3*3-4*2*-1.5))/(2*2)",
-    "decimals": 3,
-    "accuracy": 0.01,
-    "explanation": "type the calculator: (3+sqrt(3*3-4*2*-1.5))/(2*2)"
-  },
-{
-  "id": "q7",
-  "problem": "Evaluate<br> <svg width='100' height='100'><text x='5' y='35'>2x-5</text><line x1='0' y1='43' x2='50' y2='43' style='stroke:black;stroke-width:1' /><text x='0' y='65'>-3+10x</text></svg>when x=4",
-  "answer_type": "number",
-  "formula": "0.0811",
-  "decimals": 4,
-  "accuracy": 0.001,
-  "explanation": "(2*4-5)/(-3+10*4)"
-},
-{
-  "id": "q8",
-  "problem": "The price of gold 10 years ago was Rp 625,000 per gram. If the current price is Rp 2,000,000 per gram, what is the percentage increase in the price of gold over the past 10 years?",
-  "answer_type": "number",
-  "formula": "(2000000-625000)/625000*100",
-  "unit": "%",        
-  "decimals": 1,
-  "accuracy": 0.01,
-  "explanation": "(2000000-625000)/625000*100"
-},
-{
-  "id": "q9",
-  "problem": "Up to a purchase of 5 kg, the price of an item is Rp 5000 per gram. Beyond that, the price is discounted by 5%. A customer buys 6 kg. How many rupiahs should he/she pay?",
-  "answer_type": "number",
-  "formula": "5*5000*1000+(6-5)*5000*(1-5/100)*1000",
-  "unit": "Rp",        
-  "decimals": 1,
-  "accuracy": 0.01,
-  "explanation": "5*5000*1000+(6-5)*5000*(1-5/100)*1000"
-},   
-{
-  "id": "q10",
-  "problem": "The price of gold has increased dramatically by 220% over the past 10 years. If the current price of gold is Rp 2 million per gram, what was its price 10 years ago?",
-  "answer_type": "number",
-  "formula": "2000000/(1+220/100)",
-  "unit": "Rp per gram",        
-  "decimals": 1,
-  "accuracy": 0.01,
-  "explanation": "2000000/(1+220/100)"
-}   ,
     {
-    "id": "q11",
-    "problem": "Solve a quadratic equation {a}x² +{b}x {c} = 0",
-    "answer_type": "subquestions",
-    "variables": {
-      "a": { "mean": 2, "range": 1, "decimals": 1 },
-      "b": { "mean": -5, "range": 2, "decimals": 1 },
-      "c": { "mean": -3, "range": 1, "decimals": 1 }
+        "id": "q1",
+        "problem": "Evaluate {a}+{b}*{c}",
+        "answer_type": "number",
+        "variables": {
+            "a": {
+                "mean": 10.2,
+                "range": 2,
+                "decimals": 1
+            },
+            "b": {
+                "mean": -4,
+                "range": 2,
+                "decimals": 1
+            },
+            "c": {
+                "mean": 6.5,
+                "range": 2,
+                "decimals": 1
+            }
+        },
+        "formula": "{a} + {b}*{c}",
+        "decimals": 4,
+        "accuracy": 0.001,
+        "explanation": "Multiplication takes precedence over addition"
     },
-    "subquestions": [
-      {
-        "label": "a) What is the discriminant?",
-        "id": "d",
-        "formula": "{b}*{b} - 4*{a}*{c}",
-        "decimals": 2,
+    {
+        "id": "q2",
+        "problem": "Evaluate ({a}+{b})*{c}",
+        "answer_type": "number",
+        "variables": {
+            "a": {
+                "mean": 10.2,
+                "range": 2,
+                "decimals": 1
+            },
+            "b": {
+                "mean": -4.3,
+                "range": 2,
+                "decimals": 1
+            },
+            "c": {
+                "mean": 6.5,
+                "range": 2,
+                "decimals": 1
+            }
+        },
+        "formula": "({a} + {b})*{c}",
+        "decimals": 4,
+        "accuracy": 0.001,
+        "explanation": "Bracket takes precedence over multiplication."
+    },
+    {
+        "id": "q3",
+        "problem": "Evaluate {a}/{b}*{c}",
+        "answer_type": "number",
+        "variables": {
+            "a": {
+                "mean": 10.2,
+                "range": 2,
+                "decimals": 1
+            },
+            "b": {
+                "mean": -4.3,
+                "range": 2,
+                "decimals": 1
+            },
+            "c": {
+                "mean": 6.5,
+                "range": 2,
+                "decimals": 1
+            }
+        },
+        "formula": "{a} / {b}*{c}",
+        "decimals": 4,
+        "accuracy": 0.001,
+        "explanation": "Left to right for same level of division and multiplication."
+    },
+    {
+        "id": "q4",
+        "problem": "Evaluate {a}/{b}² ",
+        "answer_type": "number",
+        "variables": {
+            "a": {
+                "mean": 10.2,
+                "range": 2,
+                "decimals": 1
+            },
+            "b": {
+                "mean": 4.3,
+                "range": 2,
+                "decimals": 1
+            }
+        },
+        "formula": "{a} / power({b},2)}",
+        "decimals": 4,
+        "accuracy": 0.001,
+        "explanation": " Exponential takes precedence over divisiom."
+    },
+    {
+        "id": "q5",
+        "problem": "Given x=2<sup>2</sup>/<sub>{a}</sub>-5<sup>3</sup>/<sub>{b}</sub><br>Calculate x",
+        "answer_type": "number",
+        "variables": {
+            "a": {
+                "mean": 5,
+                "range": 1,
+                "decimals": 0
+            },
+            "b": {
+                "mean": 8,
+                "range": 1,
+                "decimals": 0
+            }
+        },
+        "formula": "2+2/{a} - 5-3/{b}",
+        "decimals": 3,
         "accuracy": 0.01,
-        "explanation": "Discriminant d = b² - 4ac"
-      },
-      {
-        "label": "b) What is the smaller root?",
-        "formula": "Math.min((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-        "decimals": 2,
+        "explanation": ""
+    },
+    {
+        "id": "q6",
+        "problem": "Given abc formula:<img src='../gambar/x1abc.jpg'><br>Calculate x1 when a=2, b=-3 and c=-1.5",
+        "answer_type": "number",
+        "variables": {},
+        "formula": "(3+sqrt(3*3-4*2*-1.5))/(2*2)",
+        "decimals": 3,
         "accuracy": 0.01,
-        "explanation": "Smaller root = min of the two roots"
-      },
-      {
-        "label": "c) What is the larger root?",
-        "formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-        "decimals": 2,
+        "explanation": "type the calculator: (3+sqrt(3*3-4*2*-1.5))/(2*2)"
+    },
+    {
+        "id": "q7",
+        "problem": "Evaluate<br> <svg width='100' height='100'><text x='5' y='35'>2x-5</text><line x1='0' y1='43' x2='50' y2='43' style='stroke:black;stroke-width:1' /><text x='0' y='65'>-3+10x</text></svg>when x=4",
+        "answer_type": "number",
+        "formula": "0.0811",
+        "decimals": 4,
+        "accuracy": 0.001,
+        "explanation": "(2*4-5)/(-3+10*4)"
+    },
+    {
+        "id": "q8",
+        "problem": "The price of gold 10 years ago was Rp 625,000 per gram. If the current price is Rp 2,000,000 per gram, what is the percentage increase in the price of gold over the past 10 years?",
+        "answer_type": "number",
+        "formula": "(2000000-625000)/625000*100",
+        "unit": "%",
+        "decimals": 1,
         "accuracy": 0.01,
-        "explanation": "Larger root = max of the two roots"
-      }
-    ]
-  }
-
+        "explanation": "(2000000-625000)/625000*100"
+    },
+    {
+        "id": "q9",
+        "problem": "Up to a purchase of 5 kg, the price of an item is Rp 5000 per gram. Beyond that, the price is discounted by 5%. A customer buys 6 kg. How many rupiahs should he/she pay?",
+        "answer_type": "number",
+        "formula": "5*5000*1000+(6-5)*5000*(1-5/100)*1000",
+        "unit": "Rp",
+        "decimals": 1,
+        "accuracy": 0.01,
+        "explanation": "5*5000*1000+(6-5)*5000*(1-5/100)*1000"
+    },
+    {
+        "id": "q10",
+        "problem": "The price of gold has increased dramatically by 220% over the past 10 years. If the current price of gold is Rp 2 million per gram, what was its price 10 years ago?",
+        "answer_type": "number",
+        "formula": "2000000/(1+220/100)",
+        "unit": "Rp per gram",
+        "decimals": 1,
+        "accuracy": 0.01,
+        "explanation": "2000000/(1+220/100)"
+    },
+    {
+        "id": "q11",
+        "problem": "Solve a quadratic equation {a}x² +{b}x {c} = 0",
+        "answer_type": "subquestions",
+        "variables": {
+            "a": {
+                "mean": 2,
+                "range": 1,
+                "decimals": 1
+            },
+            "b": {
+                "mean": -5,
+                "range": 2,
+                "decimals": 1
+            },
+            "c": {
+                "mean": -3,
+                "range": 1,
+                "decimals": 1
+            }
+        },
+        "subquestions": [
+            {
+                "label": "a) What is the discriminant?",
+                "id": "d",
+                "formula": "{b}*{b} - 4*{a}*{c}",
+                "decimals": 2,
+                "accuracy": 0.01,
+                "explanation": "Discriminant d = b² - 4ac"
+            },
+            {
+                "label": "b) What is the smaller root?",
+                "formula": "Math.min((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
+                "decimals": 2,
+                "accuracy": 0.01,
+                "explanation": "Smaller root = min of the two roots"
+            },
+            {
+                "label": "c) What is the larger root?",
+                "formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
+                "decimals": 2,
+                "accuracy": 0.01,
+                "explanation": "Larger root = max of the two roots"
+            }
+        ]
+    }
 ]
