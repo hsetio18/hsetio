@@ -6,6 +6,12 @@ document.getElementById("quiz-title").textContent = decodeURIComponent(title);
 
 let problems = [], selected = [], current = 0, score = 0, startTime = 0, endTime = 0, totalTime = 0, timePerQuestion = [];
 
+function formatNumber(n) {
+  if (typeof n !== "number") return n;
+  return n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 20 });
+}
+
+
 fetch(file)
   .then(res => res.json())
   .then(data => {
@@ -72,9 +78,17 @@ function showQuestion(randomizeVars = true) {
   const displayValues = q.__values;
   // Format and inject the question text
   let text = q.problem;
+  // old
+  // for (const [k, v] of Object.entries(displayValues)) {
+  //   text = text.replaceAll(`{${k}}`, v);
+  // }
+  // new
   for (const [k, v] of Object.entries(displayValues)) {
-    text = text.replaceAll(`{${k}}`, v);
+    const formatted = v < 0 ? `− ${formatNumber(Math.abs(v))}` : formatNumber(v);
+    text = text.replaceAll(`{${k}}`, formatted);
   }
+  // end of new
+
   // Handle computed expressions like {= {a} * 100}
   text = text.replace(/\{=([^}]+)\}/g, (_, expr) => {
     try {
