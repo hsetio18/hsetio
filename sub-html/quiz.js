@@ -1,4 +1,4 @@
-// quiz.js
+// quiz.js utk check json https://jsonlint.com/
 const params = new URLSearchParams(window.location.search);
 const file = params.get("file") || "quiz-01.json";
 const title = params.get("title") || "Quiz";
