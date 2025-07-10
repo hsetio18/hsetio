@@ -79,14 +79,14 @@ function showQuestion(randomizeVars = true) {
   // Format and inject the question text
   let text = q.problem;
   // old
-  // for (const [k, v] of Object.entries(displayValues)) {
-  //   text = text.replaceAll(`{${k}}`, v);
-  // }
-  // new
   for (const [k, v] of Object.entries(displayValues)) {
-    const formatted = v < 0 ? `− ${formatNumber(Math.abs(v))}` : formatNumber(v);
-    text = text.replaceAll(`{${k}}`, formatted);
+    text = text.replaceAll(`{${k}}`, v);
   }
+  // new
+  // for (const [k, v] of Object.entries(displayValues)) {
+  //   const formatted = v < 0 ? `− ${formatNumber(Math.abs(v))}` : formatNumber(v);
+  //   text = text.replaceAll(`{${k}}`, formatted);
+  // }
   // end of new
 
   // Handle computed expressions like {= {a} * 100}
