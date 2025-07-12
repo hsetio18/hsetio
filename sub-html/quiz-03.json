@@ -53,7 +53,7 @@
     },
     {
         "id": "q3",
-        "problem": "Given<br><svg width='100' height='100'><text x='5' y='35'>{a}A-5</text><line x1='0' y1='43' x2='55' y2='43' style='stroke:black;stroke-width:1' /><text x='0' y='65'>-3+{b}A</text><text x='70' y='43'>2/3</text></svg> calculate A",
+        "problem": "Given<br><svg width='100' height='100'><text x='5' y='35'>{a}A-5</text><line x1='0' y1='43' x2='58' y2='43' style='stroke:black;stroke-width:1' /><text x='0' y='65'>-3+{b}A</text><text x='73' y='43'>=2/3</text></svg><br> calculate A",
         "answer_type": "number",
         "variables": {
             "a": {
@@ -67,7 +67,7 @@
                 "decimals": 1
             }
         },
-        "formula": "({a}*3.2)/(-3+{b}*3.2)",
+        "formula": "(-2/3*3+5)/({a}-2/3*{b})",
         "decimals": 4,
         "accuracy": 0.001,
         "explanation": ""
