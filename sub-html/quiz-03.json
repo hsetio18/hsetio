@@ -3,10 +3,10 @@
         "id": "q1",
         "problem": "Given 10x+5=4+2.5x, calculate x",
         "answer_type": "number",
-        "formula": "(4-5)/(10-7.5)",
+        "formula": "(4-5)/(10-2.5)",
         "decimals": 4,
         "accuracy": 0.001,
-        "explanation": "Arrange var in LHS and constanta to RHS<br>10x-2.5x=4-5<br>7.5x=-1<br>x=-1.5/7.5=-0.2//"
+        "explanation": "Arrange var in LHS and constanta to RHS<br>10x-2.5x=4-5<br>7.5x=-1<br>x=-1/7.5=-0.1333//"
     },
     {
         "id": "q1b",
