@@ -172,46 +172,29 @@
 	},
 	{
 		"id": "q5",
-		"problem": "Solve a quadratic equation {a}x² +{b}x +{c} = 0",
+		"problem": "Solve a quadratic equation 2x² -6x +3 = 0",
 		"answer_type": "subquestions",
-		"variables": {
-			"a": {
-				"mean": 2,
-				"range": 1,
-				"decimals": 1
-			},
-			"b": {
-				"mean": -5,
-				"range": 2,
-				"decimals": 1
-			},
-			"c": {
-				"mean": -3,
-				"range": 1,
-				"decimals": 1
-			}
-		},
 		"subquestions": [
 			{
 				"label": "a) What is the discriminant?",
 				"id": "d",
-				"formula": "{b}*{b} - 4*{a}*{c}",
-				"decimals": 2,
-				"accuracy": 0.01,
-				"explanation": "Discriminant d = b² - 4ac"
+				"formula": "6*6 - 4*2*3",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "Discriminant d = b² - 4ac=(-6)^2-4*2*3"
 			},
 			{
 				"label": "b) What is the smaller root?",
-				"formula": "Math.min((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-				"decimals": 2,
-				"accuracy": 0.01,
+				"formula": "Math.min((6 + sqrt({d})) / (2*2), (6 - sqrt({d})) / (2*2))",
+				"decimals": 4,
+				"accuracy": 0.001,
 				"explanation": "Smaller root = min of the two roots"
 			},
 			{
 				"label": "c) What is the larger root?",
-				"formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-				"decimals": 2,
-				"accuracy": 0.01,
+				"formula": "Math.max((6 + sqrt({d})) / (2*2), (6 - sqrt({d})) / (2*2))",
+				"decimals": 4,
+				"accuracy": 0.001,
 				"explanation": "Larger root = max of the two roots"
 			}
 		]
