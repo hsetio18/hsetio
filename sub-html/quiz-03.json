@@ -181,21 +181,21 @@
 				"formula": "6*6 - 4*2*3",
 				"decimals": 4,
 				"accuracy": 0.001,
-				"explanation": "Discriminant d = b² - 4ac=(-6)^2-4*2*3"
+				"explanation": "Discriminant d = b² - 4ac=(-6)^2-4*2*3=12//"
 			},
 			{
 				"label": "b) What is the smaller root?",
 				"formula": "Math.min((6 + sqrt({d})) / (2*2), (6 - sqrt({d})) / (2*2))",
 				"decimals": 4,
 				"accuracy": 0.001,
-				"explanation": "Smaller root = min of the two roots"
+				"explanation": "x1=(6+√12)/(2*2)=2.366<br>x1=(6+√12)/(2*2)=0.634<br>Smaller root = 0.634"
 			},
 			{
 				"label": "c) What is the larger root?",
 				"formula": "Math.max((6 + sqrt({d})) / (2*2), (6 - sqrt({d})) / (2*2))",
 				"decimals": 4,
 				"accuracy": 0.001,
-				"explanation": "Larger root = max of the two roots"
+				"explanation": "Larger root = 2.366"
 			}
 		]
 	},
