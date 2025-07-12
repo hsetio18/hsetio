@@ -117,6 +117,28 @@
         "explanation": ""
     },
     {
+        "id": "q4",
+        "problem": "Given TWO euations:<br>2x+2.5y=5<br>-4x+5y=2<br>Calculate x and y",
+        "answer_type": "subquestions",
+        "subquestions": [
+            {
+            {
+                "label": "a) x=?",
+                "formula": "(5*5-5)/(2*5+10)",
+                "decimals": 4,
+                "accuracy": 0.001,
+                "explanation": "(1) 2x+2.5y=5<br>(2) -4x+5y=2<br>2*(1) 4x+5y=10<br>2*(1)-(2)<br>8x=8<br?x=8/8=1//"
+            },
+            {
+                "label": "b) y=?",
+                "formula": "(20+2*2)/(2*5+10)",
+                "decimals": 4,
+                "accuracy": 0.001,
+                "explanation": "Substitude x=1 to (1)<br>2*1+2.5y=5<br>2.5y=5-2<br>y=(5-2)/2.5=1.2//"
+            }
+        ]
+    },
+    {
         "id": "q10",
         "problem": "Solve a quadratic equation {a}x² +{b}x {c} = 0",
         "answer_type": "subquestions",
