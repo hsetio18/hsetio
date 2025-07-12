@@ -20,7 +20,7 @@
                 "decimals": 1
             }
         },
-        "formula": "({b}-5)/({a}-*{c})",
+        "formula": "({b}-5)/({a}-{c})",
         "decimals": 4,
         "accuracy": 0.001,
         "explanation": "Arrange var in LHS and constanta to RHS"
