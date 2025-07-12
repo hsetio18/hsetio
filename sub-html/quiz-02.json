@@ -203,13 +203,25 @@
     },
     {
         "id": "q10",
-        "problem": "The price of gold has increased dramatically by 220% over the past 10 years. If the current price of gold is Rp 2 million per gram, what was its price 10 years ago?",
+        "problem": "The price of gold has increased dramatically by {={a}*10}% over the past 10 years. If the current price of gold is Rp {b} million per gram, what was its price 10 years ago?",
         "answer_type": "number",
-        "formula": "2000000/(1+220/100)",
+        "variables": {
+            "a": {
+                "mean": 22,
+                "range": 5,
+                "decimals": 1
+            },
+            "b": {
+                "mean": 2.1,
+                "range": 0.5,
+                "decimals": 1
+            }
+        },
+        "formula": "{b}*1000000/(1+{a}*10/100)",
         "unit": "Rp per gram",
         "decimals": 1,
         "accuracy": 0.01,
-        "explanation": "2000000/(1+220/100)"
+        "explanation": ""
     },
     {
         "id": "q11",
