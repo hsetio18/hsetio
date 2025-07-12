@@ -122,7 +122,6 @@
         "answer_type": "subquestions",
         "subquestions": [
             {
-            {
                 "label": "a) x=?",
                 "formula": "(5*5-5)/(2*5+10)",
                 "decimals": 4,
