@@ -179,11 +179,15 @@ document.getElementById("next-btn").onclick = () => {
       try {
         const expr = substitute(s.formula, q.__context);
         const val = eval(expr);
-        const rounded = parseFloat(val.toFixed(s.decimals));
+        // const rounded = parseFloat(val.toFixed(s.decimals));
+        const rounded = val;  // Keep raw number; format only when displaying
+        // JUST EDIT
         if (Math.abs(userVal - rounded) <= s.accuracy) correctSub++;
         if (s.id) q.__context[s.id] = rounded;
         s.__user = userVal;
-        s.__correct = rounded;
+        // s.__correct = rounded;
+        s.__correct = val;  // Not rounded here
+        // JUST EDIT 
       } catch (e) {
         s.__user = userVal;
         s.__correct = "Invalid expression: " + s.formula;
@@ -250,8 +254,12 @@ function showReview() {
         } catch (e) {
           rounded = "Invalid expression: " + s.formula;
         }
-        const correct = typeof rounded === "number" ? formatNumber(+rounded.toFixed(s.decimals)) : rounded;
-        const user = typeof s.__user === "number" ? formatNumber(+s.__user.toFixed(s.decimals)) : s.__user;
+        // const correct = typeof rounded === "number" ? formatNumber(+rounded.toFixed(s.decimals)) : rounded;
+        const correct = typeof rounded === "number" ? formatNumber(rounded.toFixed(s.decimals)) : rounded;
+        // JUST EDIT
+        // const user = typeof s.__user === "number" ? formatNumber(+s.__user.toFixed(s.decimals)) : s.__user;
+        const user = typeof s.__user === "number" ? formatNumber(s.__user.toFixed(s.decimals)) : s.__user;
+        // JUST EDIT
         const isCorrect = typeof rounded === "number" && Math.abs(s.__user - rounded) <= s.accuracy;
         review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
       });
