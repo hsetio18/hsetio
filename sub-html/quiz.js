@@ -238,10 +238,12 @@ function showReview() {
       }
     });
 
+    // Cleanup awkward signs
     questionText = questionText.replaceAll("+-", "-").replaceAll("--", "+");
 
     review.innerHTML += `<hr><p><strong>Q${idx + 1}:</strong> ${questionText}</p>`;
 
+    // Handle subquestions
     if (q.answer_type === "subquestions") {
       const ctx = { ...q.__values };
       q.__subq.forEach((s, i) => {
@@ -249,24 +251,29 @@ function showReview() {
         try {
           const expr = substitute(s.formula, ctx);
           val = eval(expr);
-          rounded = parseFloat(val.toFixed(s.decimals));
-          if (s.id) ctx[s.id] = rounded;
+          rounded = val.toFixed(s.decimals);  // Keep as string with trailing zeros
+          if (s.id) ctx[s.id] = parseFloat(rounded);  // store as number for later use
         } catch (e) {
           rounded = "Invalid expression: " + s.formula;
         }
-        // const correct = typeof rounded === "number" ? formatNumber(+rounded.toFixed(s.decimals)) : rounded;
-        const correct = typeof rounded === "number" ? formatNumber(rounded.toFixed(s.decimals)) : rounded;
-        // JUST EDIT
-        // const user = typeof s.__user === "number" ? formatNumber(+s.__user.toFixed(s.decimals)) : s.__user;
+
+        const correct = typeof val === "number" ? formatNumber(rounded) : rounded;
         const user = typeof s.__user === "number" ? formatNumber(s.__user.toFixed(s.decimals)) : s.__user;
-        // JUST EDIT
-        const isCorrect = typeof rounded === "number" && Math.abs(s.__user - rounded) <= s.accuracy;
+        const isCorrect = typeof val === "number" && Math.abs(s.__user - parseFloat(rounded)) <= s.accuracy;
+
         review.innerHTML += `<p>${s.label}<br>Your answer: ${user}<br>Correct answer: ${correct}<br>${s.explanation || ""}<br>${isCorrect ? "✅ Correct" : "❌ Incorrect"}</p>`;
       });
 
     } else {
-      const correct = typeof q.__correct === "number" ? formatNumber(+q.__correct.toFixed(q.decimals || 2)) : q.__correct;
-      const user = typeof q.__user === "number" ? formatNumber(+q.__user.toFixed(q.decimals || 2)) : q.__user;
+      // Single-answer question (number or mc)
+      const correct = typeof q.__correct === "number"
+        ? formatNumber(q.__correct.toFixed(q.decimals || 2))
+        : q.__correct;
+
+      const user = typeof q.__user === "number"
+        ? formatNumber(q.__user.toFixed(q.decimals || 2))
+        : q.__user;
+
       const isCorrect = q.answer_type === "mc"
         ? q.__user == q.__correct
         : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
@@ -277,4 +284,5 @@ function showReview() {
     review.innerHTML += `<p>Time: ${timePerQuestion[idx].toFixed(1)} sec</p>`;
   });
 }
+
 // end of showReview *******************
