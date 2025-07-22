@@ -160,15 +160,15 @@
 			{
 				"label": "b) What is the smaller root?",
 				"formula": "Math.min((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-				"decimals": 2,
-				"accuracy": 0.01,
+				"decimals": 4,
+				"accuracy": 0.001,
 				"explanation": "Smaller root = min of the two roots"
 			},
 			{
 				"label": "c) What is the larger root?",
 				"formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
-				"decimals": 2,
-				"accuracy": 0.01,
+				"decimals": 4,
+				"accuracy": 0.001,
 				"explanation": "Larger root = max of the two roots"
 			}
 		]
