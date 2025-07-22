@@ -1,0 +1,249 @@
+[
+	{
+		"id": "q1",
+		"problem": "Given 10x+5=4+2.5x, calculate x",
+		"answer_type": "number",
+		"formula": "(4-5)/(10-2.5)",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": "Arrange var in LHS and constanta to RHS<br>10x-2.5x=4-5<br>7.5x=-1<br>x=-1/7.5=-0.1333//"
+	},
+	{
+		"id": "q1b",
+		"problem": "Given {a}x+5={b}+{c}x, calculate x",
+		"answer_type": "number",
+		"variables": {
+			"a": {
+				"mean": 10.2,
+				"range": 3,
+				"decimals": 1
+			},
+			"b": {
+				"mean": 4,
+				"range": 2,
+				"decimals": 1
+			},
+			"c": {
+				"mean": 2.5,
+				"range": 1,
+				"decimals": 1
+			}
+		},
+		"formula": "({b}-5)/({a}-{c})",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": "Arrange var in LHS and constanta to RHS"
+	},
+	{
+		"id": "q2",
+		"problem": "Given 4P+5=8.4+1.5P, calculate P",
+		"answer_type": "number",
+		"variables": {
+			"a": {
+				"mean": 4.2,
+				"range": 2,
+				"decimals": 1
+			},
+			"b": {
+				"mean": 8.4,
+				"range": 2,
+				"decimals": 1
+			},
+			"c": {
+				"mean": 1.5,
+				"range": 1,
+				"decimals": 1
+			}
+		},
+		"formula": "(8.4-5)/(4-1.5)",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": "4P-1.5P=8.4-5<BR>2.5P=3.4<BR>P=3.4/2.5=1.36"
+	},
+	{
+		"id": "q2b",
+		"problem": "Given {a}P+5={b}+{c}P, calculate P",
+		"answer_type": "number",
+		"variables": {
+			"a": {
+				"mean": 4.2,
+				"range": 2,
+				"decimals": 1
+			},
+			"b": {
+				"mean": 8.4,
+				"range": 2,
+				"decimals": 1
+			},
+			"c": {
+				"mean": 1.5,
+				"range": 1,
+				"decimals": 1
+			}
+		},
+		"formula": "({b}-5)/({a}-{c})",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": "Arrange var in LHS and constanta to RHS"
+	},
+	{
+		"id": "q3",
+		"problem": "Given<br><svg width='200' height='100'><text x='5' y='35'>3A-5</text><line x1='0' y1='43' x2='58' y2='43' style='stroke:black;stroke-width:1' /><text x='0' y='65'>-3+2A</text><text x='73' y='43'>=2/3</text></svg><br> calculate A",
+		"answer_type": "number",
+		"formula": "(-2/3*3+5)/(3-2/3*2)",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": "(3A-5)3=2(-3+2A)<BR>9A-15=-6+4A<BR>9A-4A=-6+15<BR>5A=9<BR>A=9/5=1.8//"
+	},
+	{
+		"id": "q3b",
+		"problem": "Given<br><svg width='200' height='100'><text x='5' y='35'>{a}A-5</text><line x1='0' y1='43' x2='58' y2='43' style='stroke:black;stroke-width:1' /><text x='0' y='65'>-3+{b}A</text><text x='73' y='43'>=2/3</text></svg><br> calculate A",
+		"answer_type": "number",
+		"variables": {
+			"a": {
+				"mean": 3,
+				"range": 1,
+				"decimals": 1
+			},
+			"b": {
+				"mean": 3,
+				"range": 1,
+				"decimals": 1
+			}
+		},
+		"formula": "(-2/3*3+5)/({a}-2/3*{b})",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": ""
+	},
+	{
+		"id": "q4",
+		"problem": "Given TWO euations:<br>2x+2.5y=5<br>-4x+5y=2<br>Calculate x and y",
+		"answer_type": "subquestions",
+		"subquestions": [
+			{
+				"label": "a) x=?",
+				"formula": "(5*5-5)/(2*5+10)",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "(1) 2x+2.5y=5<br>(2) -4x+5y=2<br>2*(1) 4x+5y=10<br>2*(1)-(2)<br>8x=8<br>x=8/8=1//"
+			},
+			{
+				"label": "b) y=?",
+				"formula": "(20+2*2)/(2*5+10)",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "Substitude x=1 to (1)<br>2*1+2.5y=5<br>2.5y=5-2<br>y=(5-2)/2.5=1.2//"
+			}
+		]
+	},
+	{
+		"id": "q4b",
+		"problem": "Given TWO euations:<br>{a}x+2.5y=5<br>-4x+{d}y=2<br>Calculate x and y",
+		"variables": {
+			"a": {
+				"mean": 3,
+				"range": 1,
+				"decimals": 1
+			},
+			"d": {
+				"mean": 6,
+				"range": 1,
+				"decimals": 1
+			}
+		},
+		"answer_type": "subquestions",
+		"subquestions": [
+			{
+				"label": "a) x=?",
+				"formula": "(5*{d}-5)/({a}*{d}+10)",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": ""
+			},
+			{
+				"label": "b) y=?",
+				"formula": "(20+2*{a})/({a}*{d}+10)",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": ""
+			}
+		]
+	},
+	{
+		"id": "q5",
+		"problem": "Solve a quadratic equation 2x² -6x +3 = 0",
+		"answer_type": "subquestions",
+		"subquestions": [
+			{
+				"label": "a) What is the discriminant?",
+				"id": "d",
+				"formula": "6*6 - 4*2*3",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "Discriminant d = b² - 4ac=(-6)^2-4*2*3=12//"
+			},
+			{
+				"label": "b) What is the smaller root?",
+				"formula": "Math.min((6 + sqrt({d})) / (2*2), (6 - sqrt({d})) / (2*2))",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "x1=(6+√12)/(2*2)=2.366<br>x1=(6+√12)/(2*2)=0.634<br>Smaller root = 0.634"
+			},
+			{
+				"label": "c) What is the larger root?",
+				"formula": "Math.max((6 + sqrt({d})) / (2*2), (6 - sqrt({d})) / (2*2))",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "Larger root = 2.366"
+			}
+		]
+	},
+	{
+		"id": "q5b",
+		"problem": "Solve a quadratic equation {a}x² +{b}x {c} = 0",
+		"answer_type": "subquestions",
+		"variables": {
+			"a": {
+				"mean": 2,
+				"range": 1,
+				"decimals": 1
+			},
+			"b": {
+				"mean": -5,
+				"range": 2,
+				"decimals": 1
+			},
+			"c": {
+				"mean": -3,
+				"range": 1,
+				"decimals": 1
+			}
+		},
+		"subquestions": [
+			{
+				"label": "a) What is the discriminant?",
+				"id": "d",
+				"formula": "{b}*{b} - 4*{a}*{c}",
+				"decimals": 2,
+				"accuracy": 0.01,
+				"explanation": "Discriminant d = b² - 4ac"
+			},
+			{
+				"label": "b) What is the smaller root?",
+				"formula": "Math.min((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
+				"decimals": 2,
+				"accuracy": 0.01,
+				"explanation": "Smaller root = min of the two roots"
+			},
+			{
+				"label": "c) What is the larger root?",
+				"formula": "Math.max((-{b} + sqrt({d})) / (2*{a}), (-{b} - sqrt({d})) / (2*{a}))",
+				"decimals": 2,
+				"accuracy": 0.01,
+				"explanation": "Larger root = max of the two roots"
+			}
+		]
+	}
+    
+]
