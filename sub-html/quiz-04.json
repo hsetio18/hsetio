@@ -75,6 +75,27 @@
 	},
 	{
 		"id": "q4",
+		"problem": "Given: 1/A +2/({a}A)={b}<br> calculate A",
+		"answer_type": "number",
+		"variables": {
+			"a": {
+				"mean": 5,
+				"range": 2,
+				"decimals": 1
+			},
+			"b": {
+				"mean": 2,
+				"range": 1,
+				"decimals": 1
+			}
+		},
+		"formula": "(1*{a}+2)/({b}*{a})",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": ""
+	},
+	{
+		"id": "q5",
 		"problem": "Given TWO euations:<br>{a}x+2.5y=5<br>-4x+{d}y=2<br>Calculate x and y",
 		"variables": {
 			"a": {
@@ -107,7 +128,7 @@
 		]
 	},
 	{
-		"id": "q5",
+		"id": "q6",
 		"problem": "Solve a quadratic equation {a}x² +{b}x {c} = 0",
 		"answer_type": "subquestions",
 		"variables": {
