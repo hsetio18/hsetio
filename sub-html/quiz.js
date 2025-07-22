@@ -6,8 +6,17 @@ document.getElementById("quiz-title").textContent = decodeURIComponent(title);
 
 let problems = [], selected = [], current = 0, score = 0, startTime = 0, endTime = 0, totalTime = 0, timePerQuestion = [];
 
-function formatNumber(n) {
-  return n.toLocaleString("en-US");
+// function formatNumber(n) {
+//   return n.toLocaleString("en-US");
+// }
+function formatNumber(n, decimals = null) {
+  if (typeof n === "string") n = parseFloat(n);
+  if (typeof n !== "number" || isNaN(n)) return n;
+
+  return n.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals ?? 20,
+  });
 }
 
 fetch(file)
@@ -266,14 +275,23 @@ function showReview() {
 
     } else {
       // Single-answer question (number or mc)
+      // const correct = typeof q.__correct === "number"
+      //   ? formatNumber(q.__correct.toFixed(q.decimals || 2))
+      //   : q.__correct;
+
+      // const user = typeof q.__user === "number"
+      //   ? formatNumber(q.__user.toFixed(q.decimals || 2))
+      //   : q.__user;
+////////////////      
       const correct = typeof q.__correct === "number"
-        ? formatNumber(q.__correct.toFixed(q.decimals || 2))
+        ? formatNumber(q.__correct, q.decimals || 2)
         : q.__correct;
 
       const user = typeof q.__user === "number"
-        ? formatNumber(q.__user.toFixed(q.decimals || 2))
+        ? formatNumber(q.__user, q.decimals || 2)
         : q.__user;
 
+//////////////////
       const isCorrect = q.answer_type === "mc"
         ? q.__user == q.__correct
         : typeof q.__correct === "number" && Math.abs(q.__user - q.__correct) <= q.accuracy;
