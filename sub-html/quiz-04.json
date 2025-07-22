@@ -96,7 +96,7 @@
 	},
 	{
 		"id": "q5",
-		"problem": "Given TWO euations:<br>{a}x+2.5y=5<br>-4x+{d}y=2<br>Calculate x and y",
+		"problem": "Given TWO equations:<br>{a}x+2.5y=5<br>-4x+{d}y=2<br>Calculate x and y",
 		"variables": {
 			"a": {
 				"mean": 3,
