@@ -236,7 +236,7 @@
 				"decimals": 0
 			},
 			"b": {
-				"mean": 12
+				"mean": 12,
 				"range": 2,
 				"decimals": 0
 			}
