@@ -175,12 +175,19 @@
 	},
 	{
 		"id": "q7",
-		"problem": "Six fewer than four times a number is 78. Find the number",
+		"problem": "Five fewer than three times a number is {a}. Find the number",
 		"answer_type": "number",
-		"formula": "(78+6)/4",
+		"variables": {
+			"a": {
+				"mean": 65,
+				"range": 12,
+				"decimals": 1
+			}
+		},
+		"formula": "({a}+5)/3",
 		"decimals": 4,
 		"accuracy": 0.001,
-		"explanation": "4x-6=78 --> 4x=78+6=84  --> x=84/4=21//"
+		"explanation": ""
 	}, 
 	{
 		"id": "q8",
