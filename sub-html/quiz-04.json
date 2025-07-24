@@ -191,23 +191,23 @@
 	}, 
 	{
 		"id": "q8",
-		"problem": "The perimeter of a standard basketball court is 268 feet. The length is 34 feet longer than the width. Find the length and width",
+		"problem": "The perimeter of a rectangle is {a} cm. The length is {b} cm longer than the width. Find the length and width",
 		"answer_type": "subquestions",
 		"subquestions": [
 			{
 				"label": "a) What is the length?",
 				"id": "l",
-				"formula": "(268+68)/4",
+				"formula": "({a}+2*{b})/4",
 				"decimals": 4,
 				"accuracy": 0.001,
-				"explanation": "Let L=Length and W=width<br>2L+2W=268<br>W=L-34<br>2L+2(L-34)=268<br>4L-68=268<br>L=(268+68)/4=84 feet//"
+				"explanation": ""
 			},
 			{
 				"label": "b) What is the width",
-				"formula": "{l}-34",
+				"formula": "{l}-{b}",
 				"decimals": 4,
 				"accuracy": 0.001,
-				"explanation": "W=84-34=50 feet//"
+				"explanation": ""
 			}
 		]
 	},
