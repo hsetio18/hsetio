@@ -193,6 +193,18 @@
 		"id": "q8",
 		"problem": "The perimeter of a rectangle is {a} cm. The length is {b} cm longer than the width. Find the length and width",
 		"answer_type": "subquestions",
+		"variables": {
+			"a": {
+				"mean": 125,
+				"range": 10,
+				"decimals": 1
+			},
+			"b": {
+				"mean": 10,
+				"range": 5,
+				"decimals": 1
+			}
+		}
 		"subquestions": [
 			{
 				"label": "a) What is the length?",
