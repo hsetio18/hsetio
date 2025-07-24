@@ -249,23 +249,30 @@
 	}, 
 	{
 		"id": "q10",
-		"problem": "A store sells two sizes of wood paint: small cans for $8.95 each and large cans for $15.95 each. On a particular day, the store sold twice as many large cans as small cans. If the total revenue from these sales was $694.45, how many small cans and large cans were sold?",
+		"problem": "A store sells two sizes of wood paint: small cans for $8.75 each and large cans for $15.95 each. On a particular day, the store sold twice as many large cans as small cans. If the total revenue from these sales was ${={a}*40.65}, how many small cans and large cans were sold?",
 		"answer_type": "subquestions",
+		"variables": {
+			"a": {
+				"mean": 13,
+				"range": 3,
+				"decimals": 0
+			}
+		},
 		"subquestions": [
 			{
 				"label": "a) How many small cans were sold?",
 				"id": "s",
-				"formula": "694.45/(8.95+15.95*2)",
-				"decimals": 4,
-				"accuracy": 0.001,
-				"explanation": "Let s=the number of small cans sold.<br>8.95s+15.95(2s)=694.45<br>s=694.45/(8.95+15.95*2)=17<br>Thus 17 small cans sold.//"
+				"formula": "{a}",
+				"decimals": 2,
+				"accuracy": 0.1,
+				"explanation": ""
 			},
 			{
 				"label": "b) How many large cans were sold",
 				"formula": "{s}*2",
-				"decimals": 4,
-				"accuracy": 0.001,
-				"explanation": "2*17 or 34 large cans sold//"
+				"decimals": 2,
+				"accuracy": 0.1,
+				"explanation": ""
 			}
 		]
 	}
