@@ -137,7 +137,7 @@
 		"id": "q9",
 		"problem": "Harry is twelve years older than Ginny. Five years ago, the sum of their ages is 28 years. How old will Ginny be after ten years?",
 		"answer_type": "number",
-		"formula": "(78+6)/4",
+		"formula": "(28-12+5+5)/2+10",
 		"decimals": 4,
 		"accuracy": 0.001,
 		"explanation": "Let H=age of Harry now and G=age of Ginny now.<br>H=G+12<BR>H-5+G-5=28<BR>G+12-5+G-5=28<BR>2G=28-12+5+5=26<BR>G=26/2=13<BR>Thus ten years later Ginny will be 23 years old//"
