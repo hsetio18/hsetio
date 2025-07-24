@@ -172,6 +172,68 @@
 				"explanation": "Larger root = max of the two roots"
 			}
 		]
+	},
+	{
+		"id": "q7",
+		"problem": "Six fewer than four times a number is 78. Find the number",
+		"answer_type": "number",
+		"formula": "(78+6)/4",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": "4x-6=78 --> 4x=78+6=84  --> x=84/4=21//"
+	}, 
+	{
+		"id": "q8",
+		"problem": "The perimeter of a standard basketball court is 268 feet. The length is 34 feet longer than the width. Find the length and width",
+		"answer_type": "subquestions",
+		"subquestions": [
+			{
+				"label": "a) What is the length?",
+				"id": "l",
+				"formula": "(268+68)/4",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "Let L=Length and W=width<br>2L+2W=268<br>W=L-34<br>2L+2(L-34)=268<br>4L-68=268<br>L=(268+68)/4=84 feet//"
+			},
+			{
+				"label": "b) What is the width",
+				"formula": "{l}-34",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "W=84-34=50 feet//"
+			}
+		]
+	},
+	{
+		"id": "q9",
+		"problem": "Harry is twelve years older than Ginny. Five years ago, the sum of their ages is 28 years. How old will Ginny be after ten years?",
+		"answer_type": "number",
+		"formula": "(78+6)/4",
+		"decimals": 4,
+		"accuracy": 0.001,
+		"explanation": "Let H=age of Harry now and G=age of Ginny now.<br>H=G+12<BR>H-5+G-5=28<BR>G+12-5+G-5=28<BR>2G=28-12+5+5=26<BR>G=26/2=13<BR>Thus ten years later Ginny will be 23 years old//"
+	}, 
+	{
+		"id": "q10",
+		"problem": "A store sells two sizes of wood paint: small cans for $8.95 each and large cans for $15.95 each. On a particular day, the store sold twice as many large cans as small cans. If the total revenue from these sales was $694.45, how many small cans and large cans were sold?",
+		"answer_type": "subquestions",
+		"subquestions": [
+			{
+				"label": "a) How many small cans were sold?",
+				"id": "s",
+				"formula": "694.45/(8.95+15.95*2)",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "Let s=the number of small cans sold.<br>8.95s+15.95(2s)=694.45<br>s=694.45/(8.95+15.95*2)=17<br>Thus 17 small cans sold.//"
+			},
+			{
+				"label": "b) How many large cans were sold",
+				"formula": "{s}*2",
+				"decimals": 4,
+				"accuracy": 0.001,
+				"explanation": "2*17 or 34 large cans sold//"
+			}
+		]
 	}
-    
+        
 ]
